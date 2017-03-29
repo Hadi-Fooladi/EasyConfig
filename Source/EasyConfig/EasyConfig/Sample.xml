@@ -1,0 +1,20 @@
+﻿<Root Name="Config" Version="1.0">
+	<Node Name="First">
+		<Attribute Name="Num" Type="int" Desc="Amazing stuff" />
+		<Attribute Name="Num2" Type="float" />
+		<Attribute Name="Num3" Type="float" Default="14" />
+		<Attribute Name="Text" Type="string" />
+		<Attribute Name="Text2" Type="string" Default="My Name" />
+		<Attribute Name="Married" Type="yn" />
+		<Attribute Name="Single" Type="yn" Default="true" />
+	</Node>
+
+	<Node Name="Second">
+		<Attribute Name="Num" Type="int" />
+
+		<Node Name="Grade" Multiple="Yes">
+			<Attribute Name="Value" Type="float" />
+			<Attribute Name="Max" Type="float" Default="20" />
+		</Node>
+	</Node>
+</Root>
