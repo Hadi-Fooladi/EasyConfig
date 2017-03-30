@@ -11,16 +11,10 @@ namespace EasyConfig
 
 		public IndentatedStreamWriter(string path) : base(path) { }
 
-		public override void Write(string value)
-		{
-			Indent();
-			base.Write(value);
-		}
-
 		public override void WriteLine(string value)
 		{
-			Write(value);
-			base.WriteLine();
+			Indent();
+			base.WriteLine(value);
 		}
 
 		public override void WriteLine(string format, object arg0) => WriteLine(string.Format(format, arg0));
@@ -31,7 +25,7 @@ namespace EasyConfig
 		private void Indent()
 		{
 			for (int i = 0; i < IndentationCount; i++)
-				base.Write('\t');
+				Write('\t');
 		}
 	}
 }

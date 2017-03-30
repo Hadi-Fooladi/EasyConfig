@@ -6,6 +6,8 @@ namespace EasyConfig
 	{
 		public RootNode(XmlNode N) : base(N) { }
 
+		protected override string Type => Name;
+
 		protected override string ConstructorParameters => "string Filename";
 
 		protected override void ConstructorPre(IndentatedStreamWriter SW)

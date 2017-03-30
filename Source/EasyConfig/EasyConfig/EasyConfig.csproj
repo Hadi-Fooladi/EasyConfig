@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Attribute.cs" />
-    <Compile Include="Classes\Config.cs" />
+    <Compile Include="Classes\Ext\Misc.cs" />
     <Compile Include="Classes\Ext\XML.cs" />
     <Compile Include="Classes\IndentatedStreamWriter.cs" />
     <Compile Include="Classes\Node.cs" />

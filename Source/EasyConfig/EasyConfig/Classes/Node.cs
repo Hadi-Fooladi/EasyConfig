@@ -1,5 +1,4 @@
-﻿using System;
-using XmlExt;
+﻿using XmlExt;
 using System.IO;
 using System.Xml;
 using System.Collections.Generic;
@@ -69,19 +68,8 @@ namespace EasyConfig
 		public void WriteImplementation(IndentatedStreamWriter SW)
 		{
 			string T = Type;
-			Action<Action> Block = A =>
-			{
-				SW.WriteLine("{");
-				SW.IndentationCount++;
-
-				A();
-
-				SW.IndentationCount--;
-				SW.WriteLine("}");
-			};
-
 			SW.WriteLine("public class " + T);
-			Block(() =>
+			SW.Block(() =>
 			{
 				foreach (var A in Attributes)
 				{
@@ -98,7 +86,7 @@ namespace EasyConfig
 				// Writing Constructor
 				SW.WriteLine("public {0}({1})", T, ConstructorParameters);
 
-				Block(() =>
+				SW.Block(() =>
 				{
 					ConstructorPre(SW);
 
@@ -118,9 +106,8 @@ namespace EasyConfig
 			});
 		}
 
+		protected virtual string Type => Name + "Data";
 		protected virtual string ConstructorParameters => "XmlNode Node";
 		protected virtual void ConstructorPre(IndentatedStreamWriter SW) { }
-
-		private string Type => Name + "Data";
 	}
 }
