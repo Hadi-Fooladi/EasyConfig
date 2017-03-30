@@ -28,13 +28,6 @@ namespace EasyConfig
 
 		public void WriteDeclaration(StreamWriter SW)
 		{
-			if (Desc != null)
-			{
-				SW.WriteLine("/// <summary>");
-				SW.WriteLine("/// {0}", Desc);
-				SW.WriteLine("/// </summary>");
-			}
-
 			if (Multiple)
 			{
 				string T = string.Format("List<{0}>", Type);
@@ -67,21 +60,18 @@ namespace EasyConfig
 
 		public void WriteImplementation(IndentatedStreamWriter SW)
 		{
+			if (Desc != null)
+			{
+				SW.WriteLine("/// <summary>");
+				SW.WriteLine("/// {0}", Desc);
+				SW.WriteLine("/// </summary>");
+			}
+
 			string T = Type;
 			SW.WriteLine("public class " + T);
 			SW.Block(() =>
 			{
-				foreach (var A in Attributes)
-				{
-					A.WriteDeclaration(SW);
-					SW.WriteLine();
-				}
-
-				foreach (var N in Nodes)
-				{
-					N.WriteDeclaration(SW);
-					SW.WriteLine();
-				}
+				DeclareFields(SW);
 
 				// Writing Constructor
 				SW.WriteLine("public {0}({1})", T, ConstructorParameters);
@@ -109,5 +99,20 @@ namespace EasyConfig
 		protected virtual string Type => Name + "Data";
 		protected virtual string ConstructorParameters => "XmlNode Node";
 		protected virtual void ConstructorPre(IndentatedStreamWriter SW) { }
+
+		protected virtual void DeclareFields(IndentatedStreamWriter SW)
+		{
+			foreach (var A in Attributes)
+			{
+				A.WriteDeclaration(SW);
+				SW.WriteLine();
+			}
+
+			foreach (var N in Nodes)
+			{
+				N.WriteDeclaration(SW);
+				SW.WriteLine();
+			}
+		}
 	}
 }

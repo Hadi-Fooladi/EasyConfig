@@ -8,13 +8,6 @@ namespace EasyConfig
 	{
 		internal static void Main(string[] args)
 		{
-			int n = args.Length;
-			if (n % 2 != 1)
-			{
-				PrintUsage();
-				return;
-			}
-
 			try
 			{
 				string
@@ -25,9 +18,15 @@ namespace EasyConfig
 				#region Arguments Analysis
 				try
 				{
-					int i = 0;
+					int i, n = args.Length;
+					if (n % 2 != 1)
+					{
+						PrintUsage();
+						return;
+					}
 
 					n--;
+					i = 0;
 					while (i < n)
 					{
 						string Option = args[i];
@@ -65,6 +64,7 @@ namespace EasyConfig
 				using (var SW = new IndentatedStreamWriter(OutputPath))
 				{
 					SW.WriteLine("using XmlExt;");
+					SW.WriteLine("using System;");
 					SW.WriteLine("using System.Xml;");
 					SW.WriteLine("using System.Collections.Generic;");
 					
