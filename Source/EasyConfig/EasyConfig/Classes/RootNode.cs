@@ -46,5 +46,12 @@ namespace EasyConfig
 
 			base.DeclareFields(SW);
 		}
+
+		public override void WriteSample(XmlNode Node)
+		{
+			if (Version != null)
+				Node.AddAttr("Version", Version);
+			base.WriteSample(Node);
+		}
 	}
 }

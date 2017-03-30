@@ -52,5 +52,7 @@ namespace EasyConfig
 
 			SW.WriteLine("{0} = Node.{1}Attr(\"{0}\"{2});", Name, Prefix, D);
 		}
+
+		public void WriteSample(XmlNode Node) => Node.AddAttr(Name, Default);
 	}
 }

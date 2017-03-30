@@ -1,4 +1,5 @@
-﻿using System;
+﻿using XmlExt;
+using System;
 using System.IO;
 using System.Xml;
 
@@ -13,7 +14,8 @@ namespace EasyConfig
 				string
 					InputPath,
 					NameSpace = null,
-					OutputPath = null;
+					OutputPath = null,
+					SamplePath = null;
 
 				#region Arguments Analysis
 				try
@@ -38,6 +40,7 @@ namespace EasyConfig
 						{
 						case "o": OutputPath = args[i]; break;
 						case "ns": NameSpace = args[i]; break;
+						case "gs": SamplePath = args[i]; break;
 						default: throw new Exception();
 						}
 
@@ -78,6 +81,13 @@ namespace EasyConfig
 						SW.Block(() => RootNode.WriteImplementation(SW));
 					}
 				}
+
+				if (SamplePath != null)
+				{
+					var SampleDoc = new XmlDocument();
+					RootNode.WriteSample(SampleDoc.AppendNode(RootNode.Name));
+					SampleDoc.Save(SamplePath);
+				}
 			}
 			catch (Exception E)
 			{
@@ -97,8 +107,11 @@ namespace EasyConfig
 			Console.WriteLine("   EasyConfig [Options] File");
 			Console.WriteLine();
 			Console.WriteLine("Options:");
-			Console.WriteLine("\t-o\t Output file (Default: Same name as file with '.cs' extension in the current folder)");
-			Console.WriteLine("\t-ns\t namespace name (Default: no namespace)");
+			//                 0        1         2         3
+			//                 123456789012345678901234567890
+			Console.WriteLine("   -o path  | Output file (Default: Same name as file with '.cs' extension in the current folder)");
+			Console.WriteLine("   -ns name | namespace name (Default: no namespace)");
+			Console.WriteLine("   -gs path | Generate Sample xml file");
 		}
 	}
 }

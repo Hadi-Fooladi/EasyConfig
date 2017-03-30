@@ -114,5 +114,11 @@ namespace EasyConfig
 				SW.WriteLine();
 			}
 		}
+
+		public virtual void WriteSample(XmlNode Node)
+		{
+			foreach (var A in Attributes) A.WriteSample(Node);
+			foreach (var N in Nodes) N.WriteSample(Node.AppendNode(N.Name));
+		}
 	}
 }
