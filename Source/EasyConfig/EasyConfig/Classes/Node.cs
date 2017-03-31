@@ -7,8 +7,8 @@ namespace EasyConfig
 {
 	internal class Node
 	{
-		public string Name, Desc;
 		public bool Multiple;
+		public string Name, Desc, Type;
 
 		public readonly List<Node> Nodes = new List<Node>();
 		public readonly List<Attribute> Attributes = new List<Attribute>();
@@ -17,6 +17,7 @@ namespace EasyConfig
 		{
 			Name = N.Attr("Name");
 			Desc = N.Attr("Desc", null);
+			Type = N.Attr("Type", null);
 			Multiple = N.ynAttr("Multiple", false);
 
 			foreach (XmlNode X in N.SelectNodes("Attribute"))
@@ -30,11 +31,11 @@ namespace EasyConfig
 		{
 			if (Multiple)
 			{
-				string T = string.Format("List<{0}>", Type);
+				string T = string.Format("List<{0}>", TypeName);
 				SW.WriteLine("public readonly {0} {1} = new {0}();", T, Name);
 			}
 			else
-				SW.WriteLine("public readonly {0} {1};", Type, Name);
+				SW.WriteLine("public readonly {0} {1};", TypeName, Name);
 		}
 
 		public void WriteRead(IndentatedStreamWriter SW)
@@ -44,7 +45,7 @@ namespace EasyConfig
 			{
 				SW.WriteLine("foreach (XmlNode X in Node.SelectNodes(\"{0}\"))", Name);
 				SW.IndentationCount++;
-				SW.WriteLine("{0}.Add(new {1}(X));", Name, Type);
+				SW.WriteLine("{0}.Add(new {1}(X));", Name, TypeName);
 				SW.IndentationCount--;
 			}
 			else
@@ -53,7 +54,7 @@ namespace EasyConfig
 				SW.WriteLine("var {0} = Node.SelectSingleNode(\"{1}\");", NameNode, Name);
 				SW.WriteLine("if ({0} != null)", NameNode);
 				SW.IndentationCount++;
-				SW.WriteLine("{0} = new {1}({2});", Name, Type, NameNode);
+				SW.WriteLine("{0} = new {1}({2});", Name, TypeName, NameNode);
 				SW.IndentationCount--;
 			}
 		}
@@ -67,8 +68,8 @@ namespace EasyConfig
 				SW.WriteLine("/// </summary>");
 			}
 
-			string T = Type;
-			SW.WriteLine("public class " + T);
+			string T = TypeName;
+			SW.WriteLine("public {0} {1}", Type ?? Global.DefaultType, T);
 			SW.Block(() =>
 			{
 				DeclareFields(SW);
@@ -96,7 +97,7 @@ namespace EasyConfig
 			});
 		}
 
-		protected virtual string Type => Name + "Data";
+		protected virtual string TypeName => Name + "Data";
 		protected virtual string ConstructorParameters => "XmlNode Node";
 		protected virtual void ConstructorPre(IndentatedStreamWriter SW) { }
 

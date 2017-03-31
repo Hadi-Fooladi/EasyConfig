@@ -18,11 +18,13 @@ namespace EasyConfig
 				OneStringParameter
 					pSamplePath = new OneStringParameter("gs", "path", "Generate Sample xml file"),
 					pNameSpace = new OneStringParameter("ns", "name", "namespace name (Default: no namespace)"),
-					pOutputPath = new OneStringParameter("o", "path", "Output file (Default: Same name as file with '.cs' extension in the current folder)");
+					pOutputPath = new OneStringParameter("o", "path", "Output file (Default: Same name as file with '.cs' extension in the current folder)"),
+					pDefaultType = new OneStringParameter("dt", "type", "class/struct (Default: class)") { CustomProcess = Value => Global.DefaultType = Value };
 
 				P.Add(pOutputPath);
 				P.Add(pNameSpace);
 				P.Add(pSamplePath);
+				P.Add(pDefaultType);
 
 				#region Arguments Analysis
 				try

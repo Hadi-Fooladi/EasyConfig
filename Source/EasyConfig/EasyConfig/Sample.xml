@@ -1,5 +1,5 @@
 ﻿<Root Name="Config" Version="1.0" Desc="Config Class">
-	<Node Name="First">
+	<Node Name="First" Type="class">
 		<Attribute Name="Num" Type="int" Desc="Amazing stuff" />
 		<Attribute Name="Num2" Type="float" />
 		<Attribute Name="Num3" Type="float" Default="14" />
@@ -10,7 +10,7 @@
 	</Node>
 
 	<Node Name="Second" Desc="Second Class">
-		<Node Name="Grade" Multiple="Yes">
+		<Node Name="Grade" Multiple="Yes" Type="struct">
 			<Attribute Name="Value" Type="float" />
 			<Attribute Name="Max" Type="float" Default="20" />
 		</Node>
