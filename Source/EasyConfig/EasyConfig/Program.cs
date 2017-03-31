@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace EasyConfig
 {
@@ -11,49 +12,52 @@ namespace EasyConfig
 		{
 			try
 			{
-				string
-					InputPath,
-					NameSpace = null,
-					OutputPath = null,
-					SamplePath = null;
+				string InputPath, OutputPath;
+
+				// Adding Parameters
+				OneStringParameter
+					pSamplePath = new OneStringParameter("gs", "path", "Generate Sample xml file"),
+					pNameSpace = new OneStringParameter("ns", "name", "namespace name (Default: no namespace)"),
+					pOutputPath = new OneStringParameter("o", "path", "Output file (Default: Same name as file with '.cs' extension in the current folder)");
+
+				P.Add(pOutputPath);
+				P.Add(pNameSpace);
+				P.Add(pSamplePath);
 
 				#region Arguments Analysis
 				try
 				{
-					int i, n = args.Length;
-					if (n % 2 != 1)
-					{
-						PrintUsage();
-						return;
-					}
+					int
+						ndx = 0,
+						n = args.Length - 1;
 
-					n--;
-					i = 0;
-					while (i < n)
+					while (ndx < n)
 					{
-						string Option = args[i];
+						string Option = args[ndx++];
 						if (Option[0] != '-')
 							throw new Exception();
 
-						i++;
-						switch (Option.Substring(1))
-						{
-						case "o": OutputPath = args[i]; break;
-						case "ns": NameSpace = args[i]; break;
-						case "gs": SamplePath = args[i]; break;
-						default: throw new Exception();
-						}
+						IParameter Param = null;
+						string Code = Option.Substring(1);
+						foreach (var X in P)
+							if (X.Code == Code)
+							{
+								Param = X;
+								break;
+							}
 
-						i++;
+						if (Param == null)
+							throw new Exception("Unknown Parameter");
+
+						Param.Process(args, ref ndx);
 					}
 
-					InputPath = args[i];
-					if (OutputPath == null)
-						OutputPath = Path.GetFileNameWithoutExtension(InputPath) + ".cs";
+					InputPath = args[ndx];
+					OutputPath = pOutputPath.Value ?? Path.GetFileNameWithoutExtension(InputPath) + ".cs";
 				}
-				catch
+				catch (Exception E)
 				{
-					PrintUsage();
+					PrintUsage("Error: " + E.Message);
 					return;
 				}
 				#endregion
@@ -73,20 +77,20 @@ namespace EasyConfig
 					
 					SW.WriteLine();
 
-					if (NameSpace == null)
+					if (pNameSpace.Value == null)
 						RootNode.WriteImplementation(SW);
 					else
 					{
-						SW.WriteLine("namespace {0}", NameSpace);
+						SW.WriteLine("namespace {0}", pNameSpace.Value);
 						SW.Block(() => RootNode.WriteImplementation(SW));
 					}
 				}
 
-				if (SamplePath != null)
+				if (pSamplePath.Value != null)
 				{
 					var SampleDoc = new XmlDocument();
 					RootNode.WriteSample(SampleDoc.AppendNode(RootNode.Name));
-					SampleDoc.Save(SamplePath);
+					SampleDoc.Save(pSamplePath.Value);
 				}
 			}
 			catch (Exception E)
@@ -100,18 +104,33 @@ namespace EasyConfig
 			}
 		}
 
-		internal static void PrintUsage()
+		private static readonly List<IParameter> P = new List<IParameter>();
+
+		internal static void PrintUsage(string Message = null)
 		{
+			if (Message != null)
+			{
+				Console.WriteLine();
+				Console.WriteLine(Message);
+			}
+
 			Console.WriteLine();
 			Console.WriteLine("Usage: ");
 			Console.WriteLine("   EasyConfig [Options] File");
 			Console.WriteLine();
 			Console.WriteLine("Options:");
-			//                 0        1         2         3
-			//                 123456789012345678901234567890
-			Console.WriteLine("   -o path  | Output file (Default: Same name as file with '.cs' extension in the current folder)");
-			Console.WriteLine("   -ns name | namespace name (Default: no namespace)");
-			Console.WriteLine("   -gs path | Generate Sample xml file");
+
+			int MaxLen = 0;
+			foreach (var X in P)
+				MaxLen = Math.Max(MaxLen, (X.Code + X.CodeParams).Length);
+
+			var Format = string.Format("{{0,-{0}}}", MaxLen + 1);
+			foreach (var X in P)
+			{
+				Console.Write("   -");
+				Console.Write(Format, X.Code + " " + X.CodeParams);
+				Console.WriteLine(" | " + X.Desc);
+			}
 		}
 	}
 }
