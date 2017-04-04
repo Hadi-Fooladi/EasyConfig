@@ -1,4 +1,5 @@
 ﻿using XmlExt;
+using System;
 using System.IO;
 using System.Xml;
 using System.Collections.Generic;
@@ -51,11 +52,17 @@ namespace EasyConfig
 			else
 			{
 				string NameNode = Name + "Node";
-				SW.WriteLine("var {0} = Node.SelectSingleNode(\"{1}\");", NameNode, Name);
-				SW.WriteLine("if ({0} != null)", NameNode);
-				SW.IndentationCount++;
-				SW.WriteLine("{0} = new {1}({2});", Name, TypeName, NameNode);
-				SW.IndentationCount--;
+
+				if ((Type ?? Global.DefaultType) == "struct")
+					SW.WriteLine("{0} = new {1}(Node.SelectSingleNode(\"{0}\"));", Name, TypeName);
+				else
+				{
+					SW.WriteLine("var {0} = Node.SelectSingleNode(\"{1}\");", NameNode, Name);
+					SW.WriteLine("if ({0} != null)", NameNode);
+					SW.IndentationCount++;
+					SW.WriteLine("{0} = new {1}({2});", Name, TypeName, NameNode);
+					SW.IndentationCount--;
+				}
 			}
 		}
 
