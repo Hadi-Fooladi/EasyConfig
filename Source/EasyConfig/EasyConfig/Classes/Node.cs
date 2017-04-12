@@ -44,35 +44,35 @@ namespace EasyConfig
 				Fields.Add(new Field(X, this));
 		}
 
-		public void WriteDeclaration(IndentatedStreamWriter SW) => SW.Declare(Name, TypeName, Multiple, null);
+		public void WriteDeclaration(IndentedStreamWriter SW) => SW.Declare(Name, TypeName, Multiple, null);
 
-		public void WriteRead(IndentatedStreamWriter SW)
+		public void WriteRead(IndentedStreamWriter SW)
 		{
-			SW.WriteLine();
 			if (Multiple)
 			{
+				SW.WriteLine();
 				SW.WriteLine("{0} = new List<{1}>();", Name, TypeName);
 				SW.WriteLine("foreach (XmlNode X in Node.SelectNodes(\"{0}\"))", Name);
 				SW.Inside(() => SW.WriteLine("{0}.Add(new {1}(X));", Name, TypeName));
+				SW.WriteLine();
 			}
 			else
 				if (isStruct)
 					SW.WriteLine("{0} = new {1}(Node.SelectSingleNode(\"{0}\"));", Name, TypeName);
 				else
 				{
+					SW.WriteLine();
 					string NameNode = Name + "Node";
 					SW.WriteLine("var {0} = Node.SelectSingleNode(\"{1}\");", NameNode, Name);
 					SW.WriteLine("if ({0} != null)", NameNode);
 					SW.Inside(() => SW.WriteLine("{0} = new {1}({2});", Name, TypeName, NameNode));
 					if (Container.isStruct)
-					{
-						SW.WriteLine("else");
-						SW.Inside(() => SW.WriteLine("{0} = null;", Name));
-					}
+						SW.WriteLine("else {0} = null;", Name);
+					SW.WriteLine();
 				}
 		}
 
-		public void WriteImplementation(IndentatedStreamWriter SW)
+		public void WriteImplementation(IndentedStreamWriter SW)
 		{
 			SW.WriteDesc(Desc);
 
@@ -81,6 +81,7 @@ namespace EasyConfig
 			SW.Block(() =>
 			{
 				DeclareFields(SW);
+				SW.WriteLine();
 
 				// Writing Constructor
 				SW.WriteLine("public {0}({1})", T, ConstructorParameters);
@@ -109,27 +110,18 @@ namespace EasyConfig
 
 		protected virtual string TypeName => ProposedTypeName ?? Name + "Data";
 		protected virtual string ConstructorParameters => "XmlNode Node";
-		protected virtual void ConstructorPre(IndentatedStreamWriter SW) { }
+		protected virtual void ConstructorPre(IndentedStreamWriter SW) { }
 
-		protected virtual void DeclareFields(IndentatedStreamWriter SW)
+		protected virtual void DeclareFields(IndentedStreamWriter SW)
 		{
 			foreach (var A in Attributes)
-			{
 				A.WriteDeclaration(SW);
-				SW.WriteLine();
-			}
 
 			foreach (var F in Fields)
-			{
 				F.WriteDeclaration(SW);
-				SW.WriteLine();
-			}
 
 			foreach (var N in Nodes)
-			{
 				N.WriteDeclaration(SW);
-				SW.WriteLine();
-			}
 		}
 
 		public virtual void WriteSample(XmlNode Node) => WriteSample(Node, true);

@@ -18,7 +18,7 @@ namespace EasyConfig
 			Default = N.Attr("Default", null);
 		}
 
-		public void WriteDeclaration(IndentatedStreamWriter SW) => SW.Declare(Name, Type == "yn" ? "bool" : Type, false, Desc);
+		public void WriteDeclaration(IndentedStreamWriter SW) => SW.Declare(Name, Type == "yn" ? "bool" : Type, false, Desc);
 
 		public void WriteRead(StreamWriter SW)
 		{

@@ -47,7 +47,7 @@
     <Compile Include="Classes\Ext\XML.cs" />
     <Compile Include="Classes\Field.cs" />
     <Compile Include="Classes\Global.cs" />
-    <Compile Include="Classes\IndentatedStreamWriter.cs" />
+    <Compile Include="Classes\IndentedStreamWriter.cs" />
     <Compile Include="Classes\Node.cs" />
     <Compile Include="Classes\Parameters\OneStringParameter.cs" />
     <Compile Include="Classes\RootNode.cs" />

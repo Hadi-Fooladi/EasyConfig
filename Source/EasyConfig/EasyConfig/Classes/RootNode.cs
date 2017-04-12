@@ -1,5 +1,4 @@
-﻿using System;
-using XmlExt;
+﻿using XmlExt;
 using System.Xml;
 
 namespace EasyConfig
@@ -14,27 +13,25 @@ namespace EasyConfig
 
 		protected override string ConstructorParameters => "string Filename";
 
-		protected override void ConstructorPre(IndentatedStreamWriter SW)
+		protected override void ConstructorPre(IndentedStreamWriter SW)
 		{
 			SW.WriteLine("var Doc = new XmlDocument();");
 			SW.WriteLine("Doc.Load(Filename);");
 			SW.WriteLine();
 			SW.WriteLine("var Node = Doc.SelectSingleNode(\"{0}\");", Name);
+			SW.WriteLine();
 
 			if (Version != null)
 			{
-				SW.WriteLine();
 				SW.WriteLine("// Check version");
 				SW.WriteLine("Version = new Version(Node.Attr(\"Version\"));");
 				SW.WriteLine("if (Version.Major != ExpectedVersion.Major || Version.Minor < ExpectedVersion.Minor)");
-				SW.IndentationCount++;
-				SW.WriteLine("throw new Exception(\"Version Mismatch\");");
-				SW.IndentationCount--;
+				SW.Inside(() => SW.WriteLine("throw new Exception(\"Version Mismatch\");"));
 				SW.WriteLine();
 			}
 		}
 
-		protected override void DeclareFields(IndentatedStreamWriter SW)
+		protected override void DeclareFields(IndentedStreamWriter SW)
 		{
 			if (Version != null)
 			{
