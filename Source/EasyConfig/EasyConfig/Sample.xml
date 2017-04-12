@@ -1,4 +1,4 @@
-﻿<Root Name="Config" Version="1.0" Desc="Config Class">
+﻿<Root Name="Config" Version="1.0" Desc="Config Class" EasyConfig-Version="1.4">
 	<Node Name="First" Type="class">
 		<Attribute Name="Num" Type="int" Desc="Amazing stuff" />
 		<Attribute Name="Num2" Type="float" />
@@ -14,5 +14,25 @@
 			<Attribute Name="Value" Type="float" />
 			<Attribute Name="Max" Type="float" Default="20" />
 		</Node>
+	</Node>
+
+	<Node Name="Person" Type="class" TypeName="CPerson">
+		<Attribute Name="Age" Type="int" />
+		<Attribute Name="Height" Type="float" />
+		<Attribute Name="Weight" Type="float" />
+
+		<Field Name="Spouse" Type="CPerson" Desc="Spouse Info" />
+		<Field Name="Children" TagName="Child" Type="CPerson" Multiple="Yes" />
+	</Node>
+
+	<Node Name="Family" Type="struct" TypeName="CFamily">
+		<Attribute Name="nChild" Type="int" />
+		<Field Name="Husband" Type="CPerson" />
+		<Field Name="Wife" Type="CPerson" />
+	</Node>
+
+	<Node Name="BigFamily">
+		<Field Name="Father" Type="CFamily" />
+		<Field Name="Mother" Type="CFamily" />
 	</Node>
 </Root>

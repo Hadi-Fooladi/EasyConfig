@@ -10,7 +10,7 @@ namespace EasyConfig
 
 		public RootNode(XmlNode N) : base(N) { Version = N.Attr("Version", null); }
 
-		protected override string TypeName => Name;
+		protected override string TypeName => ProposedTypeName ?? Name;
 
 		protected override string ConstructorParameters => "string Filename";
 
@@ -51,6 +51,7 @@ namespace EasyConfig
 		{
 			if (Version != null)
 				Node.AddAttr("Version", Version);
+
 			base.WriteSample(Node);
 		}
 	}

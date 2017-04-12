@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace EasyConfig
 {
@@ -26,6 +27,36 @@ namespace EasyConfig
 		{
 			for (int i = 0; i < IndentationCount; i++)
 				Write('\t');
+		}
+
+		public void Block(Action A)
+		{
+			WriteLine("{");
+			Inside(A);
+			WriteLine("}");
+		}
+
+		public void Inside(Action A)
+		{
+			IndentationCount++;
+			A();
+			IndentationCount--;
+		}
+
+		public void Declare(string Name, string Type, bool isList, string Desc)
+		{
+			WriteDesc(Desc);
+			var Format = string.Format("public readonly {0} {{1}};", isList ? "List<{0}>" : "{0}");
+			WriteLine(Format, Type, Name);
+		}
+
+		public void WriteDesc(string Desc)
+		{
+			if (Desc == null) return;
+
+			WriteLine("/// <summary>");
+			WriteLine("/// {0}", Desc);
+			WriteLine("/// </summary>");
 		}
 	}
 }

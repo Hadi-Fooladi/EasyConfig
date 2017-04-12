@@ -18,17 +18,7 @@ namespace EasyConfig
 			Default = N.Attr("Default", null);
 		}
 
-		public void WriteDeclaration(StreamWriter SW)
-		{
-			if (Desc != null)
-			{
-				SW.WriteLine("/// <summary>");
-				SW.WriteLine("/// {0}", Desc);
-				SW.WriteLine("/// </summary>");
-			}
-
-			SW.WriteLine("public readonly {0} {1};", Type == "yn" ? "bool" : Type, Name);
-		}
+		public void WriteDeclaration(IndentatedStreamWriter SW) => SW.Declare(Name, Type == "yn" ? "bool" : Type, false, Desc);
 
 		public void WriteRead(StreamWriter SW)
 		{
