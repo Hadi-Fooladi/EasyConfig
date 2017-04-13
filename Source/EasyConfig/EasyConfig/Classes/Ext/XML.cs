@@ -13,6 +13,12 @@ namespace XmlExt
 		public static float fAttr(this XmlNode Node, string Name) => Convert.ToSingle(Node.Attr(Name));
 		public static bool ynAttr(this XmlNode Node, string Name) => string.Compare(Node.Attr(Name), "Yes", StringComparison.OrdinalIgnoreCase) == 0;
 
+		public static Version verAttr(this XmlNode Node, string Name)
+		{
+			var A = Node.Attributes[Name];
+			return A == null ? null : new Version(A.Value);
+		}
+
 		public static string Attr(this XmlNode Node, string Name, string Default)
 		{
 			var A = Node.Attributes[Name];

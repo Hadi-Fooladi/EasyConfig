@@ -1,4 +1,4 @@
-﻿<EasyConfig Version="3.0">
+﻿<EasyConfig Version="4.0">
 	<DataType Name="Complex">
 		<Attribute Name="Real" Type="float" />
 		<Attribute Name="Imaginary" Type="float" />
@@ -30,7 +30,7 @@
 			<Attribute Name="Num2" Type="float" />
 			<Attribute Name="Num3" Type="float" Default="14" />
 			<Attribute Name="Text" Type="string" />
-			<Attribute Name="Text2" Type="string" Default="My Name" />
+			<Attribute Name="Text2" Type="string" Default='"My Name"' />
 			<Attribute Name="Married" Type="yn" />
 			<Attribute Name="Single" Type="yn" Default="true" />
 		</Node>

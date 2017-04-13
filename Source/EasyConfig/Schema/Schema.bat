@@ -1,0 +1,1 @@
+..\EasyConfig\bin\Release\EasyConfig -ns Schema Schema.EasyConfig

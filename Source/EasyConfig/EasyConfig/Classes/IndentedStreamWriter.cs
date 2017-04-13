@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Schema;
+using System;
 using System.IO;
 
 namespace EasyConfig
@@ -78,6 +79,8 @@ namespace EasyConfig
 			// We put a line after declaration if it has description
 			if (Desc != null) WriteLine();
 		}
+
+		public void Declare(Field F) => Declare(F.Name, F.Type, F.Multiple, F.Desc);
 
 		public void WriteDesc(string Desc)
 		{

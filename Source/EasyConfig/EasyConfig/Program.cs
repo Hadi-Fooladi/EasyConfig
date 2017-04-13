@@ -63,24 +63,21 @@ namespace EasyConfig
 				}
 				#endregion
 
-				var Doc = new XmlDocument();
-				Doc.Load(InputPath);
-
-				var Root = Doc.SelectSingleNode("EasyConfig");
+				var EC = new Schema.EasyConfig(InputPath);
 
 				// Check Easy-Config Version
 				Version
-					Ver = new Version(Root.Attr("Version", "1.0")),
+					Ver = EC.Version,
 					AppVer = Assembly.GetExecutingAssembly().GetName().Version;
 
 				if (Ver.Major != AppVer.Major && Ver.Minor > AppVer.Minor)
 					throw new Exception("Version Mismatch");
 
 				var Types = new List<DataType>();
-				foreach (XmlNode X in Root.SelectNodes("DataType"))
-					Types.Add(new DataType(X));
+				foreach (var T in EC.Types)
+					Types.Add(new DataType(T));
 
-				var RootNode = new RootNode(Root.SelectSingleNode("Root"));
+				var RootNode = new RootNode(EC.Root);
 
 				// Filling 'Global.Name2DataType'
 				RootNode.RegisterName();

@@ -1,0 +1,41 @@
+<EasyConfig Version="4.0">
+	<DataType Name="Attribute">
+		<Attribute Name="Name" Type="string" />
+		<Attribute Name="Type" Type="string" />
+		<Attribute Name="Desc" Type="string" Default="null" />
+		<Attribute Name="Default" Type="string" Default="null" />
+	</DataType>
+
+	<DataType Name="Field">
+		<Attribute Name="Name" Type="string" />
+		<Attribute Name="Type" Type="string" />
+		<Attribute Name="Desc" Type="string" Default="null" />
+		<Attribute Name="TagName" Type="string" Default="null" />
+		<Attribute Name="Multiple" Type="yn" Default="false" />
+	</DataType>
+
+	<DataType Name="DataType">
+		<Attribute Name="Name" Type="string" />
+		<Attribute Name="Desc" Type="string" Default="null" />
+		<Attribute Name="Inherit" Type="string" Default="null" />
+		<Field Name="Fields" Type="Field" TagName="Field" Multiple="Yes" />
+		<Field Name="Attributes" Type="Attribute" TagName="Attribute" Multiple="Yes" />
+	</DataType>
+
+	<DataType Name="Node" Inherit="DataType">
+		<Attribute Name="Multiple" Type="yn" Default="false" />
+		<Attribute Name="TypeName" Type="string" Default="null" />
+		<Field Name="Nodes" Type="Node" TagName="Node" Multiple="Yes" />
+		<Field Name="Types" Type="DataType" TagName="DataType" Multiple="Yes" />
+	</DataType>
+
+	<Root Name="EasyConfig">
+		<Attribute Name="Version" Type="Version" />
+
+		<Field Name="Types" Type="DataType" TagName="DataType" Multiple="Yes" />
+		
+		<Node Name="Root" TypeName="CRoot" Inherit="Node">
+			<Attribute Name="Version" Type="Version" />
+		</Node>
+	</Root>
+</EasyConfig>
