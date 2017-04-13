@@ -88,7 +88,5 @@ namespace EasyConfig
 			WriteLine("/// {0}", Desc);
 			WriteLine("/// </summary>");
 		}
-
-		public void RemoveBlankLine() => BlankLine = false;
 	}
 }

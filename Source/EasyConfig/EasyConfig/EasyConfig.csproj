@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="abc.cs" />
     <Compile Include="Classes\Attribute.cs" />
+    <Compile Include="Classes\DataType.cs" />
     <Compile Include="Classes\Ext\Misc.cs" />
     <Compile Include="Classes\Ext\XML.cs" />
     <Compile Include="Classes\Field.cs" />

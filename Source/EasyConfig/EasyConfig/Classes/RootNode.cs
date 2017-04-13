@@ -1,13 +1,21 @@
 ﻿using XmlExt;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace EasyConfig
 {
 	internal class RootNode : Node
 	{
 		private readonly string Version;
+		private List<DataType> Types = new List<DataType>();
 
-		public RootNode(XmlNode N) : base(N) { Version = N.Attr("Version", null); }
+		public RootNode(XmlNode N) : base(N)
+		{
+			Version = N.Attr("Version", null);
+
+			foreach (XmlNode X in N.SelectNodes("Types/DataType"))
+				Types.Add(new DataType(X));
+		}
 
 		protected override string TypeName => ProposedTypeName ?? Name;
 
@@ -44,12 +52,30 @@ namespace EasyConfig
 			base.DeclareFields(SW);
 		}
 
-		public override void WriteSample(XmlNode Node)
+		protected override void ImplementNestedClasses(IndentedStreamWriter SW)
+		{
+			base.ImplementNestedClasses(SW);
+
+			foreach (var T in Types)
+			{
+				SW.WriteLine();
+				T.WriteImplementation(SW);
+			}
+		}
+
+		public new void WriteSample(XmlNode Node)
 		{
 			if (Version != null)
 				Node.AddAttr("Version", Version);
 
 			base.WriteSample(Node);
+		}
+
+		public override void RegisterName()
+		{
+			base.RegisterName();
+			foreach (var T in Types)
+				T.RegisterName();
 		}
 	}
 }

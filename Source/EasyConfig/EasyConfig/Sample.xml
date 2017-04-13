@@ -1,5 +1,27 @@
-﻿<Root Name="Config" Version="1.0" Desc="Config Class" EasyConfig-Version="1.4">
-	<Node Name="First" Type="class">
+﻿<Root Name="Config" Version="1.0" Desc="Config Class" EasyConfig-Version="2.0">
+	<Types>
+		<DataType Name="Complex">
+			<Attribute Name="Real" Type="float" />
+			<Attribute Name="Imaginary" Type="float" />
+		</DataType>
+
+		<DataType Name="Formula2">
+			<Field Name="C0" Type="Complex" />
+			<Field Name="C1" Type="Complex" />
+			<Field Name="C2" Type="Complex" />
+		</DataType>
+
+		<DataType Name="ComplexNum" Inherit="Complex">
+			<Attribute Name="a" Type="float" />
+			<Attribute Name="b" Type="float" />
+		</DataType>
+
+		<DataType Name="FormulaN">
+			<Field Name="C" Type="Complex" Multiple="Yes" />
+		</DataType>
+	</Types>
+
+	<Node Name="First">
 		<Attribute Name="Num" Type="int" Desc="Amazing stuff" />
 		<Attribute Name="Num2" Type="float" />
 		<Attribute Name="Num3" Type="float" Default="14" />
@@ -14,9 +36,13 @@
 			<Attribute Name="Value" Type="float" />
 			<Attribute Name="Max" Type="float" Default="20" />
 		</Node>
+		<Node Name="Grade2" Multiple="Yes">
+			<Attribute Name="Value" Type="float" />
+			<Attribute Name="Max" Type="float" Default="20" />
+		</Node>
 	</Node>
 
-	<Node Name="Person" Type="class" TypeName="CPerson">
+	<Node Name="Person" TypeName="CPerson">
 		<Attribute Name="Age" Type="int" />
 		<Attribute Name="Height" Type="float" />
 		<Attribute Name="Weight" Type="float" />
@@ -25,7 +51,11 @@
 		<Field Name="Children" TagName="Child" Type="CPerson" Multiple="Yes" />
 	</Node>
 
-	<Node Name="Family" Type="struct" TypeName="CFamily">
+	<Node Name="Employee" Inherit="CPerson">
+		<Attribute Name="Wage" Type="float" />
+	</Node>
+
+	<Node Name="Family" TypeName="CFamily">
 		<Attribute Name="nChild" Type="int" />
 		<Field Name="Husband" Type="CPerson" />
 		<Field Name="Wife" Type="CPerson" />
@@ -34,5 +64,23 @@
 	<Node Name="BigFamily">
 		<Field Name="Father" Type="CFamily" />
 		<Field Name="Mother" Type="CFamily" />
+	</Node>
+
+	<Node Name="Algebra">
+		<Field Name="Origin" Type="Complex" />
+		<Field Name="Numbers" Type="ComplexNum" Multiple="Yes" />
+	</Node>
+
+	<Node Name="ComplexNum2" Inherit="ComplexNum">
+		<Attribute Name="c" Type="float" />
+
+		<Node Name="Person">
+			<Attribute Name="Age" Type="int" />
+			<Attribute Name="Height" Type="float" />
+			<Attribute Name="Weight" Type="float" />
+
+			<Field Name="Spouse" Type="PersonData" Desc="Spouse Info" />
+			<Field Name="Children" TagName="Child" Type="PersonData" Multiple="Yes" />
+		</Node>
 	</Node>
 </Root>
