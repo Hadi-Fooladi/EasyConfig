@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\AttributeExt.cs" />
+    <Compile Include="Classes\Attribute.cs" />
     <Compile Include="Classes\DataType.cs" />
     <Compile Include="Classes\Ext\Misc.cs" />
     <Compile Include="Classes\Ext\XML.cs" />
@@ -51,7 +51,7 @@
     <Compile Include="Classes\IndentedStreamWriter.cs" />
     <Compile Include="Classes\Node.cs" />
     <Compile Include="Classes\Parameters\OneStringParameter.cs" />
-    <Compile Include="Classes\RootNode.cs" />
+    <Compile Include="Classes\CRoot.cs" />
     <Compile Include="Interfaces\IParameter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

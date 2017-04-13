@@ -1,15 +1,11 @@
 ﻿using XmlExt;
 using System.Xml;
 
-namespace EasyConfig
+namespace Schema
 {
-	internal class RootNode : Node
+	internal partial class CRoot
 	{
-		private readonly Schema.EasyConfig.CRoot R;
-
-		public RootNode(Schema.EasyConfig.CRoot R) : base(R) { this.R = R; }
-
-		protected override string TypeName => R.TypeName ?? Name;
+		protected override string DataTypeName => TypeName ?? Name;
 
 		protected override string ConstructorParameters => "string Filename";
 
@@ -21,7 +17,7 @@ namespace EasyConfig
 			SW.WriteLine("var Node = Doc.SelectSingleNode(\"{0}\");", Name);
 			SW.WriteLine();
 
-			if (R.Version != null)
+			if (Version != null)
 			{
 				SW.WriteLine("// Check version");
 				SW.WriteLine("Version = new Version(Node.Attr(\"Version\"));");
@@ -33,7 +29,7 @@ namespace EasyConfig
 
 		protected override void DeclareFields(IndentedStreamWriter SW)
 		{
-			var V = R.Version;
+			var V = Version;
 			if (V != null)
 			{
 				SW.WriteLine("public readonly Version Version;");
@@ -47,8 +43,8 @@ namespace EasyConfig
 
 		public new void WriteSample(XmlNode Node)
 		{
-			if (R.Version != null)
-				Node.AddAttr("Version", R.Version);
+			if (Version != null)
+				Node.AddAttr("Version", Version);
 
 			base.WriteSample(Node);
 		}

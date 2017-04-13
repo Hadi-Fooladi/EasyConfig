@@ -1,38 +1,32 @@
 ﻿using XmlExt;
 using System.Xml;
 
-namespace EasyConfig
+namespace Schema
 {
-	internal class DataType
+	internal partial class DataType
 	{
-		private readonly Schema.DataType DT;
-
-		public DataType(Schema.DataType DT) { this.DT = DT; }
-
-		public string Name => DT.Name;
-
 		public void WriteImplementation(IndentedStreamWriter SW)
 		{
-			SW.WriteDesc(DT.Desc);
+			SW.WriteDesc(Desc);
 
-			string T = TypeName;
-			SW.WriteLine("public class {0}{1}", T, DT.Inherit != null ? " : " + DT.Inherit : "");
+			string T = DataTypeName;
+			SW.WriteLine("internal {0}class {1}{2}", Partial ? "partial " : "", T, Inherit != null ? " : " + Inherit : "");
 			SW.Block(() =>
 			{
 				DeclareFields(SW);
 				SW.WriteLine();
 
 				// Writing Constructor
-				SW.WriteLine("public {0}({1}){2}", T, ConstructorParameters, DT.Inherit != null ? " : base(Node)" : "");
+				SW.WriteLine("public {0}({1}){2}", T, ConstructorParameters, Inherit != null ? " : base(Node)" : "");
 
 				SW.Block(() =>
 				{
 					ConstructorPre(SW);
 
-					foreach (var A in DT.Attributes)
+					foreach (var A in Attributes)
 						A.WriteRead(SW);
 
-					foreach (var F in DT.Fields)
+					foreach (var F in Fields)
 						F.WriteRead(SW);
 
 					ConstructorPost(SW);
@@ -42,7 +36,7 @@ namespace EasyConfig
 			});
 		}
 
-		protected virtual string TypeName => Name;
+		protected virtual string DataTypeName => Name;
 		protected virtual string ConstructorParameters => "XmlNode Node";
 		protected virtual void ConstructorPre(IndentedStreamWriter SW) { }
 		protected virtual void ConstructorPost(IndentedStreamWriter SW) { }
@@ -50,24 +44,24 @@ namespace EasyConfig
 
 		protected virtual void DeclareFields(IndentedStreamWriter SW)
 		{
-			foreach (var A in DT.Attributes) A.WriteDeclaration(SW);
-			foreach (var F in DT.Fields) SW.Declare(F);
+			foreach (var A in Attributes) A.WriteDeclaration(SW);
+			foreach (var F in Fields) SW.Declare(F);
 		}
 
 		public void WriteSample(XmlNode Node) => WriteSample(Node, true);
 
 		public virtual void WriteSample(XmlNode Node, bool IncludeFields)
 		{
-			if (DT.Inherit != null)
-				Global.Name2DataType[DT.Inherit].WriteSample(Node, IncludeFields);
+			if (Inherit != null)
+				Global.Name2DataType[Inherit].WriteSample(Node, IncludeFields);
 
-			foreach (var A in DT.Attributes) A.WriteSample(Node);
+			foreach (var A in Attributes) A.WriteSample(Node);
 
 			if (IncludeFields)
-				foreach (var F in DT.Fields)
+				foreach (var F in Fields)
 					Global.Name2DataType[F.Type].WriteSample(Node.AppendNode(F.TagName ?? F.Name), false);
 		}
 
-		public virtual void RegisterName() => Global.Name2DataType.Add(TypeName, this);
+		public virtual void RegisterName() => Global.Name2DataType.Add(DataTypeName, this);
 	}
 }

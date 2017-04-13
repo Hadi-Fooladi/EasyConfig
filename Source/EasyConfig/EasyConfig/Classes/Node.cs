@@ -1,44 +1,33 @@
 ﻿using XmlExt;
 using System.Xml;
-using System.Collections.Generic;
 
-namespace EasyConfig
+namespace Schema
 {
-	internal class Node : DataType
+	internal partial class Node
 	{
-		private readonly Schema.Node SN;
-		private readonly List<Node> Nodes = new List<Node>();
-		private readonly List<DataType> Types = new List<DataType>();
-
-		public Node(Schema.Node SN) : base(SN)
-		{
-			this.SN = SN;
-			foreach (var N in SN.Nodes) Nodes.Add(new Node(N));
-			foreach (var T in SN.Types) Types.Add(new DataType(T));
-		}
-
-		public void WriteDeclaration(IndentedStreamWriter SW) => SW.Declare(Name, TypeName, SN.Multiple, null);
+		public void WriteDeclaration(IndentedStreamWriter SW) => SW.Declare(Name, DataTypeName, Multiple, null);
 
 		public void WriteRead(IndentedStreamWriter SW)
 		{
+			string T = DataTypeName;
 			SW.WriteLine();
-			if (SN.Multiple)
+			if (Multiple)
 			{
-				SW.WriteLine("{0} = new List<{1}>();", Name, TypeName);
+				SW.WriteLine("{0} = new List<{1}>();", Name, T);
 				SW.WriteLine("foreach (XmlNode X in Node.SelectNodes(\"{0}\"))", Name);
-				SW.Inside(() => SW.WriteLine("{0}.Add(new {1}(X));", Name, TypeName));
+				SW.Inside(() => SW.WriteLine("{0}.Add(new {1}(X));", Name, T));
 			}
 			else
 			{
 				string NameNode = Name + "Node";
 				SW.WriteLine("var {0} = Node.SelectSingleNode(\"{1}\");", NameNode, Name);
 				SW.WriteLine("if ({0} != null)", NameNode);
-				SW.Inside(() => SW.WriteLine("{0} = new {1}({2});", Name, TypeName, NameNode));
+				SW.Inside(() => SW.WriteLine("{0} = new {1}({2});", Name, T, NameNode));
 			}
 			SW.WriteLine();
 		}
 
-		protected override string TypeName => SN.TypeName ?? Name + "Data";
+		protected override string DataTypeName => TypeName ?? Name + "Data";
 
 		protected override void ConstructorPost(IndentedStreamWriter SW)
 		{

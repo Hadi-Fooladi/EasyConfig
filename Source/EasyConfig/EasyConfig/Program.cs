@@ -73,15 +73,9 @@ namespace EasyConfig
 				if (Ver.Major != AppVer.Major && Ver.Minor > AppVer.Minor)
 					throw new Exception("Version Mismatch");
 
-				var Types = new List<DataType>();
-				foreach (var T in EC.Types)
-					Types.Add(new DataType(T));
-
-				var RootNode = new RootNode(EC.Root);
-
 				// Filling 'Global.Name2DataType'
-				RootNode.RegisterName();
-				foreach (var T in Types) T.RegisterName();
+				EC.Root.RegisterName();
+				foreach (var T in EC.Types) T.RegisterName();
 
 				using (var SW = new IndentedStreamWriter(OutputPath))
 				{
@@ -96,14 +90,14 @@ namespace EasyConfig
 					SW.WriteLine();
 
 					if (pNameSpace.Value == null)
-						RootNode.WriteImplementation(SW);
+						EC.Root.WriteImplementation(SW);
 					else
 					{
 						SW.WriteLine("namespace {0}", pNameSpace.Value);
 						SW.Block(() =>
 						{
-							RootNode.WriteImplementation(SW);
-							foreach (var T in Types) T.WriteImplementation(SW);
+							EC.Root.WriteImplementation(SW);
+							foreach (var T in EC.Types) T.WriteImplementation(SW);
 						});
 					}
 				}
@@ -111,7 +105,7 @@ namespace EasyConfig
 				if (pSamplePath.Value != null)
 				{
 					var SampleDoc = new XmlDocument();
-					RootNode.WriteSample(SampleDoc.AppendNode(RootNode.Name));
+					EC.Root.WriteSample(SampleDoc.AppendNode(EC.Root.Name));
 					SampleDoc.Save(pSamplePath.Value);
 				}
 			}
