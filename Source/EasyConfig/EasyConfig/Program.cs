@@ -66,20 +66,25 @@ namespace EasyConfig
 				var Doc = new XmlDocument();
 				Doc.Load(InputPath);
 
-				var Root = Doc.SelectSingleNode("Root");
+				var Root = Doc.SelectSingleNode("EasyConfig");
 
 				// Check Easy-Config Version
 				Version
-					Ver = new Version(Root.Attr("EasyConfig-Version", "1.0")),
+					Ver = new Version(Root.Attr("Version", "1.0")),
 					AppVer = Assembly.GetExecutingAssembly().GetName().Version;
 
 				if (Ver.Major != AppVer.Major && Ver.Minor > AppVer.Minor)
 					throw new Exception("Version Mismatch");
 
-				var RootNode = new RootNode(Root);
+				var Types = new List<DataType>();
+				foreach (XmlNode X in Root.SelectNodes("DataType"))
+					Types.Add(new DataType(X));
+
+				var RootNode = new RootNode(Root.SelectSingleNode("Root"));
 
 				// Filling 'Global.Name2DataType'
 				RootNode.RegisterName();
+				foreach (var T in Types) T.RegisterName();
 
 				using (var SW = new IndentedStreamWriter(OutputPath))
 				{
@@ -98,7 +103,11 @@ namespace EasyConfig
 					else
 					{
 						SW.WriteLine("namespace {0}", pNameSpace.Value);
-						SW.Block(() => RootNode.WriteImplementation(SW));
+						SW.Block(() =>
+						{
+							RootNode.WriteImplementation(SW);
+							foreach (var T in Types) T.WriteImplementation(SW);
+						});
 					}
 				}
 

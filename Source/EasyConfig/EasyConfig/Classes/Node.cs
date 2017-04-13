@@ -10,6 +10,7 @@ namespace EasyConfig
 		public string ProposedTypeName;
 
 		public readonly List<Node> Nodes = new List<Node>();
+		private readonly List<DataType> Types = new List<DataType>();
 
 		public Node(XmlNode N) : base(N)
 		{
@@ -18,6 +19,9 @@ namespace EasyConfig
 
 			foreach (XmlNode X in N.SelectNodes("Node"))
 				Nodes.Add(new Node(X));
+
+			foreach (XmlNode X in N.SelectNodes("DataType"))
+				Types.Add(new DataType(X));
 		}
 
 		public void WriteDeclaration(IndentedStreamWriter SW) => SW.Declare(Name, TypeName, Multiple, null);
@@ -58,6 +62,12 @@ namespace EasyConfig
 				SW.WriteLine();
 				N.WriteImplementation(SW);
 			}
+
+			foreach (var T in Types)
+			{
+				SW.WriteLine();
+				T.WriteImplementation(SW);
+			}
 		}
 
 		protected override void DeclareFields(IndentedStreamWriter SW)
@@ -78,8 +88,8 @@ namespace EasyConfig
 		public override void RegisterName()
 		{
 			base.RegisterName();
-			foreach (var N in Nodes)
-				N.RegisterName();
+			foreach (var N in Nodes) N.RegisterName();
+			foreach (var T in Types) T.RegisterName();
 		}
 	}
 }
