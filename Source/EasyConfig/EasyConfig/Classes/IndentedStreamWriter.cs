@@ -1,5 +1,4 @@
-﻿using Schema;
-using System;
+﻿using System;
 using System.IO;
 
 /// <summary>
@@ -78,7 +77,7 @@ internal class IndentedStreamWriter : StreamWriter
 		if (Desc != null) WriteLine();
 	}
 
-	public void Declare(Field F) => Declare(F.Name, F.Type, F.Multiple, F.Desc);
+	public void Declare(EasyConfig.Field F) => Declare(F.Name, F.Type, F.Multiple, F.Desc);
 
 	public void WriteDesc(string Desc)
 	{

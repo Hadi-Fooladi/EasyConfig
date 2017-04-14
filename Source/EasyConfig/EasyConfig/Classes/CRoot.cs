@@ -1,7 +1,7 @@
 ﻿using XmlExt;
 using System.Xml;
 
-namespace Schema
+namespace EasyConfig
 {
 	internal partial class CRoot
 	{
@@ -14,7 +14,7 @@ namespace Schema
 			SW.WriteLine("var Doc = new XmlDocument();");
 			SW.WriteLine("Doc.Load(Filename);");
 			SW.WriteLine();
-			SW.WriteLine("var Node = Doc.SelectSingleNode(\"{0}\");", Name);
+			SW.WriteLine("var Node = Doc.SelectSingleNode(\"{0}\");", TagName ?? Name);
 			SW.WriteLine();
 
 			if (Version != null)

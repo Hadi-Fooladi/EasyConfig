@@ -52,6 +52,7 @@
     <Compile Include="Classes\Node.cs" />
     <Compile Include="Classes\Parameters\OneStringParameter.cs" />
     <Compile Include="Classes\CRoot.cs" />
+    <Compile Include="Classes\Parameters\ZeroParameter.cs" />
     <Compile Include="Interfaces\IParameter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

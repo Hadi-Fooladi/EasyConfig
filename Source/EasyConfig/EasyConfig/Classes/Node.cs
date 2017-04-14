@@ -1,7 +1,7 @@
 ﻿using XmlExt;
 using System.Xml;
 
-namespace Schema
+namespace EasyConfig
 {
 	internal partial class Node
 	{
@@ -9,18 +9,21 @@ namespace Schema
 
 		public void WriteRead(IndentedStreamWriter SW)
 		{
-			string T = DataTypeName;
+			string
+				T = DataTypeName,
+				Tag = TagName ?? Name;
+
 			SW.WriteLine();
 			if (Multiple)
 			{
 				SW.WriteLine("{0} = new List<{1}>();", Name, T);
-				SW.WriteLine("foreach (XmlNode X in Node.SelectNodes(\"{0}\"))", Name);
+				SW.WriteLine("foreach (XmlNode X in Node.SelectNodes(\"{0}\"))", Tag);
 				SW.Inside(() => SW.WriteLine("{0}.Add(new {1}(X));", Name, T));
 			}
 			else
 			{
 				string NameNode = Name + "Node";
-				SW.WriteLine("var {0} = Node.SelectSingleNode(\"{1}\");", NameNode, Name);
+				SW.WriteLine("var {0} = Node.SelectSingleNode(\"{1}\");", NameNode, Tag);
 				SW.WriteLine("if ({0} != null)", NameNode);
 				SW.Inside(() => SW.WriteLine("{0} = new {1}({2});", Name, T, NameNode));
 			}

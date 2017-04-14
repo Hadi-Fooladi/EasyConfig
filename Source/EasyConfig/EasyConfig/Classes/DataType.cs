@@ -1,7 +1,7 @@
 ﻿using XmlExt;
 using System.Xml;
 
-namespace Schema
+namespace EasyConfig
 {
 	internal partial class DataType
 	{
@@ -10,7 +10,13 @@ namespace Schema
 			SW.WriteDesc(Desc);
 
 			string T = DataTypeName;
-			SW.WriteLine("internal {0}class {1}{2}", Partial ? "partial " : "", T, Inherit != null ? " : " + Inherit : "");
+			SW.WriteLine(
+				"{0} {1}class {2}{3}",
+				Access ?? Global.DefaultAccessModifier,
+				Partial ? "partial " : "",
+				T,
+				Inherit != null ? " : " + Inherit : "");
+
 			SW.Block(() =>
 			{
 				DeclareFields(SW);

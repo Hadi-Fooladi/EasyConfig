@@ -1,4 +1,4 @@
-<EasyConfig Version="4.1">
+<EasyConfig Version="4.2">
 	<DataType Name="Attribute" Partial="Yes">
 		<Attribute Name="Name" Type="string" />
 		<Attribute Name="Type" Type="string" />
@@ -10,7 +10,7 @@
 		<Attribute Name="Name" Type="string" />
 		<Attribute Name="Type" Type="string" />
 		<Attribute Name="Desc" Type="string" Default="null" />
-		<Attribute Name="TagName" Type="string" Default="null" />
+		<Attribute Name="TagName" Type="string" Default="null" Desc="If null, 'Name' will be used for tag name" />
 		<Attribute Name="Multiple" Type="yn" Default="false" />
 	</DataType>
 
@@ -19,6 +19,7 @@
 		<Attribute Name="Desc" Type="string" Default="null" />
 		<Attribute Name="Inherit" Type="string" Default="null" />
 		<Attribute Name="Partial" Type="yn" Default="false" />
+		<Attribute Name="Access" Type="string" Default="null" Desc="Access modifier for class (null means internal)" />
 		<Field Name="Fields" Type="Field" TagName="Field" Multiple="Yes" />
 		<Field Name="Attributes" Type="Attribute" TagName="Attribute" Multiple="Yes" />
 	</DataType>
@@ -26,6 +27,7 @@
 	<DataType Name="Node" Inherit="DataType" Partial="Yes">
 		<Attribute Name="Multiple" Type="yn" Default="false" />
 		<Attribute Name="TypeName" Type="string" Default="null" />
+		<Attribute Name="TagName" Type="string" Default="null" Desc="If null, 'Name' will be used for tag name" />
 		<Field Name="Nodes" Type="Node" TagName="Node" Multiple="Yes" />
 		<Field Name="Types" Type="DataType" TagName="DataType" Multiple="Yes" />
 	</DataType>
@@ -34,7 +36,7 @@
 		<Attribute Name="Version" Type="Version" />
 	</DataType>
 
-	<Root Name="EasyConfig">
+	<Root Name="Schema" TagName="EasyConfig">
 		<Attribute Name="Version" Type="Version" />
 		<Field Name="Root" Type="CRoot" />
 		<Field Name="Types" Type="DataType" TagName="DataType" Multiple="Yes" />

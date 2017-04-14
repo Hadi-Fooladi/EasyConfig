@@ -1,7 +1,7 @@
 ﻿using XmlExt;
 using System.Xml;
 
-namespace Schema
+namespace EasyConfig
 {
 	internal partial class Attribute
 	{

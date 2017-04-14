@@ -1,4 +1,4 @@
-﻿namespace Schema
+﻿namespace EasyConfig
 {
 	internal partial class Field
 	{

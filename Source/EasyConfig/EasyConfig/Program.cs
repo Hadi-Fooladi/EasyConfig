@@ -15,15 +15,24 @@ namespace EasyConfig
 			{
 				string InputPath, OutputPath;
 
-				// Adding Parameters
+				#region Adding Parameters
 				OneStringParameter
 					pSamplePath = new OneStringParameter("gs", "path", "Generate Sample xml file"),
 					pNameSpace = new OneStringParameter("ns", "name", "namespace name (Default: no namespace)"),
 					pOutputPath = new OneStringParameter("o", "path", "Output file (Default: Same name as file with '.cs' extension in the current folder)");
 
+				var pPublic = new ZeroParameter
+				{
+					Code = "public",
+					Act = () => Global.DefaultAccessModifier = "public",
+					Desc = "Change access modifier for all classes to public (By default it is internal)"
+				};
+
 				P.Add(pOutputPath);
 				P.Add(pNameSpace);
 				P.Add(pSamplePath);
+				P.Add(pPublic);
+				#endregion
 
 				#region Arguments Analysis
 				try
@@ -31,6 +40,12 @@ namespace EasyConfig
 					int
 						ndx = 0,
 						n = args.Length - 1;
+
+					if (n < 0)
+					{
+						PrintUsage();
+						return;
+					}
 
 					while (ndx < n)
 					{
@@ -63,19 +78,21 @@ namespace EasyConfig
 				}
 				#endregion
 
-				var EC = new Schema.EasyConfig(InputPath);
+				var Schema = new Schema(InputPath);
 
 				// Check Easy-Config Version
 				Version
-					Ver = EC.Version,
+					Ver = Schema.Version,
 					AppVer = Assembly.GetExecutingAssembly().GetName().Version;
 
 				if (Ver.Major != AppVer.Major && Ver.Minor > AppVer.Minor)
 					throw new Exception("Version Mismatch");
 
+				var Root = Schema.Root;
+
 				// Filling 'Global.Name2DataType'
-				EC.Root.RegisterName();
-				foreach (var T in EC.Types) T.RegisterName();
+				Root.RegisterName();
+				foreach (var T in Schema.Types) T.RegisterName();
 
 				using (var SW = new IndentedStreamWriter(OutputPath))
 				{
@@ -90,14 +107,14 @@ namespace EasyConfig
 					SW.WriteLine();
 
 					if (pNameSpace.Value == null)
-						EC.Root.WriteImplementation(SW);
+						Root.WriteImplementation(SW);
 					else
 					{
 						SW.WriteLine("namespace {0}", pNameSpace.Value);
 						SW.Block(() =>
 						{
-							EC.Root.WriteImplementation(SW);
-							foreach (var T in EC.Types) T.WriteImplementation(SW);
+							Root.WriteImplementation(SW);
+							foreach (var T in Schema.Types) T.WriteImplementation(SW);
 						});
 					}
 				}
@@ -105,7 +122,7 @@ namespace EasyConfig
 				if (pSamplePath.Value != null)
 				{
 					var SampleDoc = new XmlDocument();
-					EC.Root.WriteSample(SampleDoc.AppendNode(EC.Root.Name));
+					Root.WriteSample(SampleDoc.AppendNode(Root.Name));
 					SampleDoc.Save(pSamplePath.Value);
 				}
 			}
