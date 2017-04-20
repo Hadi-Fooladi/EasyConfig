@@ -1,4 +1,9 @@
-<EasyConfig Version="4.2">
+<EasyConfig
+	Version="4.2"
+	xmlns="EasyConfig"
+	xsi:schemaLocation="EasyConfig Schema.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
 	<DataType Name="Attribute" Partial="Yes">
 		<Attribute Name="Name" Type="string" />
 		<Attribute Name="Type" Type="string" />
