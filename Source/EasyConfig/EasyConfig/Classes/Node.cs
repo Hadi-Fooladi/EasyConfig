@@ -7,35 +7,12 @@ namespace EasyConfig
 	{
 		public void WriteDeclaration(IndentedStreamWriter SW) => SW.Declare(Name, DataTypeName, Multiple, null);
 
-		public void WriteRead(IndentedStreamWriter SW)
-		{
-			string
-				T = DataTypeName,
-				Tag = TagName ?? Name;
-
-			SW.WriteLine();
-			if (Multiple)
-			{
-				SW.WriteLine("{0} = new List<{1}>();", Name, T);
-				SW.WriteLine("foreach (XmlNode X in Node.SelectNodes(\"{0}\"))", Tag);
-				SW.Inside(() => SW.WriteLine("{0}.Add(new {1}(X));", Name, T));
-			}
-			else
-			{
-				string NameNode = Name + "Node";
-				SW.WriteLine("var {0} = Node.SelectSingleNode(\"{1}\");", NameNode, Tag);
-				SW.WriteLine("if ({0} != null)", NameNode);
-				SW.Inside(() => SW.WriteLine("{0} = new {1}({2});", Name, T, NameNode));
-			}
-			SW.WriteLine();
-		}
-
-		protected override string DataTypeName => TypeName ?? Name + "Data";
+		public override string DataTypeName => TypeName ?? Name + "Data";
 
 		protected override void ConstructorPost(IndentedStreamWriter SW)
 		{
 			foreach (var N in Nodes)
-				N.WriteRead(SW);
+				SW.WriteRead(N);
 		}
 
 		protected override void ImplementNestedClasses(IndentedStreamWriter SW)

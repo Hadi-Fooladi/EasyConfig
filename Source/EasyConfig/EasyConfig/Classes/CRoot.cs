@@ -5,7 +5,7 @@ namespace EasyConfig
 {
 	internal partial class CRoot
 	{
-		protected override string DataTypeName => TypeName ?? Name;
+		public override string DataTypeName => TypeName ?? Name;
 
 		protected override string ConstructorParameters => "string Filename";
 
@@ -14,7 +14,7 @@ namespace EasyConfig
 			SW.WriteLine("var Doc = new XmlDocument();");
 			SW.WriteLine("Doc.Load(Filename);");
 			SW.WriteLine();
-			SW.WriteLine("var Node = Doc.SelectSingleNode(\"{0}\");", TagName ?? Name);
+			SW.WriteLine("var Node = Doc.DocumentElement;");
 			SW.WriteLine();
 
 			if (Version != null)

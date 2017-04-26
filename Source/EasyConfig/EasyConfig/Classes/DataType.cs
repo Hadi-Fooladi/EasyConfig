@@ -33,7 +33,7 @@ namespace EasyConfig
 						A.WriteRead(SW);
 
 					foreach (var F in Fields)
-						F.WriteRead(SW);
+						SW.WriteRead(F);
 
 					ConstructorPost(SW);
 				});
@@ -42,7 +42,7 @@ namespace EasyConfig
 			});
 		}
 
-		protected virtual string DataTypeName => Name;
+		public virtual string DataTypeName => Name;
 		protected virtual string ConstructorParameters => "XmlNode Node";
 		protected virtual void ConstructorPre(IndentedStreamWriter SW) { }
 		protected virtual void ConstructorPost(IndentedStreamWriter SW) { }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using EasyConfig;
 
 /// <summary>
 /// StreamWriter which supports Indentation
@@ -87,5 +88,29 @@ internal class IndentedStreamWriter : StreamWriter
 		WriteLine("/// <summary>");
 		WriteLine("/// {0}", Desc);
 		WriteLine("/// </summary>");
+	}
+
+	public void WriteRead(Field F) => WriteRead(F.Name, F.TagName ?? F.Name, F.Type, F.Multiple);
+	public void WriteRead(Node N) => WriteRead(N.Name, N.TagName ?? N.Name, N.DataTypeName, N.Multiple);
+
+	public void WriteRead(string Name, string Tag, string Type, bool Multiple)
+	{
+		string XPath = $"\"*[local-name()='{Tag}']\"";
+
+		WriteLine();
+		if (Multiple)
+		{
+			WriteLine($"{Name} = new List<{Type}>();");
+			WriteLine($"foreach (XmlNode X in Node.SelectNodes({XPath}))");
+			Inside(() => WriteLine($"{Name}.Add(new {Type}(X));"));
+		}
+		else
+		{
+			string NameNode = Name + "Node";
+			WriteLine($"var {NameNode} = Node.SelectSingleNode({XPath});");
+			WriteLine($"if ({NameNode} != null)");
+			Inside(() => WriteLine($"{Name} = new {Type}({NameNode});"));
+		}
+		WriteLine();
 	}
 }
