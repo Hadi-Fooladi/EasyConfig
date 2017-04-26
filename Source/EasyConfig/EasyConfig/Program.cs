@@ -107,15 +107,17 @@ namespace EasyConfig
 					SW.WriteLine();
 
 					if (pNameSpace.Value == null)
-						Root.WriteImplementation(SW);
+						WriteCode();
 					else
 					{
-						SW.WriteLine("namespace {0}", pNameSpace.Value);
-						SW.Block(() =>
-						{
-							Root.WriteImplementation(SW);
-							foreach (var T in Schema.Types) T.WriteImplementation(SW);
-						});
+						SW.WriteLine($"namespace {pNameSpace.Value}");
+						SW.Block(WriteCode);
+					}
+
+					void WriteCode()
+					{
+						Root.WriteImplementation(SW);
+						foreach (var T in Schema.Types) T.WriteImplementation(SW);
 					}
 				}
 
