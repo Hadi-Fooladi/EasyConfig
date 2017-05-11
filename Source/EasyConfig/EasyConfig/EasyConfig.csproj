@@ -45,7 +45,6 @@
     <Compile Include="Classes\Attribute.cs" />
     <Compile Include="Classes\DataType.cs" />
     <Compile Include="Classes\Ext\Misc.cs" />
-    <Compile Include="Classes\Ext\XML.cs" />
     <Compile Include="Classes\Global.cs" />
     <Compile Include="Classes\IndentedStreamWriter.cs" />
     <Compile Include="Classes\Node.cs" />
@@ -55,7 +54,6 @@
     <Compile Include="Interfaces\IParameter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Classes\Schema.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -66,5 +64,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup />
+  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
