@@ -2,8 +2,11 @@
 using System.Windows;
 using System.Reflection;
 using System.Windows.Controls;
-
+using System.Windows.Data;
+using System.Xml;
 using EasyConfig;
+using Microsoft.Win32;
+using XmlExt;
 
 namespace Editor
 {
@@ -27,7 +30,7 @@ namespace Editor
 			if (Ver.Major != AppVer.Major && Ver.Minor > AppVer.Minor)
 				throw new Exception("Version Mismatch");
 
-			var Root = Get(Schema.Root, null);
+			Root = Get(Schema.Root, null);
 			TV.Items.Add(Root.TreeViewItem);
 
 			//}
@@ -51,6 +54,8 @@ namespace Editor
 			}
 		}
 
+		private readonly TreeNode Root;
+
 		#region Event Handlers
 		private void miExit_OnClick(object sender, RoutedEventArgs e) => Close();
 
@@ -60,6 +65,27 @@ namespace Editor
 			var TN = (TreeNode)TVI.Tag;
 
 			DG.ItemsSource = TN.Attributes;
+			lblPath.SetBinding(TextBlock.TextProperty, new Binding("Path") { Source = TN });
+		}
+
+		private void miSave_OnClick(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				var Doc = new XmlDocument();
+				Root.FillXmlNode(Doc.AppendNode(Root.Name));
+
+				var SFD = new SaveFileDialog
+				{
+					FileName = "Config",
+					DefaultExt = "*.xml",
+					Filter = "XML Files|*.xml|All Files|*.*"
+				};
+
+				if (SFD.ShowDialog() ?? false)
+					Doc.Save(SFD.FileName);
+			}
+			catch (Exception E) { Msg.Error(E.Message); }
 		}
 		#endregion
 	}
