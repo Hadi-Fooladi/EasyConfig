@@ -11,7 +11,7 @@
 	Width="640" Height="480"
 	FontSize="16"
 	WindowStartupLocation="CenterScreen">
-    <DockPanel>
+	<DockPanel>
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="_File">
 				<MenuItem Header="_Save" />
@@ -19,9 +19,21 @@
 				<MenuItem Header="E_xit" Click="miExit_OnClick" />
 			</MenuItem>
 		</Menu>
-        <TreeView Name="TV" DockPanel.Dock="Left" Width="175" />
-		<Grid>
-			
-		</Grid>
-    </DockPanel>
+		<TreeView Name="TV" DockPanel.Dock="Left" Width="175" SelectedItemChanged="TV_OnSelectedItemChanged" />
+		<DataGrid Name="DG" AutoGenerateColumns="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="FullRow">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
+				<DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True" />
+				<DataGridTemplateColumn Header="Override Default">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsEnabled="{Binding HasDefault}" IsChecked="{Binding OverrideDefault}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" />
+				<DataGridTextColumn Header="Default" Binding="{Binding Default}" IsReadOnly="True" Width="80" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</DockPanel>
 </Window>
