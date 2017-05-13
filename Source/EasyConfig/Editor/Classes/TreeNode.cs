@@ -59,7 +59,7 @@ namespace Editor
 
 		private void Init()
 		{
-			AddAttributes();
+			AddAttributes(DT);
 			Container?.Nodes.Add(this);
 
 			CM.Opened += (_, __) => TreeViewItem.IsSelected = true;
@@ -105,9 +105,12 @@ namespace Editor
 			else Path = Container.Path + "/" + Name;
 		}
 
-		private void AddAttributes()
+		private void AddAttributes(DataType DataType)
 		{
-			foreach (var A in DT.Attributes)
+			if (DataType.Inherit != null)
+				AddAttributes(Global.DataTypeMap[DataType.Inherit]);
+
+			foreach (var A in DataType.Attributes)
 				Attributes.Add(new AttributeValue(A));
 		}
 	}

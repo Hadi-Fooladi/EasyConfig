@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using System.Reflection;
 using System.Windows.Controls;
@@ -83,7 +84,21 @@ namespace Editor
 				};
 
 				if (SFD.ShowDialog() ?? false)
-					Doc.Save(SFD.FileName);
+				{
+					var XWS = new XmlWriterSettings
+					{
+						Indent = true,
+						IndentChars = "\t",
+						OmitXmlDeclaration = true
+					};
+
+					using (var Stream = File.Open(SFD.FileName, FileMode.Create, FileAccess.Write))
+					{
+						var XW = XmlWriter.Create(Stream, XWS);
+						Doc.Save(XW);
+						XW.Close();
+					}
+				}
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
 		}
