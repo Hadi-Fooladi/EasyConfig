@@ -14,23 +14,21 @@ namespace Editor
 		public TreeNode(Node N, TreeNode Container)
 		{
 			DT = N;
-			Tag = N.Tag;
-			Name = N.Name;
+			Name = Tag = N.Tag;
 			Multiple = N.Multiple;
 			this.Container = Container;
 
-			Init();
+			Init(false);
 		}
 
 		public TreeNode(Field F, TreeNode Container)
 		{
-			Tag = F.Tag;
-			Name = F.Name;
+			Name = Tag = F.Tag;
 			Multiple = F.Multiple;
 			this.Container = Container;
 			DT = Global.DataTypeMap[F.Type];
 
-			Init();
+			Init(true);
 		}
 
 		public TreeNode(Node N, TreeNode Container, XmlNode XN) : this(N, Container) { AssignAttributeValues(XN); }
@@ -59,7 +57,7 @@ namespace Editor
 				N.FillXmlNode(Node.AppendNode(N.Tag));
 		}
 
-		private void Init()
+		private void Init(bool isField)
 		{
 			AddFieldsMenu(DT);
 			AddAttributes(DT);
@@ -69,7 +67,7 @@ namespace Editor
 					if (X.Multiple)
 						AddMenu("Add " + X.Name, () => new TreeNode(X, this));
 
-			if (Container != null && Multiple)
+			if (isField || Multiple)
 			{
 				if (CM.Items.Count > 0)
 					CM.Items.Add(new Separator());
@@ -122,8 +120,7 @@ namespace Editor
 				AddFieldsMenu(Global.DataTypeMap[DataType.Inherit]);
 
 			foreach (var F in DataType.Fields)
-				if (F.Multiple)
-					AddMenu("Add " + F.Name, () => new TreeNode(F, this));
+				AddMenu("Add " + F.Tag, () => new TreeNode(F, this));
 		}
 
 		private void AssignAttributeValues(XmlNode Node)

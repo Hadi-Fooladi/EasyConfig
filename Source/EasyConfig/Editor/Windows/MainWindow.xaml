@@ -20,6 +20,9 @@
 				<Separator />
 				<MenuItem Header="E_xit" Click="miExit_OnClick" />
 			</MenuItem>
+			<MenuItem Header="_Schema">
+				<MenuItem Header="_Open" Click="miOpenSchema_OnClick"  />
+			</MenuItem>
 		</Menu>
 		<TreeView Name="TV" DockPanel.Dock="Left" Width="175" SelectedItemChanged="TV_OnSelectedItemChanged">
 			<TreeView.Resources>

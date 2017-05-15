@@ -17,38 +17,59 @@ namespace Editor
 		public MainWindow()
 		{
 			InitializeComponent();
+			AppVer = Assembly.GetExecutingAssembly().GetName().Version;
 
-			//try
-			//{
-			
-			Global.Schema = Schema = new Schema(Global.args[0]);
-			Global.DataTypeMap = new DataTypeMap(Schema);
+			if (Global.args.Length == 1)
+				LoadSchema(Global.args[0]);
+		}
 
-			// Check Easy-Config Version
-			Version
-				Ver = Schema.Version,
-				AppVer = Assembly.GetExecutingAssembly().GetName().Version;
+		private TreeNode m_Root;
 
-			if (Ver.Major != AppVer.Major && Ver.Minor > AppVer.Minor)
-				throw new Exception("Version Mismatch");
+		private Schema Schema;
+		private readonly Version AppVer;
 
-			Root = Get(Schema.Root, null);
-			TV.Items.Add(Root.TreeViewItem);
-			Root.TreeViewItem.IsSelected = true;
+		private TreeNode Root
+		{
+			get => m_Root;
+			set
+			{
+				m_Root = value;
+				var TVI = value.TreeViewItem;
 
-			//}
-			//catch (Exception E)
-			//{
-			//	Msg.Error(E.Message);
-			//	Application.Current.Shutdown();
-			//}
+				TV.Items.Clear();
+				TV.Items.Add(TVI);
+				TVI.IsSelected = true;
+			}
+		}
 
-			TreeNode Get(Node N, TreeNode Container)
+		private static bool IsTrue(bool? B) => B ?? false;
+		private static bool IsFalse(bool? B) => !(B ?? true);
+
+		private static XmlNode Select(XmlNode Node, string LocalName) => Node.SelectSingleNode($"*[local-name()='{LocalName}']");
+		private static XmlNodeList SelectAll(XmlNode Node, string LocalName) => Node.SelectNodes($"*[local-name()='{LocalName}']");
+
+		private void LoadSchema(string Filename)
+		{
+			try
+			{
+				Global.Schema = Schema = new Schema(Filename);
+				Global.DataTypeMap = new DataTypeMap(Schema);
+
+				// Check Easy-Config Version
+				Version Ver = Schema.Version;
+				if (Ver.Major != AppVer.Major && Ver.Minor > AppVer.Minor)
+					throw new Exception("Version Mismatch");
+
+				Root = CreateTreeNode(Schema.Root, null);
+			}
+			catch (Exception E) { Msg.Error(E.Message, "Loading Schema Failed"); }
+
+			TreeNode CreateTreeNode(Node N, TreeNode Container)
 			{
 				var TN = new TreeNode(N, Container);
 
 				foreach (var X in N.Nodes)
-					Get(X, TN);
+					CreateTreeNode(X, TN);
 
 				foreach (var F in N.AllFields)
 					new TreeNode(F, TN);
@@ -56,15 +77,6 @@ namespace Editor
 				return TN;
 			}
 		}
-
-		private TreeNode Root;
-		private readonly Schema Schema;
-
-		private static bool IsTrue(bool? B) => B ?? false;
-		private static bool IsFalse(bool? B) => !(B ?? true);
-
-		private static XmlNode Select(XmlNode Node, string LocalName) => Node.SelectSingleNode($"*[local-name()='{LocalName}']");
-		private static XmlNodeList SelectAll(XmlNode Node, string LocalName) => Node.SelectNodes($"*[local-name()='{LocalName}']");
 
 		#region Event Handlers
 		private void miExit_OnClick(object sender, RoutedEventArgs e) => Close();
@@ -113,7 +125,6 @@ namespace Editor
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
 		}
-		#endregion
 
 		private void miOpen_OnClick(object sender, RoutedEventArgs e)
 		{
@@ -126,11 +137,7 @@ namespace Editor
 				var Doc = new XmlDocument();
 				Doc.Load(OFD.FileName);
 
-				Root = CreateTreeNode(Schema.Root, null, Doc.SelectSingleNode(Schema.Root.Tag));
-
-				TV.Items.Clear();
-				TV.Items.Add(Root.TreeViewItem);
-				Root.TreeViewItem.IsSelected = true;
+				Root = CreateTreeNode(Schema.Root, null, Select(Doc, Schema.Root.Tag));
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
 
@@ -162,5 +169,14 @@ namespace Editor
 			}
 			#endregion
 		}
+
+		private void miOpenSchema_OnClick(object sender, RoutedEventArgs e)
+		{
+			var OFD = new OpenFileDialog { Filter = "EasyConfig Files|*.EasyConfig|All Files|*.*" };
+
+			if (IsTrue(OFD.ShowDialog()))
+				LoadSchema(OFD.FileName);
+		}
+		#endregion
 	}
 }

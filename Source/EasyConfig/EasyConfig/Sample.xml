@@ -101,5 +101,11 @@
 		<Node Name="MyFormula" Inherit="Formula3">
 			<Field Name="C4" Type="Complex" />
 		</Node>
+
+		<Node Name="Society">
+			<Node Name="Human" Multiple="Yes">
+				<Field Name="C" Type="Complex" Multiple="Yes" />
+			</Node>
+		</Node>
 	</Root>
 </EasyConfig>
