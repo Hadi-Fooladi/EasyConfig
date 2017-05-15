@@ -36,16 +36,18 @@ namespace Editor
 		#endregion
 
 		public readonly string Name, Tag;
+		public readonly TreeNode Container;
 		public readonly TreeViewItem TreeViewItem = new TreeViewItem();
+
+		public readonly List<TreeNode> Nodes = new List<TreeNode>();
 		public readonly List<AttributeValue> Attributes = new List<AttributeValue>();
 
 		private readonly DataType DT;
 		private readonly bool Multiple;
-		private readonly TreeNode Container;
 		private readonly ContextMenu CM = new ContextMenu();
-		private readonly List<TreeNode> Nodes = new List<TreeNode>();
 
 		public string Path { get; private set; }
+		public bool Removable { get; private set; }
 
 		public void FillXmlNode(XmlNode Node)
 		{
@@ -55,6 +57,14 @@ namespace Editor
 
 			foreach (var N in Nodes)
 				N.FillXmlNode(Node.AppendNode(N.Tag));
+		}
+
+		public void Remove()
+		{
+			if (!Removable) return;
+
+			Container.Nodes.Remove(this);
+			Container.TreeViewItem.Items.Remove(TreeViewItem);
 		}
 
 		private void Init(bool isField)
@@ -67,16 +77,13 @@ namespace Editor
 					if (X.Multiple)
 						AddMenu("Add " + X.Name, () => new TreeNode(X, this));
 
-			if (isField || Multiple)
+			Removable = isField || Multiple;
+			if (Removable)
 			{
 				if (CM.Items.Count > 0)
 					CM.Items.Add(new Separator());
 
-				AddMenu("Remove", () =>
-				{
-					Container.Nodes.Remove(this);
-					Container.TreeViewItem.Items.Remove(TreeViewItem);
-				});
+				AddMenu("Remove", Remove);
 			}
 
 			TreeViewItem.Tag = this;

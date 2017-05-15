@@ -61,6 +61,7 @@
     <Compile Include="Classes\DataTypeMap.cs" />
     <Compile Include="Classes\EasyConfig\Field.cs" />
     <Compile Include="Classes\EasyConfig\Node.cs" />
+    <Compile Include="Classes\Ext\Misc.cs" />
     <Compile Include="Classes\Global.cs" />
     <Compile Include="Classes\Msg.cs" />
     <Compile Include="Classes\TreeNode.cs" />

@@ -5,6 +5,7 @@ using System.Windows;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Controls;
 
 using XmlExt;
@@ -19,8 +20,13 @@ namespace Editor
 			InitializeComponent();
 			AppVer = Assembly.GetExecutingAssembly().GetName().Version;
 
-			if (Global.args.Length == 1)
-				LoadSchema(Global.args[0]);
+			int n = Global.args.Length;
+			if (n >= 1)
+				if (LoadSchema(Global.args[0]))
+					if (n >= 2)
+						Open(Global.args[1]);
+					else
+						GenerateSchemaTree();
 		}
 
 		private TreeNode m_Root;
@@ -28,6 +34,7 @@ namespace Editor
 		private Schema Schema;
 		private readonly Version AppVer;
 
+		#region Properties
 		private TreeNode Root
 		{
 			get => m_Root;
@@ -42,13 +49,17 @@ namespace Editor
 			}
 		}
 
+		private bool isCtrlDown => Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+		#endregion
+
+		#region Methods
 		private static bool IsTrue(bool? B) => B ?? false;
 		private static bool IsFalse(bool? B) => !(B ?? true);
 
 		private static XmlNode Select(XmlNode Node, string LocalName) => Node.SelectSingleNode($"*[local-name()='{LocalName}']");
 		private static XmlNodeList SelectAll(XmlNode Node, string LocalName) => Node.SelectNodes($"*[local-name()='{LocalName}']");
 
-		private void LoadSchema(string Filename)
+		private bool LoadSchema(string Filename)
 		{
 			try
 			{
@@ -60,9 +71,56 @@ namespace Editor
 				if (Ver.Major != AppVer.Major && Ver.Minor > AppVer.Minor)
 					throw new Exception("Version Mismatch");
 
-				Root = CreateTreeNode(Schema.Root, null);
+				return true;
 			}
 			catch (Exception E) { Msg.Error(E.Message, "Loading Schema Failed"); }
+
+			return false;
+		}
+
+		private void Open(string FileName)
+		{
+			try
+			{
+				var Doc = new XmlDocument();
+				Doc.Load(FileName);
+
+				Root = CreateTreeNode(Schema.Root, null, Select(Doc, Schema.Root.Tag));
+			}
+			catch (Exception E) { Msg.Error(E.Message); }
+
+			#region Local Functions
+			TreeNode CreateTreeNode(Node N, TreeNode Container, XmlNode XN)
+			{
+				var TN = new TreeNode(N, Container, XN);
+
+				CreateAllFields(N, TN, XN);
+
+				foreach (var X in N.Nodes)
+					foreach (XmlNode Node in SelectAll(XN, X.Tag))
+						CreateTreeNode(X, TN, Node);
+
+				return TN;
+			}
+
+			void CreateTreeNodeByField(Field F, TreeNode Container, XmlNode XN)
+			{
+				var TN = new TreeNode(F, Container, XN);
+				CreateAllFields(Global.DataTypeMap[F.Type], TN, XN);
+			}
+
+			void CreateAllFields(DataType DT, TreeNode Container, XmlNode XN)
+			{
+				foreach (var Field in DT.AllFields)
+					foreach (XmlNode Node in SelectAll(XN, Field.Tag))
+						CreateTreeNodeByField(Field, Container, Node);
+			}
+			#endregion
+		}
+
+		private void GenerateSchemaTree()
+		{
+			Root = CreateTreeNode(Schema.Root, null);
 
 			TreeNode CreateTreeNode(Node N, TreeNode Container)
 			{
@@ -77,6 +135,7 @@ namespace Editor
 				return TN;
 			}
 		}
+		#endregion
 
 		#region Event Handlers
 		private void miExit_OnClick(object sender, RoutedEventArgs e) => Close();
@@ -128,46 +187,10 @@ namespace Editor
 
 		private void miOpen_OnClick(object sender, RoutedEventArgs e)
 		{
-			try
-			{
-				var OFD = new OpenFileDialog { Filter = "(XML, EasyConfig) Files|*.xml;*.EasyConfig|All Files|*.*" };
+			var OFD = new OpenFileDialog { Filter = "(XML, EasyConfig) Files|*.xml;*.EasyConfig|All Files|*.*" };
 
-				if (IsFalse(OFD.ShowDialog())) return;
-
-				var Doc = new XmlDocument();
-				Doc.Load(OFD.FileName);
-
-				Root = CreateTreeNode(Schema.Root, null, Select(Doc, Schema.Root.Tag));
-			}
-			catch (Exception E) { Msg.Error(E.Message); }
-
-			#region Local Functions
-			TreeNode CreateTreeNode(Node N, TreeNode Container, XmlNode XN)
-			{
-				var TN = new TreeNode(N, Container, XN);
-
-				CreateAllFields(N, TN, XN);
-
-				foreach (var X in N.Nodes)
-					foreach (XmlNode Node in SelectAll(XN, X.Tag))
-						CreateTreeNode(X, TN, Node);
-
-				return TN;
-			}
-
-			void CreateTreeNodeByField(Field F, TreeNode Container, XmlNode XN)
-			{
-				var TN = new TreeNode(F, Container, XN);
-				CreateAllFields(Global.DataTypeMap[F.Type], TN, XN);
-			}
-
-			void CreateAllFields(DataType DT, TreeNode Container, XmlNode XN)
-			{
-				foreach (var Field in DT.AllFields)
-					foreach (XmlNode Node in SelectAll(XN, Field.Tag))
-						CreateTreeNodeByField(Field, Container, Node);
-			}
-			#endregion
+			if (IsTrue(OFD.ShowDialog()))
+				Open(OFD.FileName);
 		}
 
 		private void miOpenSchema_OnClick(object sender, RoutedEventArgs e)
@@ -175,7 +198,75 @@ namespace Editor
 			var OFD = new OpenFileDialog { Filter = "EasyConfig Files|*.EasyConfig|All Files|*.*" };
 
 			if (IsTrue(OFD.ShowDialog()))
-				LoadSchema(OFD.FileName);
+				if (LoadSchema(OFD.FileName))
+					GenerateSchemaTree();
+		}
+
+		private void TV_OnPreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (!isCtrlDown) return;
+			if (e.Key != Key.Up && e.Key != Key.Down) return;
+
+			var TVI = TV.SelectedItem as TreeViewItem;
+			if (TVI == null) return;
+
+			TreeNode
+				Child = (TreeNode)TVI.Tag,
+				Container = Child.Container;
+
+			if (Container == null) return;
+
+			var Nodes = Container.Nodes;
+			var Items = Container.TreeViewItem.Items;
+
+			int ndx = Nodes.IndexOf(Child);
+
+			switch (e.Key)
+			{
+			case Key.Up:
+				if (ndx > 0)
+				{
+					Nodes.Swap(ndx - 1, ndx);
+
+					Items.RemoveAt(ndx);
+					Items.RemoveAt(ndx - 1);
+
+					Items.Insert(ndx - 1, Nodes[ndx - 1].TreeViewItem);
+					Items.Insert(ndx, Nodes[ndx].TreeViewItem);
+				}
+				break;
+
+			case Key.Down:
+				if (ndx < Nodes.Count - 1)
+				{
+					Nodes.Swap(ndx + 1, ndx);
+
+					Items.RemoveAt(ndx + 1);
+					Items.RemoveAt(ndx);
+
+					Items.Insert(ndx, Nodes[ndx].TreeViewItem);
+					Items.Insert(ndx + 1, Nodes[ndx + 1].TreeViewItem);
+				}
+				break;
+			}
+
+			e.Handled =
+			TVI.IsSelected = true;
+		}
+
+		private void TV_OnPreviewKeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.Key != Key.Delete) return;
+
+			var TVI = TV.SelectedItem as TreeViewItem;
+			if (TVI == null) return;
+
+			var TN = (TreeNode)TVI.Tag;
+
+			TN.Remove();
+			TV.Focus();
+
+			e.Handled = true;
 		}
 		#endregion
 	}

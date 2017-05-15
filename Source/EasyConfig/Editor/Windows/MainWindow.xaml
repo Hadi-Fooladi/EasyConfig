@@ -12,6 +12,8 @@
 	FontSize="16"
 	WindowStartupLocation="CenterScreen">
 	<DockPanel>
+
+		<!-- Main Menu -->
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="_File">
 				<MenuItem Header="_Open" Click="miOpen_OnClick"  />
@@ -24,13 +26,22 @@
 				<MenuItem Header="_Open" Click="miOpenSchema_OnClick"  />
 			</MenuItem>
 		</Menu>
-		<TreeView Name="TV" DockPanel.Dock="Left" Width="175" SelectedItemChanged="TV_OnSelectedItemChanged">
+
+		<TreeView
+			Name="TV" DockPanel.Dock="Left" Width="175"
+			PreviewKeyUp="TV_OnPreviewKeyUp"
+			PreviewKeyDown="TV_OnPreviewKeyDown"
+			SelectedItemChanged="TV_OnSelectedItemChanged">
+			
 			<TreeView.Resources>
 				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}" />
 				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}" />
 			</TreeView.Resources>
 		</TreeView>
+
 		<TextBlock Name="lblPath" DockPanel.Dock="Top" Text="{Binding Path}" FontSize="20" FontWeight="Bold" Margin="5" />
+
+		<!-- Attributes Grid -->
 		<DataGrid Name="DG" AutoGenerateColumns="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="FullRow">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
