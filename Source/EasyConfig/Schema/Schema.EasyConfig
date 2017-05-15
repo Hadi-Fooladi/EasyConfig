@@ -11,7 +11,7 @@
 		<Attribute Name="Default" Type="string" Default="null" />
 	</DataType>
 
-	<DataType Name="Field">
+	<DataType Name="Field" Partial="Yes">
 		<Attribute Name="Name" Type="string" />
 		<Attribute Name="Type" Type="string" />
 		<Attribute Name="Desc" Type="string" Default="null" />

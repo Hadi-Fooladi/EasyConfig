@@ -14,8 +14,8 @@ namespace Editor
 		public TreeNode(Node N, TreeNode Container)
 		{
 			DT = N;
+			Tag = N.Tag;
 			Name = N.Name;
-			Tag = N.TagName;
 			Multiple = N.Multiple;
 			this.Container = Container;
 
@@ -24,28 +24,30 @@ namespace Editor
 
 		public TreeNode(Field F, TreeNode Container)
 		{
+			Tag = F.Tag;
 			Name = F.Name;
-			Tag = F.TagName;
 			Multiple = F.Multiple;
 			this.Container = Container;
 			DT = Global.DataTypeMap[F.Type];
 
 			Init();
 		}
+
+		public TreeNode(Node N, TreeNode Container, XmlNode XN) : this(N, Container) { AssignAttributeValues(XN); }
+		public TreeNode(Field F, TreeNode Container, XmlNode XN) : this(F, Container) { AssignAttributeValues(XN); }
 		#endregion
 
-		public readonly List<TreeNode> Nodes = new List<TreeNode>();
+		public readonly string Name, Tag;
+		public readonly TreeViewItem TreeViewItem = new TreeViewItem();
 		public readonly List<AttributeValue> Attributes = new List<AttributeValue>();
 
-		public readonly DataType DT;
-		public readonly bool Multiple;
-		public readonly string Name, Tag;
-		public readonly TreeNode Container;
-		public readonly TreeViewItem TreeViewItem = new TreeViewItem();
+		private readonly DataType DT;
+		private readonly bool Multiple;
+		private readonly TreeNode Container;
+		private readonly ContextMenu CM = new ContextMenu();
+		private readonly List<TreeNode> Nodes = new List<TreeNode>();
 
 		public string Path { get; private set; }
-
-		private readonly ContextMenu CM = new ContextMenu();
 
 		public void FillXmlNode(XmlNode Node)
 		{
@@ -54,55 +56,55 @@ namespace Editor
 					Node.AddAttr(A.Name, A.Value);
 
 			foreach (var N in Nodes)
-				N.FillXmlNode(Node.AppendNode(N.Name));
+				N.FillXmlNode(Node.AppendNode(N.Tag));
 		}
 
 		private void Init()
 		{
+			AddFieldsMenu(DT);
 			AddAttributes(DT);
-			Container?.Nodes.Add(this);
-
-			CM.Opened += (_, __) => TreeViewItem.IsSelected = true;
-
-			foreach (var F in DT.Fields)
-				if (F.Multiple)
-				{
-					var MI = new MenuItem { Header = "Add " + F.Name };
-					MI.Click += (_, __) => new TreeNode(F, this);
-					CM.Items.Add(MI);
-				}
 
 			if (DT is Node N)
 				foreach (var X in N.Nodes)
 					if (X.Multiple)
-					{
-						var MI = new MenuItem { Header = "Add " + X.Name };
-						MI.Click += (_, __) => new TreeNode(X, this);
-						CM.Items.Add(MI);
-					}
+						AddMenu("Add " + X.Name, () => new TreeNode(X, this));
 
 			if (Container != null && Multiple)
 			{
-				CM.Items.Add(new Separator());
+				if (CM.Items.Count > 0)
+					CM.Items.Add(new Separator());
 
-				var MI = new MenuItem { Header = "Remove" };
-				MI.Click += (_, __) =>
+				AddMenu("Remove", () =>
 				{
 					Container.Nodes.Remove(this);
 					Container.TreeViewItem.Items.Remove(TreeViewItem);
-				};
-				CM.Items.Add(MI);
+				});
 			}
 
 			TreeViewItem.Tag = this;
 			TreeViewItem.Header = Name;
-			TreeViewItem.ContextMenu = CM.Items.Count > 0 ? CM : null;
 
-			Container?.TreeViewItem.Items.Add(TreeViewItem);
+			if (CM.Items.Count > 0)
+			{
+				TreeViewItem.ContextMenu = CM;
+				CM.Opened += (_, __) => TreeViewItem.IsSelected = true;
+			}
 
-			if (Container == null)
-				Path = Name;
-			else Path = Container.Path + "/" + Name;
+			if (Container != null)
+			{
+				Container.Nodes.Add(this);
+				Container.TreeViewItem.Items.Add(TreeViewItem);
+
+				Path = Container.Path + "/" + Name;
+			}
+			else Path = Name;
+		}
+
+		private void AddMenu(string Header, Action A)
+		{
+			var MI = new MenuItem { Header = Header };
+			MI.Click += (_, __) => A();
+			CM.Items.Add(MI);
 		}
 
 		private void AddAttributes(DataType DataType)
@@ -112,6 +114,25 @@ namespace Editor
 
 			foreach (var A in DataType.Attributes)
 				Attributes.Add(new AttributeValue(A));
+		}
+
+		private void AddFieldsMenu(DataType DataType)
+		{
+			if (DataType.Inherit != null)
+				AddFieldsMenu(Global.DataTypeMap[DataType.Inherit]);
+
+			foreach (var F in DataType.Fields)
+				if (F.Multiple)
+					AddMenu("Add " + F.Name, () => new TreeNode(F, this));
+		}
+
+		private void AssignAttributeValues(XmlNode Node)
+		{
+			foreach (var A in Attributes)
+			{
+				A.Value = Node.Attr(A.Name, null);
+				A.OverrideDefault = A.HasDefault && A.Value != null;
+			}
 		}
 	}
 }
