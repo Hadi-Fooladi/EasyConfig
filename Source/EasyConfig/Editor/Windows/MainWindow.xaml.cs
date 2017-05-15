@@ -261,11 +261,21 @@ namespace Editor
 			var TVI = TV.SelectedItem as TreeViewItem;
 			if (TVI == null) return;
 
-			var TN = (TreeNode)TVI.Tag;
+			var Child = (TreeNode)TVI.Tag;
+			if (!Child.Removable) return;
 
-			TN.Remove();
+			var Container = Child.Container;
+
+			int ndx = Container.Nodes.IndexOf(Child);
+
+			Child.Remove();
+
+			int n = Container.Nodes.Count;
+			TreeNode Selected = n == 0 ? Container : Container.Nodes[Math.Min(ndx, n - 1)];
+
+			Selected.TreeViewItem.IsSelected = true;
+
 			TV.Focus();
-
 			e.Handled = true;
 		}
 		#endregion
