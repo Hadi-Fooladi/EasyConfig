@@ -4,9 +4,11 @@ namespace EasyConfig
 {
 	internal partial class Base
 	{
+		public bool HasDesc => Desc != null || MultiLineDesc != null;
+
 		public void WriteDesc(StreamWriter SW)
 		{
-			if (Desc == null && MultiLineDesc == null) return;
+			if (!HasDesc) return;
 
 			SW.WriteLine();
 			SW.WriteLine("/// <summary>");
@@ -34,7 +36,7 @@ namespace EasyConfig
 			SW.WriteLine(Format, Type, Name);
 
 			// We put a line after declaration if it has description
-			if (Desc != null) SW.WriteLine();
+			if (HasDesc) SW.WriteLine();
 		}
 	}
 }
