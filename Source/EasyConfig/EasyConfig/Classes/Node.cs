@@ -5,7 +5,7 @@ namespace EasyConfig
 {
 	internal partial class Node
 	{
-		public void WriteDeclaration(IndentedStreamWriter SW) => SW.Declare(Name, DataTypeName, Multiple, null);
+		public void WriteDeclaration(IndentedStreamWriter SW) => Declare(SW, DataTypeName, Multiple);
 
 		public override string DataTypeName => TypeName ?? Name + "Data";
 

@@ -7,7 +7,7 @@ namespace EasyConfig
 	{
 		public void WriteImplementation(IndentedStreamWriter SW)
 		{
-			SW.WriteDesc(Desc);
+			WriteDesc(SW);
 
 			string T = DataTypeName;
 			SW.WriteLine(
@@ -51,7 +51,7 @@ namespace EasyConfig
 		protected virtual void DeclareFields(IndentedStreamWriter SW)
 		{
 			foreach (var A in Attributes) A.WriteDeclaration(SW);
-			foreach (var F in Fields) SW.Declare(F);
+			foreach (var F in Fields) F.Declare(SW, F.Type, F.Multiple);
 		}
 
 		public void WriteSample(XmlNode Node) => WriteSample(Node, true);

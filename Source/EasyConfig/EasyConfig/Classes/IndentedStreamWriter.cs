@@ -68,28 +68,6 @@ internal class IndentedStreamWriter : StreamWriter
 		IndentationCount--;
 	}
 
-	public void Declare(string Name, string Type, bool isList, string Desc)
-	{
-		WriteDesc(Desc);
-		var Format = string.Format("public readonly {0} {{1}};", isList ? "List<{0}>" : "{0}");
-		WriteLine(Format, Type, Name);
-
-		// We put a line after declaration if it has description
-		if (Desc != null) WriteLine();
-	}
-
-	public void Declare(EasyConfig.Field F) => Declare(F.Name, F.Type, F.Multiple, F.Desc);
-
-	public void WriteDesc(string Desc)
-	{
-		if (Desc == null) return;
-
-		WriteLine();
-		WriteLine("/// <summary>");
-		WriteLine("/// {0}", Desc);
-		WriteLine("/// </summary>");
-	}
-
 	public void WriteRead(Field F) => WriteRead(F.Name, F.TagName ?? F.Name, F.Type, F.Multiple);
 	public void WriteRead(Node N) => WriteRead(N.Name, N.TagName ?? N.Name, N.DataTypeName, N.Multiple);
 

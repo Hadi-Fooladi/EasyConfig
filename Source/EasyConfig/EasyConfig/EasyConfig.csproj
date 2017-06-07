@@ -51,6 +51,7 @@
     <Compile Include="Classes\Parameters\OneStringParameter.cs" />
     <Compile Include="Classes\CRoot.cs" />
     <Compile Include="Classes\Parameters\ZeroParameter.cs" />
+    <Compile Include="Classes\Partial\Base.cs" />
     <Compile Include="Interfaces\IParameter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,6 +62,7 @@
   <ItemGroup>
     <Content Include="Sample.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup />

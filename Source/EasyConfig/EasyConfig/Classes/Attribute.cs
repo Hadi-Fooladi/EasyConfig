@@ -5,7 +5,7 @@ namespace EasyConfig
 {
 	internal partial class Attribute
 	{
-		public void WriteDeclaration(IndentedStreamWriter SW) => SW.Declare(Name, Type == "yn" ? "bool" : Type, false, Desc);
+		public void WriteDeclaration(IndentedStreamWriter SW) => Declare(SW, Type == "yn" ? "bool" : Type, false);
 
 		public void WriteRead(IndentedStreamWriter SW)
 		{

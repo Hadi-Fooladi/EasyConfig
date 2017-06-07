@@ -4,24 +4,32 @@
 	xsi:schemaLocation="EasyConfig Schema.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-	<DataType Name="Attribute" Partial="Yes">
+	<DataType Name="Base" Partial="Yes">
 		<Attribute Name="Name" Type="string" />
-		<Attribute Name="Type" Type="string" />
 		<Attribute Name="Desc" Type="string" Default="null" />
+		<Field Name="MultiLineDesc" TagName="Desc" Type="MultiLineDesc" />
+	</DataType>
+
+	<DataType Name="SingleLineDesc">
+		<Attribute Name="Value" Type="string" />
+	</DataType>
+	
+	<DataType Name="MultiLineDesc">
+		<Field Name="Lines" TagName="Line" Type="SingleLineDesc" Multiple="Yes" />
+	</DataType>
+
+	<DataType Name="Attribute" Inherit="Base" Partial="Yes">
+		<Attribute Name="Type" Type="string" />
 		<Attribute Name="Default" Type="string" Default="null" />
 	</DataType>
 
-	<DataType Name="Field" Partial="Yes">
-		<Attribute Name="Name" Type="string" />
+	<DataType Name="Field" Inherit="Base" Partial="Yes">
 		<Attribute Name="Type" Type="string" />
-		<Attribute Name="Desc" Type="string" Default="null" />
 		<Attribute Name="TagName" Type="string" Default="null" Desc="If null, 'Name' will be used for tag name" />
 		<Attribute Name="Multiple" Type="yn" Default="false" />
 	</DataType>
 
-	<DataType Name="DataType" Partial="Yes">
-		<Attribute Name="Name" Type="string" />
-		<Attribute Name="Desc" Type="string" Default="null" />
+	<DataType Name="DataType" Inherit="Base" Partial="Yes">
 		<Attribute Name="Inherit" Type="string" Default="null" />
 		<Attribute Name="Partial" Type="yn" Default="false" />
 		<Attribute Name="Access" Type="string" Default="null" Desc="Access modifier for class (null means internal)" />

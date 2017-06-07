@@ -1,4 +1,9 @@
-﻿<EasyConfig Version="4.0">
+﻿<EasyConfig
+	Version="4.2"
+	xmlns="EasyConfig"
+	xsi:schemaLocation="EasyConfig ../Schema/Schema.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
 	<DataType Name="Complex">
 		<Attribute Name="Real" Type="float" />
 		<Attribute Name="Imaginary" Type="float" />
@@ -51,10 +56,6 @@
 		</Node>
 
 		<Node Name="Person" TypeName="CPerson">
-			<DataType Name="Nested2" Inherit="Nested">
-				<Attribute Name="d" Type="int" />
-			</DataType>
-
 			<Attribute Name="Age" Type="int" />
 			<Attribute Name="Height" Type="float" />
 			<Attribute Name="Weight" Type="float" />
@@ -63,10 +64,19 @@
 
 			<Field Name="Spouse" Type="CPerson" Desc="Spouse Info" />
 			<Field Name="Children" TagName="Child" Type="CPerson" Multiple="Yes" />
+
+			<DataType Name="Nested2" Inherit="Nested">
+				<Attribute Name="d" Type="int" />
+			</DataType>
 		</Node>
 
 		<Node Name="Employee" Inherit="CPerson">
-			<Attribute Name="Wage" Type="float" />
+			<Attribute Name="Wage" Type="float">
+				<Desc>
+					<Line Value="Employee Wage"/>
+					<Line Value="?????????????"/>
+				</Desc>
+			</Attribute>
 		</Node>
 
 		<Node Name="Family" TypeName="CFamily">
@@ -99,10 +109,21 @@
 		</Node>
 	
 		<Node Name="MyFormula" Inherit="Formula3">
-			<Field Name="C4" Type="Complex" />
+			<Field Name="C4" Type="Complex">
+				<Desc>
+					<Line Value="Multi-Line" />
+					<Line Value="Comment" />
+				</Desc>
+			</Field>
 		</Node>
 
 		<Node Name="Society">
+			<Desc>
+				<Line Value="Multiple" />
+				<Line Value="Line" />
+				<Line Value="!!!!!!!!!!!!!!!!!" />
+			</Desc>
+
 			<Node Name="Human" Multiple="Yes">
 				<Field Name="C" Type="Complex" Multiple="Yes" />
 			</Node>
