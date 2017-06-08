@@ -42,14 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Attribute.cs" />
-    <Compile Include="Classes\DataType.cs" />
+    <Compile Include="Classes\Partial\Attribute.cs" />
+    <Compile Include="Classes\Partial\DataType.cs" />
     <Compile Include="Classes\Ext\Misc.cs" />
     <Compile Include="Classes\Global.cs" />
     <Compile Include="Classes\IndentedStreamWriter.cs" />
-    <Compile Include="Classes\Node.cs" />
+    <Compile Include="Classes\Partial\Node.cs" />
     <Compile Include="Classes\Parameters\OneStringParameter.cs" />
-    <Compile Include="Classes\CRoot.cs" />
+    <Compile Include="Classes\Partial\CRoot.cs" />
     <Compile Include="Classes\Parameters\ZeroParameter.cs" />
     <Compile Include="Classes\Partial\Base.cs" />
     <Compile Include="Interfaces\IParameter.cs" />
