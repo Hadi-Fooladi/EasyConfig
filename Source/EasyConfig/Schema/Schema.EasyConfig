@@ -20,7 +20,7 @@
 
 	<DataType Name="VarBase" Inherit="Base">
 		<Attribute Name="Type" Type="string" />
-		<Attribute Name="ReadOnly" Type="yn" Default="true" />
+		<Attribute Name="ReadOnly" Type="yn" Default="Defaults.ReadOnly" Desc="Default is 'true'" />
 	</DataType>
 
 	<DataType Name="Attribute" Inherit="VarBase" Partial="Yes">
@@ -35,13 +35,13 @@
 	<DataType Name="DataType" Inherit="Base" Partial="Yes">
 		<Attribute Name="Inherit" Type="string" Default="null" />
 		<Attribute Name="Partial" Type="yn" Default="false" />
-		<Attribute Name="Access" Type="string" Default="null" Desc="Access modifier for class (null means internal)" />
+		<Attribute Name="Access" Type="string" Default="Defaults.Access" Desc="Access modifier for class (Default is internal)" />
 		<Field Name="Fields" Type="Field" TagName="Field" Multiple="Yes" />
 		<Field Name="Attributes" Type="Attribute" TagName="Attribute" Multiple="Yes" />
 	</DataType>
 
 	<DataType Name="Node" Inherit="DataType" Partial="Yes">
-		<Attribute Name="ReadOnly" Type="yn" Default="true" />
+		<Attribute Name="ReadOnly" Type="yn" Default="Defaults.ReadOnly" Desc="Default is 'true'" />
 		<Attribute Name="Multiple" Type="yn" Default="false" />
 		<Attribute Name="TypeName" Type="string" Default="null" />
 		<Attribute Name="TagName" Type="string" Default="null" Desc="If null, 'Name' will be used for tag name" />

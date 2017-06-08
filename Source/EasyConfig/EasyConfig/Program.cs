@@ -24,14 +24,22 @@ namespace EasyConfig
 				var pPublic = new ZeroParameter
 				{
 					Code = "public",
-					Act = () => Global.DefaultAccessModifier = "public",
+					Act = () => Defaults.Access = "public",
 					Desc = "Change access modifier for all classes to public (By default it is internal)"
+				};
+
+				var pWritable = new ZeroParameter
+				{
+					Code = "w",
+					Act = () => Defaults.ReadOnly = false,
+					Desc = "Makes all fields writable by default (If not specified by default fields are readonly)"
 				};
 
 				P.Add(pOutputPath);
 				P.Add(pNameSpace);
 				P.Add(pSamplePath);
 				P.Add(pPublic);
+				P.Add(pWritable);
 				#endregion
 
 				#region Arguments Analysis

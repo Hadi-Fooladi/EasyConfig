@@ -12,7 +12,7 @@ namespace EasyConfig
 			string T = DataTypeName;
 			SW.WriteLine(
 				"{0} {1}class {2}{3}",
-				Access ?? Global.DefaultAccessModifier,
+				Access,
 				Partial ? "partial " : "",
 				T,
 				Inherit != null ? " : " + Inherit : "");

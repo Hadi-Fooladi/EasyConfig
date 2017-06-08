@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Parameters\FlagParameter.cs" />
     <Compile Include="Classes\Partial\Attribute.cs" />
     <Compile Include="Classes\Partial\DataType.cs" />
     <Compile Include="Classes\Ext\Misc.cs" />
