@@ -44,10 +44,10 @@
 			<Attribute Name="Single" Type="yn" Default="true" />
 		</Node>
 
-		<Node Name="Second" Desc="Second Class">
-			<Node Name="Grade" Multiple="Yes" Type="struct">
-				<Attribute Name="Value" Type="float" />
-				<Attribute Name="Max" Type="float" Default="20" />
+		<Node Name="Second" Desc="Second Class" ReadOnly="No">
+			<Node Name="Grade" Multiple="Yes">
+				<Attribute Name="Value" Type="float" ReadOnly="Yes" />
+				<Attribute Name="Max" Type="float" Default="20" ReadOnly="No" />
 			</Node>
 			<Node Name="Grade2" Multiple="Yes">
 				<Attribute Name="Value" Type="float" />
@@ -60,7 +60,7 @@
 			<Attribute Name="Height" Type="float" />
 			<Attribute Name="Weight" Type="float" />
 
-			<Field Name="UseNested" Type="Nested2" />
+			<Field Name="UseNested" Type="Nested2" ReadOnly="No" />
 
 			<Field Name="Spouse" Type="CPerson" Desc="Spouse Info" />
 			<Field Name="Children" TagName="Child" Type="CPerson" Multiple="Yes" />

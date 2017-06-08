@@ -1,11 +1,12 @@
 ﻿using XmlExt;
+using System.IO;
 using System.Xml;
 
 namespace EasyConfig
 {
 	internal partial class Attribute
 	{
-		public void WriteDeclaration(IndentedStreamWriter SW) => Declare(SW, Type == "yn" ? "bool" : Type, false);
+		public override void Declare(StreamWriter SW) => Declare(SW, Type == "yn" ? "bool" : Type, false, ReadOnly);
 
 		public void WriteRead(IndentedStreamWriter SW)
 		{

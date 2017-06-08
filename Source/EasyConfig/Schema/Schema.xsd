@@ -50,11 +50,18 @@
 		<attribute name="Desc" type="string" use="optional" />
 	</complexType>
 
-	
-	<complexType name="Attribute">
+	<complexType name="VarBase">
 		<complexContent>
 			<extension base="ec:Base">
 				<attribute name="Type" type="string" use="required" />
+				<attribute name="ReadOnly" type="ec:YesNo" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Attribute">
+		<complexContent>
+			<extension base="ec:VarBase">
 				<attribute name="Default" type="string" use="optional" />
 			</extension>
 		</complexContent>
@@ -62,8 +69,7 @@
 
 	<complexType name="Field">
 		<complexContent>
-			<extension base="ec:Base">
-				<attribute name="Type" type="string" use="required" />
+			<extension base="ec:VarBase">
 				<attribute name="TagName" type="string" use="optional" />
 				<attribute name="Multiple" type="ec:YesNo" use="optional" />
 			</extension>
@@ -95,6 +101,7 @@
 				</choice>
 
 				<!-- Node Attributes -->
+				<attribute name="ReadOnly" type="ec:YesNo" use="optional" />
 				<attribute name="Multiple" type="ec:YesNo" use="optional" />
 				<attribute name="TagName" type="string" use="optional" />
 				<attribute name="TypeName" type="string" use="optional" />

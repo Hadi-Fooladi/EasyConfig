@@ -18,13 +18,16 @@
 		<Field Name="Lines" TagName="Line" Type="SingleLineDesc" Multiple="Yes" />
 	</DataType>
 
-	<DataType Name="Attribute" Inherit="Base" Partial="Yes">
+	<DataType Name="VarBase" Inherit="Base">
 		<Attribute Name="Type" Type="string" />
+		<Attribute Name="ReadOnly" Type="yn" Default="true" />
+	</DataType>
+
+	<DataType Name="Attribute" Inherit="VarBase" Partial="Yes">
 		<Attribute Name="Default" Type="string" Default="null" />
 	</DataType>
 
-	<DataType Name="Field" Inherit="Base" Partial="Yes">
-		<Attribute Name="Type" Type="string" />
+	<DataType Name="Field" Inherit="VarBase" Partial="Yes">
 		<Attribute Name="TagName" Type="string" Default="null" Desc="If null, 'Name' will be used for tag name" />
 		<Attribute Name="Multiple" Type="yn" Default="false" />
 	</DataType>
@@ -38,6 +41,7 @@
 	</DataType>
 
 	<DataType Name="Node" Inherit="DataType" Partial="Yes">
+		<Attribute Name="ReadOnly" Type="yn" Default="true" />
 		<Attribute Name="Multiple" Type="yn" Default="false" />
 		<Attribute Name="TypeName" Type="string" Default="null" />
 		<Attribute Name="TagName" Type="string" Default="null" Desc="If null, 'Name' will be used for tag name" />

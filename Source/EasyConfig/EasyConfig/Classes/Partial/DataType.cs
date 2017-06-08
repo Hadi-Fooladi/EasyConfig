@@ -50,8 +50,8 @@ namespace EasyConfig
 
 		protected virtual void DeclareFields(IndentedStreamWriter SW)
 		{
-			foreach (var A in Attributes) A.WriteDeclaration(SW);
-			foreach (var F in Fields) F.Declare(SW, F.Type, F.Multiple);
+			foreach (var A in Attributes) A.Declare(SW);
+			foreach (var F in Fields) F.Declare(SW);
 		}
 
 		public void WriteSample(XmlNode Node) => WriteSample(Node, true);

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace EasyConfig
 {
@@ -28,12 +29,14 @@ namespace EasyConfig
 			SW.WriteLine("/// </summary>");
 		}
 
-		public void Declare(StreamWriter SW, string Type, bool isList)
+		public virtual void Declare(StreamWriter SW) => throw new NotImplementedException();
+
+		public void Declare(StreamWriter SW, string Type, bool isList, bool ReadOnly)
 		{
 			WriteDesc(SW);
 
-			var Format = string.Format("public readonly {0} {{1}};", isList ? "List<{0}>" : "{0}");
-			SW.WriteLine(Format, Type, Name);
+			var Format = string.Format("public{{0}} {0} {{2}};", isList ? "List<{1}>" : "{1}");
+			SW.WriteLine(Format, ReadOnly ? " readonly" : "", Type, Name);
 
 			// We put a line after declaration if it has description
 			if (HasDesc) SW.WriteLine();

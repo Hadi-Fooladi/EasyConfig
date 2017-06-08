@@ -1,11 +1,12 @@
 ﻿using XmlExt;
+using System.IO;
 using System.Xml;
 
 namespace EasyConfig
 {
 	internal partial class Node
 	{
-		public void WriteDeclaration(IndentedStreamWriter SW) => Declare(SW, DataTypeName, Multiple);
+		public override void Declare(StreamWriter SW) => Declare(SW, DataTypeName, Multiple, ReadOnly);
 
 		public override string DataTypeName => TypeName ?? Name + "Data";
 
@@ -35,7 +36,7 @@ namespace EasyConfig
 			base.DeclareFields(SW);
 
 			foreach (var N in Nodes)
-				N.WriteDeclaration(SW);
+				N.Declare(SW);
 		}
 
 		public override void WriteSample(XmlNode Node, bool IncludeFields)
