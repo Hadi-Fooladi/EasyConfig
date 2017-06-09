@@ -51,5 +51,13 @@ namespace EasyConfig
 			foreach (var N in Nodes) N.RegisterName();
 			foreach (var T in Types) T.RegisterName();
 		}
+
+		public override void SaveMethodPost()
+		{
+			Global.SW.WriteLine();
+
+			foreach (var N in Nodes)
+				N.WriteSave(N.TagName ?? N.Name, N.Multiple);
+		}
 	}
 }

@@ -27,5 +27,7 @@ namespace EasyConfig
 		}
 
 		public void WriteSample(XmlNode Node) => Node.AddAttr(Name, Default);
+
+		public void WriteSave() => Global.SW.WriteLine("Node.AddAttr(\"{0}\", {0});", Name);
 	}
 }

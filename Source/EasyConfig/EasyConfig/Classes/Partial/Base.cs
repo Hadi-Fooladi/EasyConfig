@@ -42,5 +42,10 @@ namespace EasyConfig
 			// We put a line after declaration if it has description
 			if (HasDesc) Global.SW.WriteLine();
 		}
+
+		public void WriteSave(string TagName, bool isList) =>
+			Global.SW.WriteLine(isList
+				? $"foreach (var X in {Name}) X.Save(Node.AppendNode(\"{TagName}\"));"
+				: $"{Name}.Save(Node.AppendNode(\"{TagName}\"));");
 	}
 }

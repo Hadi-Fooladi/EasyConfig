@@ -5,9 +5,12 @@ namespace EasyConfig
 {
 	internal partial class CRoot
 	{
+		private const string PARAM = "string Filename";
+
 		public override string DataTypeName => TypeName ?? Name;
 
-		protected override string ConstructorParameters => "string Filename";
+		protected override string SaveMethodParameters => PARAM;
+		protected override string ConstructorParameters => PARAM;
 
 		protected override void ConstructorPre()
 		{
@@ -48,6 +51,22 @@ namespace EasyConfig
 				Node.AddAttr("Version", Version);
 
 			base.WriteSample(Node);
+		}
+
+		public override void SaveMethodPre()
+		{
+			var SW = Global.SW;
+
+			SW.WriteLine("var Doc = new XmlDocument();");
+			SW.WriteLine($"var Node = Doc.AppendNode(\"{TagName ?? Name}\");");
+			SW.WriteLine();
+		}
+
+		public override void SaveMethodPost()
+		{
+			base.SaveMethodPost();
+			Global.SW.WriteLine();
+			Global.SW.WriteLine("Doc.Save(Filename);");
 		}
 	}
 }

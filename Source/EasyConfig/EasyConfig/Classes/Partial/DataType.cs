@@ -5,6 +5,8 @@ namespace EasyConfig
 {
 	internal partial class DataType
 	{
+		public DataType Base => Inherit == null ? null : Global.Name2DataType[Inherit];
+
 		public void WriteImplementation()
 		{
 			WriteDesc();
@@ -20,7 +22,6 @@ namespace EasyConfig
 
 				// Writing Constructor
 				SW.WriteLine("public {0}({1}){2}", T, ConstructorParameters, Inherit != null ? " : base(Node)" : "");
-
 				SW.Block(() =>
 				{
 					ConstructorPre();
@@ -33,6 +34,9 @@ namespace EasyConfig
 
 					ConstructorPost();
 				});
+
+				// Writing Save Method
+				WriteSaveMethod();
 
 				ImplementNestedClasses();
 			});
@@ -54,16 +58,43 @@ namespace EasyConfig
 
 		public virtual void WriteSample(XmlNode Node, bool IncludeFields)
 		{
-			if (Inherit != null)
-				Global.Name2DataType[Inherit].WriteSample(Node, IncludeFields);
+			Base?.WriteSample(Node, IncludeFields);
 
 			foreach (var A in Attributes) A.WriteSample(Node);
 
 			if (IncludeFields)
 				foreach (var F in Fields)
-					Global.Name2DataType[F.Type].WriteSample(Node.AppendNode(F.TagName ?? F.Name), false);
+					F.DataType.WriteSample(Node.AppendNode(F.TagName ?? F.Name), false);
 		}
 
 		public virtual void RegisterName() => Global.Name2DataType.Add(DataTypeName, this);
+
+		public void WriteSaveMethod()
+		{
+			var SW = Global.SW;
+
+			SW.WriteLine($"public void Save({SaveMethodParameters})");
+			SW.Block(() =>
+			{
+				if (Inherit != null)
+					SW.WriteLine("base.Save(Node);");
+
+				SaveMethodPre();
+
+				foreach (var A in Attributes)
+					A.WriteSave();
+
+				SW.WriteLine();
+
+				foreach (var F in Fields)
+					F.WriteSave(F.TagName ?? F.Name, F.Multiple);
+
+				SaveMethodPost();
+			});
+		}
+
+		protected virtual string SaveMethodParameters => "XmlNode Node";
+		public virtual void SaveMethodPre() { }
+		public virtual void SaveMethodPost() { }
 	}
 }

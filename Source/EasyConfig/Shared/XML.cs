@@ -11,7 +11,7 @@ namespace XmlExt
 		public static string Attr(this XmlNode Node, string Name) => Node.Attributes[Name].Value;
 		public static int iAttr(this XmlNode Node, string Name) => Convert.ToInt32(Node.Attr(Name));
 		public static float fAttr(this XmlNode Node, string Name) => Convert.ToSingle(Node.Attr(Name));
-		public static bool ynAttr(this XmlNode Node, string Name) => string.Compare(Node.Attr(Name), "Yes", StringComparison.OrdinalIgnoreCase) == 0;
+		public static bool ynAttr(this XmlNode Node, string Name) => string.Equals(Node.Attr(Name), "Yes", StringComparison.OrdinalIgnoreCase);
 
 		public static Version verAttr(this XmlNode Node, string Name)
 		{
@@ -40,7 +40,7 @@ namespace XmlExt
 		public static bool ynAttr(this XmlNode Node, string Name, bool Default)
 		{
 			var A = Node.Attributes[Name];
-			return A == null ? Default : string.Compare(A.Value, "Yes", StringComparison.OrdinalIgnoreCase) == 0;
+			return A == null ? Default : string.Equals(A.Value, "Yes", StringComparison.OrdinalIgnoreCase);
 		}
 
 		public static XmlElement AppendNode(this XmlNode Node, string Name)
