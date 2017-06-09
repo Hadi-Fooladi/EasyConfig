@@ -1,14 +1,13 @@
 ﻿using XmlExt;
-using System.IO;
 using System.Xml;
 
 namespace EasyConfig
 {
 	internal partial class Attribute
 	{
-		public override void Declare(StreamWriter SW) => Declare(SW, Type == "yn" ? "bool" : Type, false, ReadOnly);
+		public override void Declare() => Declare(Type == "yn" ? "bool" : Type, false, ReadOnly);
 
-		public void WriteRead(IndentedStreamWriter SW)
+		public void WriteRead()
 		{
 			string Prefix;
 			switch (Type[0])
@@ -24,7 +23,7 @@ namespace EasyConfig
 			if (D != null)
 				D = ", " + D;
 
-			SW.WriteLine("{0} = Node.{1}Attr(\"{0}\"{2});", Name, Prefix, D);
+			Global.SW.WriteLine("{0} = Node.{1}Attr(\"{0}\"{2});", Name, Prefix, D);
 		}
 
 		public void WriteSample(XmlNode Node) => Node.AddAttr(Name, Default);

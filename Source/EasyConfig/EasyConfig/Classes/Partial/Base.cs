@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace EasyConfig
 {
@@ -7,9 +6,11 @@ namespace EasyConfig
 	{
 		public bool HasDesc => Desc != null || MultiLineDesc != null;
 
-		public void WriteDesc(StreamWriter SW)
+		public void WriteDesc()
 		{
 			if (!HasDesc) return;
+
+			var SW = Global.SW;
 
 			SW.WriteLine();
 			SW.WriteLine("/// <summary>");
@@ -29,17 +30,17 @@ namespace EasyConfig
 			SW.WriteLine("/// </summary>");
 		}
 
-		public virtual void Declare(StreamWriter SW) => throw new NotImplementedException();
+		public virtual void Declare() => throw new NotImplementedException();
 
-		public void Declare(StreamWriter SW, string Type, bool isList, bool ReadOnly)
+		public void Declare(string Type, bool isList, bool ReadOnly)
 		{
-			WriteDesc(SW);
+			WriteDesc();
 
 			var Format = string.Format("public{{0}} {0} {{2}};", isList ? "List<{1}>" : "{1}");
-			SW.WriteLine(Format, ReadOnly ? " readonly" : "", Type, Name);
+			Global.SW.WriteLine(Format, ReadOnly ? " readonly" : "", Type, Name);
 
 			// We put a line after declaration if it has description
-			if (HasDesc) SW.WriteLine();
+			if (HasDesc) Global.SW.WriteLine();
 		}
 	}
 }

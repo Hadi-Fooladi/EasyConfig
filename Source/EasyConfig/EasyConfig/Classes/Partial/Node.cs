@@ -1,42 +1,41 @@
 ﻿using XmlExt;
-using System.IO;
 using System.Xml;
 
 namespace EasyConfig
 {
 	internal partial class Node
 	{
-		public override void Declare(StreamWriter SW) => Declare(SW, DataTypeName, Multiple, ReadOnly);
+		public override void Declare() => Declare(DataTypeName, Multiple, ReadOnly);
 
 		public override string DataTypeName => TypeName ?? Name + "Data";
 
-		protected override void ConstructorPost(IndentedStreamWriter SW)
+		protected override void ConstructorPost()
 		{
 			foreach (var N in Nodes)
-				SW.WriteRead(N);
+				Global.SW.WriteRead(N);
 		}
 
-		protected override void ImplementNestedClasses(IndentedStreamWriter SW)
+		protected override void ImplementNestedClasses()
 		{
 			foreach (var N in Nodes)
 			{
-				SW.WriteLine();
-				N.WriteImplementation(SW);
+				Global.SW.WriteLine();
+				N.WriteImplementation();
 			}
 
 			foreach (var T in Types)
 			{
-				SW.WriteLine();
-				T.WriteImplementation(SW);
+				Global.SW.WriteLine();
+				T.WriteImplementation();
 			}
 		}
 
-		protected override void DeclareFields(IndentedStreamWriter SW)
+		protected override void DeclareFields()
 		{
-			base.DeclareFields(SW);
+			base.DeclareFields();
 
 			foreach (var N in Nodes)
-				N.Declare(SW);
+				N.Declare();
 		}
 
 		public override void WriteSample(XmlNode Node, bool IncludeFields)

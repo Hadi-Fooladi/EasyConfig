@@ -5,5 +5,7 @@ namespace EasyConfig
 	internal static class Global
 	{
 		public static readonly Dictionary<string, DataType> Name2DataType = new Dictionary<string, DataType>();
+
+		public static IndentedStreamWriter SW;
 	}
 }

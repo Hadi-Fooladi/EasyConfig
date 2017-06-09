@@ -9,8 +9,10 @@ namespace EasyConfig
 
 		protected override string ConstructorParameters => "string Filename";
 
-		protected override void ConstructorPre(IndentedStreamWriter SW)
+		protected override void ConstructorPre()
 		{
+			var SW = Global.SW;
+
 			SW.WriteLine("var Doc = new XmlDocument();");
 			SW.WriteLine("Doc.Load(Filename);");
 			SW.WriteLine();
@@ -27,18 +29,17 @@ namespace EasyConfig
 			}
 		}
 
-		protected override void DeclareFields(IndentedStreamWriter SW)
+		protected override void DeclareFields()
 		{
 			var V = Version;
 			if (V != null)
 			{
-				SW.WriteLine("public readonly Version Version;");
-				SW.WriteLine("public static readonly Version ExpectedVersion = new Version({0}, {1});", V.Major, V.Minor);
-
-				SW.WriteLine();
+				Global.SW.WriteLine("public readonly Version Version;");
+				Global.SW.WriteLine("public static readonly Version ExpectedVersion = new Version({0}, {1});", V.Major, V.Minor);
+				Global.SW.WriteLine();
 			}
 
-			base.DeclareFields(SW);
+			base.DeclareFields();
 		}
 
 		public new void WriteSample(XmlNode Node)

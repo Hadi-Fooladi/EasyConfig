@@ -1,9 +1,7 @@
-﻿using System.IO;
-
-namespace EasyConfig
+﻿namespace EasyConfig
 {
 	internal partial class Field
 	{
-		public override void Declare(StreamWriter SW) => Declare(SW, Type, Multiple, ReadOnly);
+		public override void Declare() => Declare(Type, Multiple, ReadOnly);
 	}
 }

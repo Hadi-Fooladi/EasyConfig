@@ -5,21 +5,17 @@ namespace EasyConfig
 {
 	internal partial class DataType
 	{
-		public void WriteImplementation(IndentedStreamWriter SW)
+		public void WriteImplementation()
 		{
-			WriteDesc(SW);
+			WriteDesc();
 
+			var SW = Global.SW;
 			string T = DataTypeName;
-			SW.WriteLine(
-				"{0} {1}class {2}{3}",
-				Access,
-				Partial ? "partial " : "",
-				T,
-				Inherit != null ? " : " + Inherit : "");
+			SW.WriteLine("{0} {1}class {2}{3}", Access, Partial ? "partial " : "", T, Inherit != null ? " : " + Inherit : "");
 
 			SW.Block(() =>
 			{
-				DeclareFields(SW);
+				DeclareFields();
 				SW.WriteLine();
 
 				// Writing Constructor
@@ -27,31 +23,31 @@ namespace EasyConfig
 
 				SW.Block(() =>
 				{
-					ConstructorPre(SW);
+					ConstructorPre();
 
 					foreach (var A in Attributes)
-						A.WriteRead(SW);
+						A.WriteRead();
 
 					foreach (var F in Fields)
 						SW.WriteRead(F);
 
-					ConstructorPost(SW);
+					ConstructorPost();
 				});
 
-				ImplementNestedClasses(SW);
+				ImplementNestedClasses();
 			});
 		}
 
 		public virtual string DataTypeName => Name;
 		protected virtual string ConstructorParameters => "XmlNode Node";
-		protected virtual void ConstructorPre(IndentedStreamWriter SW) { }
-		protected virtual void ConstructorPost(IndentedStreamWriter SW) { }
-		protected virtual void ImplementNestedClasses(IndentedStreamWriter SW) { }
+		protected virtual void ConstructorPre() { }
+		protected virtual void ConstructorPost() { }
+		protected virtual void ImplementNestedClasses() { }
 
-		protected virtual void DeclareFields(IndentedStreamWriter SW)
+		protected virtual void DeclareFields()
 		{
-			foreach (var A in Attributes) A.Declare(SW);
-			foreach (var F in Fields) F.Declare(SW);
+			foreach (var A in Attributes) A.Declare();
+			foreach (var F in Fields) F.Declare();
 		}
 
 		public void WriteSample(XmlNode Node) => WriteSample(Node, true);
