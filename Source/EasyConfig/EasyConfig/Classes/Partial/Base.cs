@@ -43,9 +43,15 @@ namespace EasyConfig
 			if (HasDesc) Global.SW.WriteLine();
 		}
 
-		public void WriteSave(string TagName, bool isList) =>
-			Global.SW.WriteLine(isList
-				? $"foreach (var X in {Name}) X.Save(Node.AppendNode(\"{TagName}\"));"
-				: $"{Name}.Save(Node.AppendNode(\"{TagName}\"));");
+		public void WriteSave(string TagName, bool isList)
+		{
+			var SW = Global.SW;
+
+			var Format = isList
+				? "foreach (var X in {0}) X.Save(Node.AppendNode(\"{1}\"));"
+				: "if ({0} != null) {0}.Save(Node.AppendNode(\"{1}\"));";
+
+			SW.WriteLine(Format, Name, TagName);
+		}
 	}
 }
