@@ -40,22 +40,45 @@
 		</TreeView>
 
 		<TextBlock Name="lblPath" DockPanel.Dock="Top" Text="{Binding Path}" FontSize="20" FontWeight="Bold" Margin="5" />
+		
+		<ListBox Name="LB" Width="150" SelectionMode="Single" SelectionChanged="LB_OnSelectionChanged" />
+		
+		<Grid Name="AttributeGrid" Visibility="Hidden">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="32" />
+				<RowDefinition Height="32" />
+				<RowDefinition Height="32" />
+				<RowDefinition Height="32" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+			
+			<Grid.Resources>
+				<Style x:Key="TitleKey" TargetType="TextBlock">
+					<Setter Property="VerticalAlignment" Value="Center" />
+					<Setter Property="HorizontalAlignment" Value="Right" />
+					<Setter Property="FontWeight" Value="DemiBold" />
+					<Setter Property="Margin" Value="5,0" />
+				</Style>
 
-		<!-- Attributes Grid -->
-		<DataGrid Name="DG" AutoGenerateColumns="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="FullRow">
-			<DataGrid.Columns>
-				<DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
-				<DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True" />
-				<DataGridTemplateColumn Header="Override Default">
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<CheckBox IsEnabled="{Binding HasDefault}" IsChecked="{Binding OverrideDefault,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<DataGridTextColumn Header="Value" Binding="{Binding Value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="*" />
-				<DataGridTextColumn Header="Default" Binding="{Binding Default}" IsReadOnly="True" Width="80" />
-			</DataGrid.Columns>
-		</DataGrid>
+				<Style x:Key="ValueKey" TargetType="TextBlock">
+					<Setter Property="VerticalAlignment" Value="Center" />
+					<Setter Property="HorizontalAlignment" Value="Left" />
+				</Style>
+			</Grid.Resources>
+
+			<TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource TitleKey}">Type:</TextBlock>
+			<TextBlock Name="lblType" Grid.Row="0" Grid.Column="1" Style="{StaticResource ValueKey}" />
+			
+			<TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource TitleKey}">Default: </TextBlock>
+			<TextBlock Name="lblDefault" Grid.Row="1" Grid.Column="1" Style="{StaticResource ValueKey}" />
+
+			<CheckBox Name="cbOverrideDefault" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="5,0">Override Default</CheckBox>
+
+			<TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource TitleKey}">Value:</TextBlock>
+			<TextBox Name="tbValue" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="5,0" />
+		</Grid>
 	</DockPanel>
 </Window>

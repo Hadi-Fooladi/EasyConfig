@@ -114,10 +114,7 @@ namespace Editor
 
 		private void AddAttributes(DataType DataType)
 		{
-			if (DataType.Inherit != null)
-				AddAttributes(Global.DataTypeMap[DataType.Inherit]);
-
-			foreach (var A in DataType.Attributes)
+			foreach (var A in DataType.AllAttributes)
 				Attributes.Add(new AttributeValue(A));
 		}
 

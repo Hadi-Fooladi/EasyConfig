@@ -36,5 +36,7 @@ namespace Editor
 
 			return S;
 		}
+
+		public override string ToString() => Name;
 	}
 }

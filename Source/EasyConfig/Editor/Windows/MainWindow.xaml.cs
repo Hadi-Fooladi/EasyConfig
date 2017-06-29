@@ -53,9 +53,6 @@ namespace Editor
 		#endregion
 
 		#region Methods
-		private static bool IsTrue(bool? B) => B ?? false;
-		private static bool IsFalse(bool? B) => !(B ?? true);
-
 		private static XmlNode Select(XmlNode Node, string LocalName) => Node.SelectSingleNode($"*[local-name()='{LocalName}']");
 		private static XmlNodeList SelectAll(XmlNode Node, string LocalName) => Node.SelectNodes($"*[local-name()='{LocalName}']");
 
@@ -147,7 +144,9 @@ namespace Editor
 
 			var TN = (TreeNode)TVI.Tag;
 
-			DG.ItemsSource = TN.Attributes;
+			LB.Items.Clear();
+			foreach (var A in TN.Attributes)
+				LB.Items.Add(A);
 			lblPath.SetBinding(TextBlock.TextProperty, new Binding("Path") { Source = TN });
 		}
 
@@ -165,7 +164,7 @@ namespace Editor
 					Filter = "XML Files|*.xml|All Files|*.*"
 				};
 
-				if (IsTrue(SFD.ShowDialog()))
+				if (SFD.ShowDialog().isTrue())
 				{
 					var XWS = new XmlWriterSettings
 					{
@@ -189,7 +188,7 @@ namespace Editor
 		{
 			var OFD = new OpenFileDialog { Filter = "(XML, EasyConfig) Files|*.xml;*.EasyConfig|All Files|*.*" };
 
-			if (IsTrue(OFD.ShowDialog()))
+			if (OFD.ShowDialog().isTrue())
 				Open(OFD.FileName);
 		}
 
@@ -197,7 +196,7 @@ namespace Editor
 		{
 			var OFD = new OpenFileDialog { Filter = "EasyConfig Files|*.EasyConfig|All Files|*.*" };
 
-			if (IsTrue(OFD.ShowDialog()))
+			if (OFD.ShowDialog().isTrue())
 				if (LoadSchema(OFD.FileName))
 					GenerateSchemaTree();
 		}
@@ -277,6 +276,33 @@ namespace Editor
 
 			TV.Focus();
 			e.Handled = true;
+		}
+
+		private void LB_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			var A = LB.SelectedValue as AttributeValue;
+			if (A == null)
+			{
+				AttributeGrid.Visibility = Visibility.Hidden;
+				return;
+			}
+
+			AttributeGrid.Visibility = Visibility.Visible;
+
+			lblType.Text = A.Type;
+			lblDefault.Text = A.Default;
+
+			cbOverrideDefault.IsEnabled = A.HasDefault;
+			cbOverrideDefault.SetBinding(CheckBox.IsCheckedProperty, NewBinding("OverrideDefault"));
+
+			tbValue.SetBinding(TextBox.TextProperty, NewBinding("Value"));
+
+			Binding NewBinding(string PropertyName) => new Binding(PropertyName)
+			{
+				Source = A,
+				Mode = BindingMode.TwoWay,
+				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+			};
 		}
 		#endregion
 	}
