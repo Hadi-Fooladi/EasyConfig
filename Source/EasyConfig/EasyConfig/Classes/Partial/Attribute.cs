@@ -14,6 +14,7 @@ namespace EasyConfig
 			{
 			case 'i': Prefix = "i"; break;
 			case 'f': Prefix = "f"; break;
+			case 'c': Prefix = "ch"; break;
 			case 'y': Prefix = "yn"; break;
 			case 'V': Prefix = "ver"; break;
 			default: Prefix = ""; break;
