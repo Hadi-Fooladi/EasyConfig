@@ -34,6 +34,8 @@ namespace Editor
 		private Schema Schema;
 		private readonly Version AppVer;
 
+		private bool SettingRadioButtonsManually;
+
 		#region Properties
 		private TreeNode Root
 		{
@@ -295,7 +297,33 @@ namespace Editor
 			cbOverrideDefault.IsEnabled = A.HasDefault;
 			cbOverrideDefault.SetBinding(CheckBox.IsCheckedProperty, NewBinding("OverrideDefault"));
 
-			tbValue.SetBinding(TextBox.TextProperty, NewBinding("Value"));
+			if (A.Type.Equals("yn", StringComparison.OrdinalIgnoreCase))
+			{
+				tbValue.Visibility = Visibility.Hidden;
+				YesNoGrid.Visibility = Visibility.Visible;
+
+				SettingRadioButtonsManually = true;
+				if (string.IsNullOrEmpty(A.Value))
+				{
+					rbNo.IsChecked =
+					rbYes.IsChecked = false;
+					rbNotSet.IsChecked = true;
+				}
+				else
+				{
+					rbNotSet.IsChecked = false;
+					var Yes = A.Value.Equals("Yes", StringComparison.OrdinalIgnoreCase);
+					rbNo.IsChecked = !Yes;
+					rbYes.IsChecked = Yes;
+				}
+				SettingRadioButtonsManually = false;
+			}
+			else
+			{
+				tbValue.Visibility = Visibility.Visible;
+				YesNoGrid.Visibility = Visibility.Hidden;
+				tbValue.SetBinding(TextBox.TextProperty, NewBinding("Value"));
+			}
 
 			Binding NewBinding(string PropertyName) => new Binding(PropertyName)
 			{
@@ -303,6 +331,17 @@ namespace Editor
 				Mode = BindingMode.TwoWay,
 				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
 			};
+		}
+
+		private void RadioButton_OnChecked(object sender, RoutedEventArgs e)
+		{
+			if (SettingRadioButtonsManually) return;
+
+			var A = LB.SelectedValue as AttributeValue;
+			if (A == null) return;
+
+			var RB = (RadioButton)sender;
+			A.Value = RB.Tag?.ToString();
 		}
 		#endregion
 	}

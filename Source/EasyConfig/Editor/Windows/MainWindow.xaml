@@ -1,16 +1,16 @@
 ﻿<Window
-	x:ClassModifier="internal"
-	x:Class="Editor.MainWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:local="clr-namespace:Editor"
+	x:ClassModifier="internal"
+	x:Class="Editor.MainWindow"
 	mc:Ignorable="d"
+	FontSize="16"
 	Title="EasyConfig Editor"
 	Width="640" Height="480"
-	FontSize="16"
 	WindowStartupLocation="CenterScreen">
+
 	<DockPanel>
 
 		<!-- Main Menu -->
@@ -32,7 +32,7 @@
 			PreviewKeyUp="TV_OnPreviewKeyUp"
 			PreviewKeyDown="TV_OnPreviewKeyDown"
 			SelectedItemChanged="TV_OnSelectedItemChanged">
-			
+
 			<TreeView.Resources>
 				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}" />
 				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}" />
@@ -40,21 +40,11 @@
 		</TreeView>
 
 		<TextBlock Name="lblPath" DockPanel.Dock="Top" Text="{Binding Path}" FontSize="20" FontWeight="Bold" Margin="5" />
-		
+
 		<ListBox Name="LB" Width="150" SelectionMode="Single" SelectionChanged="LB_OnSelectionChanged" />
-		
+
 		<Grid Name="AttributeGrid" Visibility="Hidden">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="32" />
-				<RowDefinition Height="32" />
-				<RowDefinition Height="32" />
-				<RowDefinition Height="32" />
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
-			
+
 			<Grid.Resources>
 				<Style x:Key="TitleKey" TargetType="TextBlock">
 					<Setter Property="VerticalAlignment" Value="Center" />
@@ -69,16 +59,54 @@
 				</Style>
 			</Grid.Resources>
 
+			<Grid.RowDefinitions>
+				<RowDefinition Height="32" />
+				<RowDefinition Height="32" />
+				<RowDefinition Height="32" />
+				<RowDefinition Height="32" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
 			<TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource TitleKey}">Type:</TextBlock>
 			<TextBlock Name="lblType" Grid.Row="0" Grid.Column="1" Style="{StaticResource ValueKey}" />
-			
-			<TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource TitleKey}">Default: </TextBlock>
+
+			<TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource TitleKey}">Default:</TextBlock>
 			<TextBlock Name="lblDefault" Grid.Row="1" Grid.Column="1" Style="{StaticResource ValueKey}" />
 
-			<CheckBox Name="cbOverrideDefault" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="5,0">Override Default</CheckBox>
+			<CheckBox
+				Name="cbOverrideDefault"
+				Grid.Row="2" Grid.Column="1"
+				Margin="5,0"
+				VerticalAlignment="Center"
+				VerticalContentAlignment="Center"
+				Content="Override Default" />
 
 			<TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource TitleKey}">Value:</TextBlock>
 			<TextBox Name="tbValue" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="5,0" />
+
+			<Grid Name="YesNoGrid" Grid.Row="3" Grid.Column="1" Visibility="Collapsed">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<Grid.Resources>
+					<Style TargetType="RadioButton">
+						<Setter Property="VerticalAlignment" Value="Center" />
+						<Setter Property="HorizontalAlignment" Value="Center" />
+						<Setter Property="VerticalContentAlignment" Value="Center" />
+						<EventSetter Event="Checked" Handler="RadioButton_OnChecked"></EventSetter>
+					</Style>
+				</Grid.Resources>
+
+				<RadioButton Name="rbYes" Grid.Column="0" Tag="Yes">Yes</RadioButton>
+				<RadioButton Name="rbNo" Grid.Column="1" Tag="No">No</RadioButton>
+				<RadioButton Name="rbNotSet" Grid.Column="2">Not Set</RadioButton>
+			</Grid>
 		</Grid>
 	</DockPanel>
 </Window>
