@@ -87,7 +87,12 @@ namespace Editor
 				var Doc = new XmlDocument();
 				Doc.Load(FileName);
 
-				Root = CreateTreeNode(Schema.Root, null, Select(Doc, Schema.Root.Tag));
+				var RootNode = Doc.DocumentElement;
+
+				var Root = CreateTreeNode(Schema.Root, null, RootNode);
+				Root.Attributes.Insert(0, new AttributeValue("Version", "Version") { Value = RootNode.Attr("Version", "") });
+
+				this.Root = Root;
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
 
@@ -122,7 +127,9 @@ namespace Editor
 
 		private void GenerateSchemaTree()
 		{
-			Root = CreateTreeNode(Schema.Root, null);
+			var Root = CreateTreeNode(Schema.Root, null);
+			Root.Attributes.Insert(0, new AttributeValue("Version", "Version") { Value = Schema.Root.Version.ToString() });
+			this.Root = Root;
 
 			TreeNode CreateTreeNode(Node N, TreeNode Container)
 			{
@@ -163,7 +170,10 @@ namespace Editor
 			try
 			{
 				var Doc = new XmlDocument();
-				Root.FillXmlNode(Doc.AppendNode(Root.Tag));
+				var RootNode = Doc.AppendNode(Root.Tag);
+				RootNode.AddAttr("Version", Schema.Version);
+
+				Root.FillXmlNode(RootNode);
 
 				var SFD = new SaveFileDialog
 				{
@@ -362,6 +372,9 @@ namespace Editor
 				var Warnings = sbWarnings.ToString();
 				if (!string.IsNullOrEmpty(Warnings))
 					Msg.Warning(Warnings);
+				else
+					Msg.Info("Validation succeeded");
+				
 			}
 			catch (TreeNode.AttributeValidationException E)
 			{

@@ -5,7 +5,22 @@ namespace Editor
 {
 	internal class AttributeValue
 	{
-		public Attr Attr;
+		public AttributeValue(Attr Attr)
+		{
+			//this.Attr = Attr;
+			Name = Attr.Name;
+			Type = Attr.Type;
+			HasDefault = Attr.Default != null;
+			Default = RemoveQuotation(Attr.Default);
+		}
+
+		public AttributeValue(string Type, string Name)
+		{
+			this.Type = Type;
+			this.Name = Name;
+		}
+
+		//private readonly Attr Attr;
 
 		public string Value { get; set; }
 		public bool OverrideDefault { get; set; }
@@ -14,15 +29,6 @@ namespace Editor
 		public string Type { get; }
 		public string Default { get; }
 		public bool HasDefault { get; }
-
-		public AttributeValue(Attr Attr)
-		{
-			this.Attr = Attr;
-			Name = Attr.Name;
-			Type = Attr.Type;
-			HasDefault = Attr.Default != null;
-			Default = RemoveQuotation(Attr.Default);
-		}
 
 		private static string RemoveQuotation(string S)
 		{
