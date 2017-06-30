@@ -1,4 +1,5 @@
-﻿using Attr = EasyConfig.Attribute;
+﻿using System;
+using Attr = EasyConfig.Attribute;
 
 namespace Editor
 {
@@ -38,5 +39,29 @@ namespace Editor
 		}
 
 		public override string ToString() => Name;
+
+		public bool Validate()
+		{
+			if (HasDefault && !OverrideDefault) return true;
+
+			switch (Type)
+			{
+			case "string": return true;
+			case "char": return Value == null ? false : Value.Length == 1;
+			case "int": return int.TryParse(Value, out int _);
+			case "float": return float.TryParse(Value, out float _);
+			case "Version": return Version.TryParse(Value, out Version _);
+			case "yn":
+				if (Value == null) return false;
+				switch (Value.ToLower())
+				{
+				case "no":
+				case "yes": return true;
+				}
+				return false;
+			default:
+				throw new Exception("Unknown data type");
+			}
+		}
 	}
 }

@@ -12,7 +12,6 @@
 	WindowStartupLocation="CenterScreen">
 
 	<DockPanel>
-
 		<!-- Main Menu -->
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="_File">
@@ -20,12 +19,38 @@
 				<Separator />
 				<MenuItem Header="_Save" Click="miSave_OnClick"  />
 				<Separator />
+				<MenuItem Header="_Validate" Click="miValidate_OnClick" />
+				<Separator />
 				<MenuItem Header="E_xit" Click="miExit_OnClick" />
 			</MenuItem>
 			<MenuItem Header="_Schema">
 				<MenuItem Header="_Open" Click="miOpenSchema_OnClick"  />
 			</MenuItem>
 		</Menu>
+
+		<ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
+			<ToolBar.Resources>
+				<Style TargetType="Button" x:Key="{x:Static ToolBar.ButtonStyleKey}">
+					<Setter Property="Width" Value="64" />
+					<Setter Property="Height" Value="64" />
+				</Style>
+			</ToolBar.Resources>
+
+			<Button Click="miOpen_OnClick" ToolTip="Open File">
+				<Image Source="/Resources/Open.png" />
+			</Button>
+			<Button Click="miSave_OnClick" ToolTip="Save File">
+				<Image Source="/Resources/Save.png" />
+			</Button>
+			<Separator />
+			<Button Click="miValidate_OnClick" ToolTip="Validate">
+				<Image Source="/Resources/Validate.png" />
+			</Button>
+			<Separator />
+			<Button Click="miOpenSchema_OnClick" ToolTip="Open Schema">
+				<Image Source="/Resources/Schema.png" />
+			</Button>
+		</ToolBar>
 
 		<TreeView
 			Name="TV" DockPanel.Dock="Left" Width="175"

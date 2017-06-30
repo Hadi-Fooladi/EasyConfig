@@ -4,6 +4,7 @@ using System.Xml;
 using System.Windows;
 using Microsoft.Win32;
 using System.Reflection;
+using System.Text;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Controls;
@@ -19,6 +20,8 @@ namespace Editor
 		{
 			InitializeComponent();
 			AppVer = Assembly.GetExecutingAssembly().GetName().Version;
+
+			Title += $" (v{AppVer.ToString(3)})";
 
 			int n = Global.args.Length;
 			if (n >= 1)
@@ -105,7 +108,7 @@ namespace Editor
 			void CreateTreeNodeByField(Field F, TreeNode Container, XmlNode XN)
 			{
 				var TN = new TreeNode(F, Container, XN);
-				CreateAllFields(Global.DataTypeMap[F.Type], TN, XN);
+				CreateAllFields(F.DataType, TN, XN);
 			}
 
 			void CreateAllFields(DataType DT, TreeNode Container, XmlNode XN)
@@ -149,6 +152,9 @@ namespace Editor
 			LB.Items.Clear();
 			foreach (var A in TN.Attributes)
 				LB.Items.Add(A);
+
+			LB.SelectedIndex = 0;
+
 			lblPath.SetBinding(TextBlock.TextProperty, new Binding("Path") { Source = TN });
 		}
 
@@ -342,6 +348,36 @@ namespace Editor
 
 			var RB = (RadioButton)sender;
 			A.Value = RB.Tag?.ToString();
+		}
+
+		private void miValidate_OnClick(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				if (Schema == null) throw new Exception("No Schema");
+
+				var sbWarnings = new StringBuilder();
+				Root.Validate(sbWarnings);
+
+				var Warnings = sbWarnings.ToString();
+				if (!string.IsNullOrEmpty(Warnings))
+					Msg.Warning(Warnings);
+			}
+			catch (TreeNode.AttributeValidationException E)
+			{
+				E.Source.RevealAndSelect();
+				LB.SelectedItem = E.AttrVal;
+
+				ShowError(E);
+			}
+			catch (TreeNode.ValidationException E)
+			{
+				E.Source.RevealAndSelect();
+				ShowError(E);
+			}
+			catch (Exception E) { ShowError(E); }
+
+			void ShowError(Exception E) => Msg.Error(E.Message, "Validation failed");
 		}
 		#endregion
 	}

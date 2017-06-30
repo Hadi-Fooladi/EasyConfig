@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml;
+using System.Text;
 using System.Windows.Controls;
 using System.Collections.Generic;
 
@@ -23,10 +24,10 @@ namespace Editor
 
 		public TreeNode(Field F, TreeNode Container)
 		{
+			DT = F.DataType;
 			Name = Tag = F.Tag;
 			Multiple = F.Multiple;
 			this.Container = Container;
-			DT = Global.DataTypeMap[F.Type];
 
 			Init(true);
 		}
@@ -67,6 +68,82 @@ namespace Editor
 			Container.TreeViewItem.Items.Remove(TreeViewItem);
 		}
 
+		public void Validate(StringBuilder sbWarnings)
+		{
+			// Checking Attributes Value
+			foreach (var A in Attributes)
+				if (!A.Validate())
+					throw NewAttributeValidationException(A, $"Attribute '{A.Name}' value is incorrect.");
+
+			foreach (var TN in Nodes)
+				TN.Validate(sbWarnings);
+
+			// Checking Nodes Count
+			var Dic = new Dictionary<string, int>(); // Map Tag => Count
+			foreach (var TN in Nodes)
+			{
+				if (Dic.ContainsKey(TN.Tag))
+					Dic[TN.Tag]++;
+				else
+					Dic[TN.Tag] = 1;
+			}
+
+			if (DT is Node N)
+				foreach (var X in N.Nodes)
+				{
+					ValidateNodeCount(X);
+					Dic.Remove(X.Tag);
+				}
+
+			foreach (var F in DT.AllFields)
+			{
+				ValidateFieldCount(F);
+				Dic.Remove(F.Tag);
+			}
+
+			foreach (var Key in Dic.Keys)
+				sbWarnings.AppendLine($"Unknown '{Key}' member in '{Path}'");
+
+			#region Local Functions
+			void ValidateNodeCount(Node Node) => ValidateCount(Node.Multiple, Node.Tag);
+			void ValidateFieldCount(Field Field) => ValidateCount(Field.Multiple, Field.Tag);
+			void ValidateCount(bool Multiple, string Tag)
+			{
+				if (Multiple) return;
+
+				if (!Dic.ContainsKey(Tag))
+				{
+					sbWarnings.AppendLine($"'{Tag}' in '{Path}' is missing");
+					return;
+				}
+
+				if (Dic[Tag] != 1)
+					throw NewValidationException($"Only one instance of '{Tag}' is acceptable");
+			}
+			#endregion
+		}
+
+		/// <summary>
+		/// Used to expand all parents tree nodes to make this node visible
+		/// </summary>
+		public void Reveal()
+		{
+			var T = this;
+			for (;;)
+			{
+				T = T.Container;
+				if (T == null) return;
+				T.TreeViewItem.IsExpanded = true;
+			}
+		}
+
+		public void RevealAndSelect()
+		{
+			Reveal();
+			TreeViewItem.IsSelected = true;
+		}
+
+		#region Private Methods
 		private void Init(bool isField)
 		{
 			AddFieldsMenu(DT);
@@ -120,10 +197,7 @@ namespace Editor
 
 		private void AddFieldsMenu(DataType DataType)
 		{
-			if (DataType.Inherit != null)
-				AddFieldsMenu(Global.DataTypeMap[DataType.Inherit]);
-
-			foreach (var F in DataType.Fields)
+			foreach (var F in DataType.AllFields)
 				AddMenu("Add " + F.Tag, () => new TreeNode(F, this));
 		}
 
@@ -134,6 +208,23 @@ namespace Editor
 				A.Value = Node.Attr(A.Name, null);
 				A.OverrideDefault = A.HasDefault && A.Value != null;
 			}
+		}
+
+		private ValidationException NewValidationException(string Message) => new ValidationException(this, Message);
+		private AttributeValidationException NewAttributeValidationException(AttributeValue A, string Message) => new AttributeValidationException(this, A, Message);
+		#endregion
+
+		public class ValidationException : Exception
+		{
+			public new readonly TreeNode Source;
+			public ValidationException(TreeNode Source, string Message) : base(Message) { this.Source = Source; }
+		}
+
+		public class AttributeValidationException : ValidationException
+		{
+			public readonly AttributeValue AttrVal;
+			public AttributeValidationException(TreeNode Source, AttributeValue AttrVal, string Message) : base(Source, Message) { this.AttrVal = AttrVal; }
+
 		}
 	}
 }

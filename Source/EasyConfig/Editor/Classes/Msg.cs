@@ -11,4 +11,6 @@ internal static class Msg
 	public static void Info(string Text, string Title = "Information") => Show(Text, Title, OK, MessageBoxImage.Information);
 
 	public static bool Confirm(string Text, string Title = "Confirm") => Show(Text, Title, YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+
+	public static void Warning(string Text, string Title = "Warning") => Show(Text, Title, OK, MessageBoxImage.Warning);
 }
