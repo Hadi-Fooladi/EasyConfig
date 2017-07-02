@@ -10,7 +10,7 @@
 		<Field Name="MultiLineDesc" TagName="Desc" Type="MultiLineDesc" />
 	</DataType>
 
-	<DataType Name="SingleLineDesc">
+	<DataType Name="SingleLineDesc" Partial="Yes">
 		<Attribute Name="Value" Type="string" />
 	</DataType>
 	

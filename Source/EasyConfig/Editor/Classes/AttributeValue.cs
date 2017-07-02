@@ -1,17 +1,18 @@
 ﻿using System;
-using Attr = EasyConfig.Attribute;
 
 namespace Editor
 {
 	internal class AttributeValue
 	{
-		public AttributeValue(Attr Attr)
+		public AttributeValue(EasyConfig.Attribute Attr)
 		{
-			//this.Attr = Attr;
 			Name = Attr.Name;
 			Type = Attr.Type;
 			HasDefault = Attr.Default != null;
 			Default = RemoveQuotation(Attr.Default);
+
+			if (Attr.MultiLineDesc == null) Desc = Attr.Desc;
+			else Desc = string.Join(Environment.NewLine, Attr.MultiLineDesc.Lines);
 		}
 
 		public AttributeValue(string Type, string Name)
@@ -20,8 +21,6 @@ namespace Editor
 			this.Name = Name;
 		}
 
-		//private readonly Attr Attr;
-
 		public string Value { get; set; }
 		public bool OverrideDefault { get; set; }
 
@@ -29,6 +28,8 @@ namespace Editor
 		public string Type { get; }
 		public string Default { get; }
 		public bool HasDefault { get; }
+
+		public readonly string Desc;
 
 		private static string RemoveQuotation(string S)
 		{

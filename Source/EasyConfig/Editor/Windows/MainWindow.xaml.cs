@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using System.Text;
 using System.Windows;
 using Microsoft.Win32;
 using System.Reflection;
-using System.Text;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Controls;
@@ -301,14 +301,15 @@ namespace Editor
 			var A = LB.SelectedValue as AttributeValue;
 			if (A == null)
 			{
-				AttributeGrid.Visibility = Visibility.Hidden;
+				dpAttribute.Visibility = Visibility.Hidden;
 				return;
 			}
 
-			AttributeGrid.Visibility = Visibility.Visible;
+			dpAttribute.Visibility = Visibility.Visible;
 
 			lblType.Text = A.Type;
 			lblDefault.Text = A.Default;
+			lblDesc.Text = A.Desc ?? "N/A";
 
 			cbOverrideDefault.IsEnabled = A.HasDefault;
 			cbOverrideDefault.SetBinding(CheckBox.IsCheckedProperty, NewBinding("OverrideDefault"));
