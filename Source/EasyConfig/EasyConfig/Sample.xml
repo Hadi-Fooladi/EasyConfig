@@ -4,6 +4,8 @@
 	xsi:schemaLocation="EasyConfig ../Schema/Schema.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+	<Enum Name="eBlood" Members="A, B, AB, O" />
+	
 	<DataType Name="Complex">
 		<Attribute Name="Real" Type="float" />
 		<Attribute Name="Imaginary" Type="float" />
@@ -59,6 +61,7 @@
 			<Attribute Name="Age" Type="int" />
 			<Attribute Name="Height" Type="float" />
 			<Attribute Name="Weight" Type="float" />
+			<Attribute Name="Blood" Type="eBlood" />
 
 			<Field Name="UseNested" Type="Nested2" ReadOnly="No" />
 

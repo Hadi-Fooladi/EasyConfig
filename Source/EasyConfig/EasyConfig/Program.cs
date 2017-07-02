@@ -127,6 +127,18 @@ namespace EasyConfig
 					{
 						Root.WriteImplementation();
 						foreach (var T in Schema.Types) T.WriteImplementation();
+
+						if (Schema.Enums.Count > 0)
+						{
+							foreach (var E in Schema.Enums) E.Declare();
+
+							SW.WriteLine("internal static class EasyConfigExt");
+							SW.Block(() =>
+							{
+								foreach (var E in Schema.Enums)
+									E.WriteExtMethods();
+							});
+						}
 					}
 				}
 

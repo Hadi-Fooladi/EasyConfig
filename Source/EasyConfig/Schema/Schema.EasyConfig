@@ -53,9 +53,15 @@
 		<Attribute Name="Version" Type="Version" />
 	</DataType>
 
+	<DataType Name="Enum" Inherit="Base" Partial="Yes">
+		<Attribute Name="Members" Type="string" Desc="Comma Separated Members" />
+		<Attribute Name="Access" Type="string" Default="Defaults.Access" Desc="Access modifier (Default is internal)" />
+	</DataType>
+
 	<Root Name="Schema" TagName="EasyConfig">
 		<Attribute Name="Version" Type="Version" />
 		<Field Name="Root" Type="CRoot" />
 		<Field Name="Types" Type="DataType" TagName="DataType" Multiple="Yes" />
+		<Field Name="Enums" Type="Enum" TagName="Enum" Multiple="Yes" />
 	</Root>
 </EasyConfig>

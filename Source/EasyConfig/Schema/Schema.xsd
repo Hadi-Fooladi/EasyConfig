@@ -8,8 +8,10 @@
 	<element name="EasyConfig">
 		<complexType>
 			<sequence>
+				<element name="Enum" type="ec:Enum" minOccurs="0" maxOccurs="unbounded" />
 				<element name="DataType" type="ec:DataType" minOccurs="0" maxOccurs="unbounded" />
 				<element name="Root" type="ec:Root" />
+				<element name="Enum" type="ec:Enum" minOccurs="0" maxOccurs="unbounded" />
 				<element name="DataType" type="ec:DataType" minOccurs="0" maxOccurs="unbounded" />
 			</sequence>
 			<attribute name="Version" type="string" use="required" />
@@ -113,6 +115,14 @@
 		<complexContent>
 			<extension base="ec:Node">
 				<attribute name="Version" type="string" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Enum">
+		<complexContent>
+			<extension base="ec:Base">
+				<attribute name="Members" type="string" use="required" />
 			</extension>
 		</complexContent>
 	</complexType>
