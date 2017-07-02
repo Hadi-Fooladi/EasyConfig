@@ -28,6 +28,7 @@
 			</MenuItem>
 		</Menu>
 
+		<!-- ToolBar -->
 		<ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
 			<ToolBar.Resources>
 				<Style TargetType="Button" x:Key="{x:Static ToolBar.ButtonStyleKey}">
@@ -68,7 +69,8 @@
 
 		<ListBox Name="LB" Width="150" SelectionMode="Single" SelectionChanged="LB_OnSelectionChanged" />
 
-		<DockPanel Name="dpAttribute" Visibility="Hidden">
+		<!-- Attributes Section -->
+		<DockPanel Name="dpAttribute" Visibility="Visible">
 			<Grid DockPanel.Dock="Top">
 				<Grid.Resources>
 					<Style x:Key="TitleKey" TargetType="TextBlock">
@@ -132,6 +134,8 @@
 					<RadioButton Name="rbNo" Grid.Column="1" Tag="No">No</RadioButton>
 					<RadioButton Name="rbNotSet" Grid.Column="2">Not Set</RadioButton>
 				</Grid>
+				
+				<ComboBox Name="cbValue" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="5,0" />
 			</Grid>
 
 			<TextBlock Name="lblDesc" DockPanel.Dock="Bottom" Background="Cornsilk" Padding="2,0" TextWrapping="Wrap" />

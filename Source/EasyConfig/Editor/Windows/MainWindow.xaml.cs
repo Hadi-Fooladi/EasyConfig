@@ -12,6 +12,8 @@ using System.Windows.Controls;
 using XmlExt;
 using EasyConfig;
 
+using Enum = EasyConfig.Enum;
+
 namespace Editor
 {
 	internal partial class MainWindow
@@ -314,8 +316,10 @@ namespace Editor
 			cbOverrideDefault.IsEnabled = A.HasDefault;
 			cbOverrideDefault.SetBinding(CheckBox.IsCheckedProperty, NewBinding("OverrideDefault"));
 
-			if (A.Type.Equals("yn", StringComparison.OrdinalIgnoreCase))
+			// Showing YesNoGrid if Type is yn
+			if (A.Type == "yn")
 			{
+				cbValue.Visibility =
 				tbValue.Visibility = Visibility.Hidden;
 				YesNoGrid.Visibility = Visibility.Visible;
 
@@ -334,13 +338,42 @@ namespace Editor
 					rbYes.IsChecked = Yes;
 				}
 				SettingRadioButtonsManually = false;
+				return;
 			}
-			else
+
+			#region Checking Type is Enum
+			Enum Enum = null;
+			foreach (var E in Schema.Enums)
+				if (A.Type == E.Name)
+				{
+					Enum = E;
+					break;
+				}
+
+			// Showing ComboBox instead of TextBox if Type is Enum
+			if (Enum != null)
 			{
-				tbValue.Visibility = Visibility.Visible;
+				cbValue.Visibility = Visibility.Visible;
+				tbValue.Visibility =
 				YesNoGrid.Visibility = Visibility.Hidden;
-				tbValue.SetBinding(TextBox.TextProperty, NewBinding("Value"));
+
+				BindingOperations.ClearBinding(cbValue, ComboBox.TextProperty);
+
+				cbValue.Items.Clear();
+				//cbValue.Items.Add("");
+				foreach (var Member in Enum.MembersArray)
+					cbValue.Items.Add(Member);
+
+				cbValue.SetBinding(ComboBox.TextProperty, NewBinding("Value"));
+				return;
 			}
+			#endregion
+
+			// Showing TextBox
+			tbValue.Visibility = Visibility.Visible;
+			cbValue.Visibility =
+			YesNoGrid.Visibility = Visibility.Hidden;
+			tbValue.SetBinding(TextBox.TextProperty, NewBinding("Value"));
 
 			Binding NewBinding(string PropertyName) => new Binding(PropertyName)
 			{

@@ -5,6 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 	<Enum Name="eBlood" Members="A, B, AB, O" />
+	<Enum Name="eGender" Members="Male, Female" />
 	
 	<DataType Name="Complex">
 		<Attribute Name="Real" Type="float" />
@@ -62,6 +63,7 @@
 			<Attribute Name="Height" Type="float" />
 			<Attribute Name="Weight" Type="float" />
 			<Attribute Name="Blood" Type="eBlood" />
+			<Attribute Name="Gender" Type="eGender" />
 
 			<Field Name="UseNested" Type="Nested2" ReadOnly="No" />
 

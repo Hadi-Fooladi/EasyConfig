@@ -60,6 +60,7 @@
     <Compile Include="Classes\AttributeValue.cs" />
     <Compile Include="Classes\EasyConfig\DataType.cs" />
     <Compile Include="Classes\DataTypeMap.cs" />
+    <Compile Include="Classes\EasyConfig\Enum.cs" />
     <Compile Include="Classes\EasyConfig\Field.cs" />
     <Compile Include="Classes\EasyConfig\Node.cs" />
     <Compile Include="Classes\EasyConfig\SingleLineDesc.cs" />

@@ -66,7 +66,18 @@ namespace Editor
 				case "yes": return true;
 				}
 				return false;
+
 			default:
+				foreach (var E in Global.Schema.Enums)
+					if (E.Name == Type)
+					{
+						foreach (var Member in E.MembersArray)
+							if (Value == Member)
+								return true;
+
+						return false;
+					}
+
 				throw new Exception("Unknown data type");
 			}
 		}
