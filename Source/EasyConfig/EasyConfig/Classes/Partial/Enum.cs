@@ -21,17 +21,16 @@
 		public void WriteExtMethods()
 		{
 			var SW = Global.SW;
+			var Parse = string.Format("({0})System.Enum.Parse(typeof({0}), Node.Attr(Name));", Name);
+
 			SW.WriteLine($"public static void Attr(this XmlNode Node, string Name, out {Name} Value)");
-			SW.Block(() =>
-			{
-				SW.WriteLine("Value = ({0})Enum.Parse(typeof({0}), Node.Attr(Name));", Name);
-			});
+			SW.Block(() => SW.WriteLine($"Value = {Parse}"));
 
 			SW.WriteLine("public static void Attr(this XmlNode Node, string Name, out {0} Value, {0} Default)", Name);
 			SW.Block(() =>
 			{
 				SW.WriteLine("var A = Node.Attributes[Name];");
-				SW.WriteLine("Value = A == null ? Default : ({0})Enum.Parse(typeof({0}), Node.Attr(Name));", Name);
+				SW.WriteLine($"Value = A == null ? Default : {Parse}");
 			});
 		}
 	}
