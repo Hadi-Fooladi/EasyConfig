@@ -71,6 +71,8 @@ namespace EasyConfig
 
 		public void WriteSaveMethod()
 		{
+			if (Global.NoSaveFlag.Exist) return;
+
 			var SW = Global.SW;
 
 			SW.WriteLine($"public void Save({SaveMethodParameters})");

@@ -40,6 +40,7 @@ namespace EasyConfig
 				P.Add(pSamplePath);
 				P.Add(pPublic);
 				P.Add(pWritable);
+				P.Add(Global.NoSaveFlag);
 				#endregion
 
 				#region Arguments Analysis

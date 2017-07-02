@@ -7,5 +7,7 @@ namespace EasyConfig
 		public static readonly Dictionary<string, DataType> Name2DataType = new Dictionary<string, DataType>();
 
 		public static IndentedStreamWriter SW;
+
+		public static FlagParameter NoSaveFlag = new FlagParameter("NoSave", "Do not implement 'Save' method");
 	}
 }
