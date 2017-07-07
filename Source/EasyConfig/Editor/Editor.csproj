@@ -65,6 +65,7 @@
     <Compile Include="Classes\EasyConfig\Node.cs" />
     <Compile Include="Classes\EasyConfig\SingleLineDesc.cs" />
     <Compile Include="Classes\Ext\Misc.cs" />
+    <Compile Include="Classes\Functions.cs" />
     <Compile Include="Classes\Global.cs" />
     <Compile Include="Classes\Msg.cs" />
     <Compile Include="Classes\TreeNode.cs" />
@@ -104,6 +105,8 @@
       <Link>Sample.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Save-Gray.png" />
+    <Resource Include="Resources\SaveAs.png" />
     <Resource Include="Resources\Validate.png" />
     <Resource Include="Resources\Schema.png" />
     <Resource Include="Resources\Save.png" />

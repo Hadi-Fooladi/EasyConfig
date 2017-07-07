@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 using XmlExt;
 using EasyConfig;
@@ -34,12 +35,16 @@ namespace Editor
 						GenerateSchemaTree();
 		}
 
+		#region Fields
 		private TreeNode m_Root;
 
 		private Schema Schema;
 		private readonly Version AppVer;
 
 		private bool SettingRadioButtonsManually;
+
+		private string m_SchemaFilename, m_ConfigFilename;
+		#endregion
 
 		#region Properties
 		private TreeNode Root
@@ -56,7 +61,39 @@ namespace Editor
 			}
 		}
 
-		private bool isCtrlDown => Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+		private static bool isCtrlDown => Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+
+		private bool SaveOn
+		{
+			set
+			{
+				bSave.IsEnabled =
+				miSave.IsEnabled = value;
+				string Gray = value ? "" : "-Gray";
+				imgSave.Source = new BitmapImage(Fn.GetLocalUri($"Resources/Save{Gray}.png"));
+			}
+		}
+
+		private string SchemaFilename
+		{
+			get => m_SchemaFilename;
+			set
+			{
+				m_SchemaFilename = value;
+				UpdateFilenames();
+			}
+		}
+
+		private string ConfigFilename
+		{
+			get => m_ConfigFilename;
+			set
+			{
+				m_ConfigFilename = value;
+				UpdateFilenames();
+				SaveOn = !string.IsNullOrEmpty(value);
+			}
+		}
 		#endregion
 
 		#region Methods
@@ -75,6 +112,8 @@ namespace Editor
 				if (Ver.Major != AppVer.Major && Ver.Minor > AppVer.Minor)
 					throw new Exception("Version Mismatch");
 
+				ConfigFilename = null;
+				SchemaFilename = Filename;
 				return true;
 			}
 			catch (Exception E) { Msg.Error(E.Message, "Loading Schema Failed"); }
@@ -95,6 +134,7 @@ namespace Editor
 				Root.Attributes.Insert(0, new AttributeValue("Version", "Version") { Value = RootNode.Attr("Version", "") });
 
 				this.Root = Root;
+				ConfigFilename = FileName;
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
 
@@ -146,6 +186,43 @@ namespace Editor
 				return TN;
 			}
 		}
+
+		private void UpdateFilenames()
+		{
+			lblFilenames.Text = $"Config: {GetFullPath(ConfigFilename)}{Environment.NewLine}Schema: {GetFullPath(SchemaFilename)}";
+
+			string GetFullPath(string P) => string.IsNullOrEmpty(P) ? "N/A" : Path.GetFullPath(P);
+		}
+
+		private void Save(string Filename)
+		{
+			try
+			{
+				var Doc = new XmlDocument();
+				var RootNode = Doc.AppendNode(Root.Tag);
+				RootNode.AddAttr("Version", Schema.Version);
+
+				Root.FillXmlNode(RootNode);
+
+				var XWS = new XmlWriterSettings
+				{
+					Indent = true,
+					IndentChars = "\t",
+					OmitXmlDeclaration = true
+				};
+
+				using (var Stream = File.Open(Filename, FileMode.Create, FileAccess.Write))
+				{
+					var XW = XmlWriter.Create(Stream, XWS);
+					Doc.Save(XW);
+					XW.Close();
+				}
+
+				ConfigFilename = Filename;
+				Msg.Info("Saving completed successfully");
+			}
+			catch (Exception E) { Msg.Error(E.Message); }
+		}
 		#endregion
 
 		#region Event Handlers
@@ -167,41 +244,19 @@ namespace Editor
 			lblPath.SetBinding(TextBlock.TextProperty, new Binding("Path") { Source = TN });
 		}
 
-		private void miSave_OnClick(object sender, RoutedEventArgs e)
+		private void miSave_OnClick(object sender, RoutedEventArgs e) => Save(ConfigFilename);
+
+		private void miSaveAs_OnClick(object sender, RoutedEventArgs e)
 		{
-			try
+			var SFD = new SaveFileDialog
 			{
-				var Doc = new XmlDocument();
-				var RootNode = Doc.AppendNode(Root.Tag);
-				RootNode.AddAttr("Version", Schema.Version);
+				FileName = "Config",
+				DefaultExt = "*.xml",
+				Filter = "XML Files|*.xml|All Files|*.*"
+			};
 
-				Root.FillXmlNode(RootNode);
-
-				var SFD = new SaveFileDialog
-				{
-					FileName = "Config",
-					DefaultExt = "*.xml",
-					Filter = "XML Files|*.xml|All Files|*.*"
-				};
-
-				if (SFD.ShowDialog().isTrue())
-				{
-					var XWS = new XmlWriterSettings
-					{
-						Indent = true,
-						IndentChars = "\t",
-						OmitXmlDeclaration = true
-					};
-
-					using (var Stream = File.Open(SFD.FileName, FileMode.Create, FileAccess.Write))
-					{
-						var XW = XmlWriter.Create(Stream, XWS);
-						Doc.Save(XW);
-						XW.Close();
-					}
-				}
-			}
-			catch (Exception E) { Msg.Error(E.Message); }
+			if (SFD.ShowDialog().isTrue())
+				Save(SFD.FileName);
 		}
 
 		private void miOpen_OnClick(object sender, RoutedEventArgs e)

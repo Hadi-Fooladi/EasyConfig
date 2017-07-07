@@ -17,7 +17,8 @@
 			<MenuItem Header="_File">
 				<MenuItem Header="_Open" Click="miOpen_OnClick"  />
 				<Separator />
-				<MenuItem Header="_Save" Click="miSave_OnClick"  />
+				<MenuItem Name="miSave" IsEnabled="False" Header="_Save" Click="miSave_OnClick" />
+				<MenuItem Header="Save _As..." Click="miSaveAs_OnClick" />
 				<Separator />
 				<MenuItem Header="_Validate" Click="miValidate_OnClick" />
 				<Separator />
@@ -40,8 +41,11 @@
 			<Button Click="miOpen_OnClick" ToolTip="Open File">
 				<Image Source="/Resources/Open.png" />
 			</Button>
-			<Button Click="miSave_OnClick" ToolTip="Save File">
-				<Image Source="/Resources/Save.png" />
+			<Button Name="bSave" IsEnabled="False" Click="miSave_OnClick" ToolTip="Save File">
+				<Image Name="imgSave" Source="/Resources/Save-Gray.png" />
+			</Button>
+			<Button Click="miSaveAs_OnClick" ToolTip="Save As File">
+				<Image Source="/Resources/SaveAs.png" />
 			</Button>
 			<Separator />
 			<Button Click="miValidate_OnClick" ToolTip="Validate">
@@ -52,6 +56,8 @@
 				<Image Source="/Resources/Schema.png" />
 			</Button>
 		</ToolBar>
+		
+		<TextBlock Name="lblFilenames" DockPanel.Dock="Bottom" Background="WhiteSmoke" FontSize="14" />
 
 		<TreeView
 			Name="TV" DockPanel.Dock="Left" Width="175"
@@ -104,12 +110,12 @@
 				<TextBlock Name="lblDefault" Grid.Row="1" Grid.Column="1" Style="{StaticResource ValueKey}" />
 
 				<CheckBox
-				Name="cbOverrideDefault"
-				Grid.Row="2" Grid.Column="1"
-				Margin="5,0"
-				VerticalAlignment="Center"
-				VerticalContentAlignment="Center"
-				Content="Override Default" />
+					Name="cbOverrideDefault"
+					Grid.Row="2" Grid.Column="1"
+					Margin="5,0"
+					VerticalAlignment="Center"
+					VerticalContentAlignment="Center"
+					Content="Override Default" />
 
 				<TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource TitleKey}">Value:</TextBlock>
 				<TextBox Name="tbValue" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="5,0" />
