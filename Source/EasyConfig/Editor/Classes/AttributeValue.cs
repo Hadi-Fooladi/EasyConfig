@@ -4,6 +4,7 @@ namespace Editor
 {
 	internal class AttributeValue
 	{
+		#region Constructors
 		public AttributeValue(EasyConfig.Attribute Attr)
 		{
 			Name = Attr.Name;
@@ -20,7 +21,11 @@ namespace Editor
 			this.Type = Type;
 			this.Name = Name;
 		}
+		#endregion
 
+		public readonly string Desc;
+
+		#region Properties
 		public string Value { get; set; }
 		public bool OverrideDefault { get; set; }
 
@@ -29,21 +34,9 @@ namespace Editor
 		public string Default { get; }
 		public bool HasDefault { get; }
 
-		public readonly string Desc;
-
-		private static string RemoveQuotation(string S)
-		{
-			if (S == null)
-				return null;
-
-			int n = S.Length;
-			if (n < 2) return S;
-
-			if (S[0] == '"' && S[n - 1] == '"')
-				return S.Substring(1, n - 2);
-
-			return S;
-		}
+		public string CurValue => HasDefault ? (OverrideDefault ? Value : Default) : Value;
+		public string PrevValue { get; private set; }
+		#endregion
 
 		public override string ToString() => Name;
 
@@ -81,5 +74,23 @@ namespace Editor
 				throw new Exception("Unknown data type");
 			}
 		}
+
+		public void ResetPrevValue() => PrevValue = CurValue;
+
+		#region Private Methods
+		private static string RemoveQuotation(string S)
+		{
+			if (S == null)
+				return null;
+
+			int n = S.Length;
+			if (n < 2) return S;
+
+			if (S[0] == '"' && S[n - 1] == '"')
+				return S.Substring(1, n - 2);
+
+			return S;
+		}
+		#endregion
 	}
 }

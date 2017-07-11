@@ -53,6 +53,8 @@ namespace Editor
 			set
 			{
 				m_Root = value;
+				Root.ResetPrevValues();
+
 				var TVI = value.TreeViewItem;
 
 				TV.Items.Clear();
@@ -97,7 +99,6 @@ namespace Editor
 		#endregion
 
 		#region Methods
-		private static XmlNode Select(XmlNode Node, string LocalName) => Node.SelectSingleNode($"*[local-name()='{LocalName}']");
 		private static XmlNodeList SelectAll(XmlNode Node, string LocalName) => Node.SelectNodes($"*[local-name()='{LocalName}']");
 
 		private bool LoadSchema(string Filename)
@@ -130,10 +131,11 @@ namespace Editor
 
 				var RootNode = Doc.DocumentElement;
 
-				var Root = CreateTreeNode(Schema.Root, null, RootNode);
-				Root.Attributes.Insert(0, new AttributeValue("Version", "Version") { Value = RootNode.Attr("Version", "") });
+				// Tree Node Root
+				var TNR = CreateTreeNode(Schema.Root, null, RootNode);
+				TNR.Attributes.Insert(0, new AttributeValue("Version", "Version") { Value = RootNode.Attr("Version", "") });
 
-				this.Root = Root;
+				Root = TNR;
 				ConfigFilename = FileName;
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
@@ -169,9 +171,10 @@ namespace Editor
 
 		private void GenerateSchemaTree()
 		{
-			var Root = CreateTreeNode(Schema.Root, null);
-			Root.Attributes.Insert(0, new AttributeValue("Version", "Version") { Value = Schema.Root.Version.ToString() });
-			this.Root = Root;
+			// Tree Node Root
+			var TNR = CreateTreeNode(Schema.Root, null);
+			TNR.Attributes.Insert(0, new AttributeValue("Version", "Version") { Value = Schema.Root.Version.ToString() });
+			Root = TNR;
 
 			TreeNode CreateTreeNode(Node N, TreeNode Container)
 			{
@@ -218,6 +221,8 @@ namespace Editor
 					XW.Close();
 				}
 
+				Root.ResetPrevValues();
+
 				ConfigFilename = Filename;
 				Msg.Info("Saving completed successfully");
 			}
@@ -244,7 +249,23 @@ namespace Editor
 			lblPath.SetBinding(TextBlock.TextProperty, new Binding("Path") { Source = TN });
 		}
 
-		private void miSave_OnClick(object sender, RoutedEventArgs e) => Save(ConfigFilename);
+		private void miSave_OnClick(object sender, RoutedEventArgs e)
+		{
+			bool DoSave;
+			if (Properties.Settings.Default.ChangeLog_ShowNextTime)
+			{
+				var CLW = new ChangeLogWindow(Root)
+				{
+					Message = "Changes you made:",
+					bOK = { Content = "Save" }
+				};
+
+				DoSave = CLW.ShowDialog().isTrue();
+			}
+			else DoSave = true;
+
+			if (DoSave) Save(ConfigFilename);
+		}
 
 		private void miSaveAs_OnClick(object sender, RoutedEventArgs e)
 		{
@@ -480,6 +501,17 @@ namespace Editor
 			catch (Exception E) { ShowError(E); }
 
 			void ShowError(Exception E) => Msg.Error(E.Message, "Validation failed");
+		}
+
+		private void miChangeLog_OnClick(object sender, RoutedEventArgs e)
+		{
+			new ChangeLogWindow(Root)
+			{
+				Message = "Changes you made:",
+				bCancel = { Content = "Close" },
+				bOK = { Visibility = Visibility.Collapsed },
+				cbNextTime = {Visibility = Visibility.Hidden }
+			}.ShowDialog();
 		}
 		#endregion
 	}

@@ -48,12 +48,15 @@
 				<Image Source="/Resources/SaveAs.png" />
 			</Button>
 			<Separator />
+			<Button Click="miOpenSchema_OnClick" ToolTip="Open Schema">
+				<Image Source="/Resources/Schema.png" />
+			</Button>
+			<Separator />
 			<Button Click="miValidate_OnClick" ToolTip="Validate">
 				<Image Source="/Resources/Validate.png" />
 			</Button>
-			<Separator />
-			<Button Click="miOpenSchema_OnClick" ToolTip="Open Schema">
-				<Image Source="/Resources/Schema.png" />
+			<Button Click="miChangeLog_OnClick" ToolTip="Show changes you made">
+				<Image Source="/Resources/Change-Log.png" />
 			</Button>
 		</ToolBar>
 		

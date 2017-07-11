@@ -49,6 +49,10 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Windows\ChangeLogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -56,6 +60,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windows\ChangeLogWindow.xaml.cs">
+      <DependentUpon>ChangeLogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\AttributeValue.cs" />
     <Compile Include="Classes\EasyConfig\DataType.cs" />
@@ -105,6 +112,7 @@
       <Link>Sample.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Change-Log.png" />
     <Resource Include="Resources\Save-Gray.png" />
     <Resource Include="Resources\SaveAs.png" />
     <Resource Include="Resources\Validate.png" />

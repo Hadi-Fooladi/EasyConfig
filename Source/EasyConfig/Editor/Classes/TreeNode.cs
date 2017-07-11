@@ -50,6 +50,7 @@ namespace Editor
 		public string Path { get; private set; }
 		public bool Removable { get; private set; }
 
+		#region Public Methods
 		public void FillXmlNode(XmlNode Node)
 		{
 			foreach (var A in Attributes)
@@ -142,6 +143,13 @@ namespace Editor
 			Reveal();
 			TreeViewItem.IsSelected = true;
 		}
+
+		public void ResetPrevValues()
+		{
+			foreach (var N in Nodes) N.ResetPrevValues();
+			foreach (var A in Attributes) A.ResetPrevValue();
+		}
+		#endregion
 
 		#region Private Methods
 		private void Init(bool isField)
