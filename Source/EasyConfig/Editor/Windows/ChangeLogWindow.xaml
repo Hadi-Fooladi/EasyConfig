@@ -24,8 +24,8 @@
 					<Setter Property="Height" Value="36" />
 				</Style>
 			</DockPanel.Resources>
-			<Button Name="bCancel" x:FieldModifier="public" DockPanel.Dock="Right">Cancel</Button>
-			<Button Name="bOK" x:FieldModifier="public" DockPanel.Dock="Right">OK</Button>
+			<Button Name="bCancel" x:FieldModifier="public" DockPanel.Dock="Right" IsCancel="True">Cancel</Button>
+			<Button Name="bOK" x:FieldModifier="public" DockPanel.Dock="Right" IsDefault="True">OK</Button>
 			<CheckBox Name="cbNextTime" x:FieldModifier="public" VerticalContentAlignment="Center" Margin="5,0">Do not show next time</CheckBox>
 		</DockPanel>
 

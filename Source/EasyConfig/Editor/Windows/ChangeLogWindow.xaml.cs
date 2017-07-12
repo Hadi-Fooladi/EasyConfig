@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Collections.Generic;
 
 namespace Editor
@@ -27,7 +26,7 @@ namespace Editor
 			void FindChanges(TreeNode Node)
 			{
 				foreach (var A in Node.Attributes)
-					if (A.PrevValue != A.CurValue)
+					if (A.Changed)
 						L.Add(new Item(A) { Path = Node.Path });
 
 				foreach (var N in Node.Nodes) FindChanges(N);
@@ -50,8 +49,6 @@ namespace Editor
 			get => lbl.Text;
 			set => lbl.Text = value;
 		}
-
-
 
 		private class Item
 		{

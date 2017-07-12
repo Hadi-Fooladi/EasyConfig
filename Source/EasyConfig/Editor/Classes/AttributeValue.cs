@@ -4,6 +4,8 @@ namespace Editor
 {
 	internal class AttributeValue
 	{
+		public delegate void dlg(AttributeValue Sender);
+
 		#region Constructors
 		public AttributeValue(EasyConfig.Attribute Attr)
 		{
@@ -25,8 +27,18 @@ namespace Editor
 
 		public readonly string Desc;
 
+		private string m_Value;
+
 		#region Properties
-		public string Value { get; set; }
+		public string Value
+		{
+			get => m_Value;
+			set
+			{
+				m_Value = value;
+				fireValueChanged();
+			}
+		}
 		public bool OverrideDefault { get; set; }
 
 		public string Name { get; }
@@ -36,8 +48,11 @@ namespace Editor
 
 		public string CurValue => HasDefault ? (OverrideDefault ? Value : Default) : Value;
 		public string PrevValue { get; private set; }
+
+		public bool Changed => CurValue != PrevValue;
 		#endregion
 
+		#region Public Methods
 		public override string ToString() => Name;
 
 		public bool Validate()
@@ -76,6 +91,10 @@ namespace Editor
 		}
 
 		public void ResetPrevValue() => PrevValue = CurValue;
+		#endregion
+
+		public static event dlg OnValueChanged;
+		public void fireValueChanged() => OnValueChanged?.Invoke(this);
 
 		#region Private Methods
 		private static string RemoveQuotation(string S)

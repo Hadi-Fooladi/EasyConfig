@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 
 using XmlExt;
@@ -33,6 +34,8 @@ namespace Editor
 						Open(Global.args[1]);
 					else
 						GenerateSchemaTree();
+
+			AttributeValue.OnValueChanged += AttributeValue_OnValueChanged;
 		}
 
 		#region Fields
@@ -44,6 +47,8 @@ namespace Editor
 		private bool SettingRadioButtonsManually;
 
 		private string m_SchemaFilename, m_ConfigFilename;
+
+		private readonly HashSet<AttributeValue> ChangeSet = new HashSet<AttributeValue>();
 		#endregion
 
 		#region Properties
@@ -92,8 +97,9 @@ namespace Editor
 			set
 			{
 				m_ConfigFilename = value;
+
+				ClearChanges();
 				UpdateFilenames();
-				SaveOn = !string.IsNullOrEmpty(value);
 			}
 		}
 		#endregion
@@ -227,6 +233,12 @@ namespace Editor
 				Msg.Info("Saving completed successfully");
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
+		}
+
+		private void ClearChanges()
+		{
+			SaveOn = false;
+			ChangeSet.Clear();
 		}
 		#endregion
 
@@ -512,6 +524,15 @@ namespace Editor
 				bOK = { Visibility = Visibility.Collapsed },
 				cbNextTime = {Visibility = Visibility.Hidden }
 			}.ShowDialog();
+		}
+
+		private void AttributeValue_OnValueChanged(AttributeValue AV)
+		{
+			if (AV.Changed) ChangeSet.Add(AV);
+			else ChangeSet.Remove(AV);
+
+			if (ConfigFilename != null)
+				SaveOn = ChangeSet.Count > 0;
 		}
 		#endregion
 	}
