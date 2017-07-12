@@ -78,6 +78,7 @@ namespace Editor
 				miSave.IsEnabled = value;
 				string Gray = value ? "" : "-Gray";
 				imgSave.Source = new BitmapImage(Fn.GetLocalUri($"Resources/Save{Gray}.png"));
+				((Image)miSave.Icon).Source = new BitmapImage(Fn.GetLocalUri($"Resources/Save16{Gray}.png"));
 			}
 		}
 
@@ -534,6 +535,8 @@ namespace Editor
 			if (ConfigFilename != null)
 				SaveOn = ChangeSet.Count > 0;
 		}
+
+		private void miSettings_OnClick(object sender, RoutedEventArgs e) => new SettingsWindow().ShowDialog();
 		#endregion
 	}
 }

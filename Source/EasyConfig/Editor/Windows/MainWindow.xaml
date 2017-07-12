@@ -14,18 +14,36 @@
 	<DockPanel>
 		<!-- Main Menu -->
 		<Menu DockPanel.Dock="Top">
-			<MenuItem Header="_File">
-				<MenuItem Header="_Open" Click="miOpen_OnClick"  />
+			<MenuItem Header="_File" HorizontalContentAlignment="Left">
+				<MenuItem Header="_Open" Click="miOpen_OnClick">
+					<MenuItem.Icon><Image Source="/Resources/Open16.png" /></MenuItem.Icon>
+				</MenuItem>
 				<Separator />
-				<MenuItem Name="miSave" IsEnabled="False" Header="_Save" Click="miSave_OnClick" />
-				<MenuItem Header="Save _As..." Click="miSaveAs_OnClick" />
+				<MenuItem Name="miSave" IsEnabled="False" Header="_Save" Click="miSave_OnClick">
+					<MenuItem.Icon><Image Source="/Resources/Save16-Gray.png" /></MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Save _As..." Click="miSaveAs_OnClick">
+					<MenuItem.Icon><Image Source="/Resources/SaveAs16.png" /></MenuItem.Icon>
+				</MenuItem>
 				<Separator />
-				<MenuItem Header="_Validate" Click="miValidate_OnClick" />
+				<MenuItem Header="_Validate" Click="miValidate_OnClick">
+					<MenuItem.Icon><Image Source="/Resources/Validate16.png" /></MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Show _Changes" Click="miChangeLog_OnClick">
+					<MenuItem.Icon><Image Source="/Resources/Change-Log16.png" /></MenuItem.Icon>
+				</MenuItem>
 				<Separator />
 				<MenuItem Header="E_xit" Click="miExit_OnClick" />
 			</MenuItem>
 			<MenuItem Header="_Schema">
-				<MenuItem Header="_Open" Click="miOpenSchema_OnClick"  />
+				<MenuItem Header="_Open" Click="miOpenSchema_OnClick">
+					<MenuItem.Icon><Image Source="/Resources/Schema16.png" /></MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+			<MenuItem Header="_Tools">
+				<MenuItem Header="_Settings" Click="miSettings_OnClick">
+					<MenuItem.Icon><Image Source="/Resources/Settings.png" /></MenuItem.Icon>
+				</MenuItem>
 			</MenuItem>
 		</Menu>
 
@@ -57,6 +75,10 @@
 			</Button>
 			<Button Click="miChangeLog_OnClick" ToolTip="Show changes you made">
 				<Image Source="/Resources/Change-Log.png" />
+			</Button>
+			<Separator />
+			<Button Click="miSettings_OnClick" ToolTip="Settings">
+				<Image Source="/Resources/Settings.png" />
 			</Button>
 		</ToolBar>
 		
