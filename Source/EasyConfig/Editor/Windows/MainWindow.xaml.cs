@@ -75,10 +75,9 @@ namespace Editor
 		{
 			set
 			{
-				bSave.IsEnabled =
+				bSave.isEnable =
 				miSave.IsEnabled = value;
 				string Gray = value ? "" : "-Gray";
-				imgSave.Source = new BitmapImage(Fn.GetLocalUri($"Resources/Save{Gray}.png"));
 				((Image)miSave.Icon).Source = new BitmapImage(Fn.GetLocalUri($"Resources/Save16{Gray}.png"));
 			}
 		}

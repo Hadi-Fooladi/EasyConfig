@@ -1,0 +1,1 @@
+fxc /T ps_2_0 /Fx MakeGray.Hex /Fe MakeGray.err /FoMakeGray.ps MakeGray.hlsl

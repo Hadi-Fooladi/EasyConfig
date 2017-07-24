@@ -49,6 +49,10 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Controls\GrayableButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -64,6 +68,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Classes\DependencyPropertyHelper.cs" />
+    <Compile Include="Classes\GrayShader.cs" />
+    <Compile Include="Controls\GrayableButton.xaml.cs">
+      <DependentUpon>GrayableButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -110,6 +119,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\Shaders\Gray.ps" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -119,6 +129,7 @@
       <Link>Sample.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Delete.png" />
     <Resource Include="Resources\Schema16.png" />
     <Resource Include="Resources\Change-Log16.png" />
     <Resource Include="Resources\Validate16.png" />
@@ -128,13 +139,13 @@
     <Resource Include="Resources\Open16.png" />
     <Resource Include="Resources\Settings.png" />
     <Resource Include="Resources\Change-Log.png" />
-    <Resource Include="Resources\Save-Gray.png" />
     <Resource Include="Resources\SaveAs.png" />
     <Resource Include="Resources\Validate.png" />
     <Resource Include="Resources\Schema.png" />
     <Resource Include="Resources\Save.png" />
     <Resource Include="Resources\Open.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
