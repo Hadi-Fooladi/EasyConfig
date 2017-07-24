@@ -1,8 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Editor
 {
-	internal class AttributeValue
+	internal class AttributeValue : INotifyPropertyChanged
 	{
 		public delegate void dlg(AttributeValue Sender);
 
@@ -36,8 +37,11 @@ namespace Editor
 			get => m_Value;
 			set
 			{
+				if (m_Value == value) return;
+
 				m_Value = value;
 				fireValueChanged();
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
 			}
 		}
 
@@ -46,8 +50,11 @@ namespace Editor
 			get => m_OverrideDefault;
 			set
 			{
+				if (m_OverrideDefault == value) return;
+
 				m_OverrideDefault = value;
 				fireOverrideDefaultChanged();
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OverrideDefault"));
 			}
 		}
 
@@ -103,14 +110,21 @@ namespace Editor
 			}
 		}
 
-		public void ResetPrevValue()
+		public void ResetPrevValues()
 		{
 			PrevValue = CurValue;
 			PrevDefault = CurDefault;
 		}
+
+		public void RevertChanges()
+		{
+			Value = PrevValue;
+			OverrideDefault = HasDefault ? !PrevDefault : false;
+		}
 		#endregion
 
 		#region Events
+		public event PropertyChangedEventHandler PropertyChanged;
 		public static event dlg OnValueChanged, OnOverrideDefaultChanged;
 
 		private void fireValueChanged() => OnValueChanged?.Invoke(this);

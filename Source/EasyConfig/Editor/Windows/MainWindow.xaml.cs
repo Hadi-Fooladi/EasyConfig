@@ -45,8 +45,6 @@ namespace Editor
 		private Schema Schema;
 		private readonly Version AppVer;
 
-		private bool SettingRadioButtonsManually;
-
 		private string m_SchemaFilename, m_ConfigFilename;
 
 		private readonly HashSet<AttributeValue> ChangeSet = new HashSet<AttributeValue>();
@@ -269,7 +267,6 @@ namespace Editor
 			{
 				var CLW = new ChangeLogWindow(Root)
 				{
-					Message = "Changes you made:",
 					bOK = { Content = "Save" }
 				};
 
@@ -408,25 +405,10 @@ namespace Editor
 			// Showing YesNoGrid if Type is yn
 			if (A.Type == "yn")
 			{
+				YNC.Visibility = Visibility.Visible;
 				cbValue.Visibility =
 				tbValue.Visibility = Visibility.Hidden;
-				YesNoGrid.Visibility = Visibility.Visible;
-
-				SettingRadioButtonsManually = true;
-				if (string.IsNullOrEmpty(A.Value))
-				{
-					rbNo.IsChecked =
-					rbYes.IsChecked = false;
-					rbNotSet.IsChecked = true;
-				}
-				else
-				{
-					rbNotSet.IsChecked = false;
-					var Yes = A.Value.Equals("Yes", StringComparison.OrdinalIgnoreCase);
-					rbNo.IsChecked = !Yes;
-					rbYes.IsChecked = Yes;
-				}
-				SettingRadioButtonsManually = false;
+				YNC.BindAttributeValue(A);
 				return;
 			}
 
@@ -442,9 +424,9 @@ namespace Editor
 			// Showing ComboBox instead of TextBox if Type is Enum
 			if (Enum != null)
 			{
+				YNC.Visibility =
+				tbValue.Visibility = Visibility.Hidden;
 				cbValue.Visibility = Visibility.Visible;
-				tbValue.Visibility =
-				YesNoGrid.Visibility = Visibility.Hidden;
 
 				BindingOperations.ClearBinding(cbValue, ComboBox.TextProperty);
 
@@ -459,9 +441,9 @@ namespace Editor
 			#endregion
 
 			// Showing TextBox
+			YNC.Visibility =
+			cbValue.Visibility = Visibility.Hidden;
 			tbValue.Visibility = Visibility.Visible;
-			cbValue.Visibility =
-			YesNoGrid.Visibility = Visibility.Hidden;
 			tbValue.SetBinding(TextBox.TextProperty, NewBinding("Value"));
 
 			Binding NewBinding(string PropertyName) => new Binding(PropertyName)
@@ -470,17 +452,6 @@ namespace Editor
 				Mode = BindingMode.TwoWay,
 				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
 			};
-		}
-
-		private void RadioButton_OnChecked(object sender, RoutedEventArgs e)
-		{
-			if (SettingRadioButtonsManually) return;
-
-			var A = LB.SelectedValue as AttributeValue;
-			if (A == null) return;
-
-			var RB = (RadioButton)sender;
-			A.Value = RB.Tag?.ToString();
 		}
 
 		private void miValidate_OnClick(object sender, RoutedEventArgs e)
@@ -520,7 +491,6 @@ namespace Editor
 		{
 			new ChangeLogWindow(Root)
 			{
-				Message = "Changes you made:",
 				bCancel = { Content = "Close" },
 				bOK = { Visibility = Visibility.Collapsed },
 				cbNextTime = {Visibility = Visibility.Hidden }

@@ -12,8 +12,15 @@
 	Width="640" Height="480"
 	WindowStartupLocation="CenterScreen">
 	<DockPanel>
-		<TextBlock Name="lbl" DockPanel.Dock="Top" FontWeight="DemiBold" Margin="5,10,5,5" FontSize="20" />
-		
+		<ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
+			<local:GrayableButton
+				Click="bDelete_OnClick"
+				Source="/Resources/Delete.png"
+				Style="{StaticResource ToolbarButtonStyle}"
+				ToolTip="Revert changes for selected items"
+				isEnable="{Binding SelectedItems.Count,ElementName=DG}" />
+		</ToolBar>
+
 		<DockPanel DockPanel.Dock="Bottom">
 			<DockPanel.Resources>
 				<Style TargetType="Button">
@@ -29,7 +36,7 @@
 			<CheckBox Name="cbNextTime" x:FieldModifier="public" VerticalContentAlignment="Center" Margin="5,0">Do not show next time</CheckBox>
 		</DockPanel>
 
-		<DataGrid Name="DG" AutoGenerateColumns="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True">
+		<DataGrid Name="DG" AutoGenerateColumns="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" IsReadOnly="True">
 			<DataGrid.Columns>
 				<DataGridTemplateColumn Header="Path" Width="Auto">
 					<DataGridTemplateColumn.CellTemplate>

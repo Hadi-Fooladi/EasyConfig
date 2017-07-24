@@ -147,7 +147,7 @@ namespace Editor
 		public void ResetPrevValues()
 		{
 			foreach (var N in Nodes) N.ResetPrevValues();
-			foreach (var A in Attributes) A.ResetPrevValue();
+			foreach (var A in Attributes) A.ResetPrevValues();
 		}
 		#endregion
 

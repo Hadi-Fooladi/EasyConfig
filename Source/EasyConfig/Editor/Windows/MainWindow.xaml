@@ -142,30 +142,11 @@
 					Content="Override Default" />
 
 				<TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource TitleKey}">Value:</TextBlock>
-				<TextBox Name="tbValue" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="5,0" />
-
-				<Grid Name="YesNoGrid" Grid.Row="3" Grid.Column="1" Visibility="Collapsed">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition />
-						<ColumnDefinition />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
-
-					<Grid.Resources>
-						<Style TargetType="RadioButton">
-							<Setter Property="VerticalAlignment" Value="Center" />
-							<Setter Property="HorizontalAlignment" Value="Center" />
-							<Setter Property="VerticalContentAlignment" Value="Center" />
-							<EventSetter Event="Checked" Handler="RadioButton_OnChecked"></EventSetter>
-						</Style>
-					</Grid.Resources>
-
-					<RadioButton Name="rbYes" Grid.Column="0" Tag="Yes">Yes</RadioButton>
-					<RadioButton Name="rbNo" Grid.Column="1" Tag="No">No</RadioButton>
-					<RadioButton Name="rbNotSet" Grid.Column="2">Not Set</RadioButton>
+				<Grid Grid.Row="3" Grid.Column="1">
+					<TextBox Name="tbValue" VerticalAlignment="Center" Margin="5,0" />
+					<local:YesNoControl x:Name="YNC" Visibility="Collapsed" />
+					<ComboBox Name="cbValue" VerticalAlignment="Center" Margin="5,0" />
 				</Grid>
-				
-				<ComboBox Name="cbValue" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="5,0" />
 			</Grid>
 
 			<TextBlock Name="lblDesc" DockPanel.Dock="Bottom" Background="Cornsilk" Padding="2,0" TextWrapping="Wrap" />

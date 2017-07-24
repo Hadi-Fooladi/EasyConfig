@@ -1,17 +1,18 @@
 ﻿using System.Windows;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Editor
 {
 	internal partial class ChangeLogWindow
 	{
+		private readonly ObservableCollection<Item> AllChanges = new ObservableCollection<Item>();
+
 		public ChangeLogWindow(TreeNode Root)
 		{
 			InitializeComponent();
 
-			var L = new List<Item>();
 			FindChanges(Root);
-			DG.ItemsSource = L;
+			DG.ItemsSource = AllChanges;
 
 			cbNextTime.IsChecked = !ShowNextTime;
 
@@ -27,7 +28,7 @@ namespace Editor
 			{
 				foreach (var A in Node.Attributes)
 					if (A.Changed)
-						L.Add(new Item(A) { Path = Node.Path });
+						AllChanges.Add(new Item(A) { Path = Node.Path });
 
 				foreach (var N in Node.Nodes) FindChanges(N);
 			}
@@ -44,14 +45,11 @@ namespace Editor
 			}
 		}
 
-		public string Message
-		{
-			get => lbl.Text;
-			set => lbl.Text = value;
-		}
-
+		#region Nested Classes
 		private class Item
 		{
+			private readonly AttributeValue AV;
+
 			public string Path { get; set; }
 			public string Attribute { get; }
 
@@ -63,6 +61,7 @@ namespace Editor
 
 			public Item(AttributeValue AV)
 			{
+				this.AV = AV;
 				Attribute = AV.Name;
 
 				After = AV.CurValue;
@@ -71,6 +70,20 @@ namespace Editor
 				AfterFontWeight = AV.CurDefault ? FontWeights.Bold : FontWeights.Normal;
 				BeforeFontWeight = AV.PrevDefault ? FontWeights.Bold : FontWeights.Normal;
 			}
+
+			public void Revert() => AV.RevertChanges();
 		}
+		#endregion
+
+		#region Event Handlers
+		private void bDelete_OnClick(object sender, RoutedEventArgs e)
+		{
+			while (DG.SelectedItem is Item X)
+			{
+				X.Revert();
+				AllChanges.Remove(X);
+			}
+		}
+		#endregion
 	}
 }
