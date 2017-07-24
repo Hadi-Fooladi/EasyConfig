@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Windows;
 using System.Collections.Generic;
 
 namespace Editor
@@ -54,14 +54,22 @@ namespace Editor
 		{
 			public string Path { get; set; }
 			public string Attribute { get; }
+
 			public string Before { get; }
 			public string After { get; }
+
+			public FontWeight BeforeFontWeight { get; }
+			public FontWeight AfterFontWeight { get; }
 
 			public Item(AttributeValue AV)
 			{
 				Attribute = AV.Name;
+
 				After = AV.CurValue;
 				Before = AV.PrevValue;
+
+				AfterFontWeight = AV.CurDefault ? FontWeights.Bold : FontWeights.Normal;
+				BeforeFontWeight = AV.PrevDefault ? FontWeights.Bold : FontWeights.Normal;
 			}
 		}
 	}

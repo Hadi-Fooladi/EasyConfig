@@ -31,10 +31,47 @@
 
 		<DataGrid Name="DG" AutoGenerateColumns="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionUnit="FullRow" IsReadOnly="True">
 			<DataGrid.Columns>
-				<DataGridTextColumn Header="Path" Binding="{Binding Path}" Width="Auto" />
-				<DataGridTextColumn Header="Attribute" Binding="{Binding Attribute}" Width="Auto" />
-				<DataGridTextColumn Header="Before" Binding="{Binding Before}" />
-				<DataGridTextColumn Header="After" Binding="{Binding After}" />
+				<DataGridTemplateColumn Header="Path" Width="Auto">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Label
+								Content="{Binding Path}"
+								Foreground="{TemplateBinding DataGrid.Foreground}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Attribute" Width="Auto">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Label
+								Content="{Binding Attribute}"
+								Foreground="{TemplateBinding DataGrid.Foreground}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Before">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Label
+								Content="{Binding Before}"
+								Foreground="{TemplateBinding DataGrid.Foreground}"
+								FontWeight="{Binding BeforeFontWeight}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="After">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Label
+								Content="{Binding After}"
+								Foreground="{TemplateBinding DataGrid.Foreground}"
+								FontWeight="{Binding AfterFontWeight}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
 	</DockPanel>

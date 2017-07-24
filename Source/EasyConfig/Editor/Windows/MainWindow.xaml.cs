@@ -36,6 +36,7 @@ namespace Editor
 						GenerateSchemaTree();
 
 			AttributeValue.OnValueChanged += AttributeValue_OnValueChanged;
+			AttributeValue.OnOverrideDefaultChanged += AttributeValue_OnValueChanged;
 		}
 
 		#region Fields

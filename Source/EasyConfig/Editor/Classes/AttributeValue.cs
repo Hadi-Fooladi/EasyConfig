@@ -28,6 +28,7 @@ namespace Editor
 		public readonly string Desc;
 
 		private string m_Value;
+		private bool m_OverrideDefault;
 
 		#region Properties
 		public string Value
@@ -39,17 +40,29 @@ namespace Editor
 				fireValueChanged();
 			}
 		}
-		public bool OverrideDefault { get; set; }
+
+		public bool OverrideDefault
+		{
+			get => m_OverrideDefault;
+			set
+			{
+				m_OverrideDefault = value;
+				fireOverrideDefaultChanged();
+			}
+		}
 
 		public string Name { get; }
 		public string Type { get; }
 		public string Default { get; }
 		public bool HasDefault { get; }
 
-		public string CurValue => HasDefault ? (OverrideDefault ? Value : Default) : Value;
+		public string CurValue => CurDefault ? Default : Value;
 		public string PrevValue { get; private set; }
 
-		public bool Changed => CurValue != PrevValue;
+		public bool Changed => CurDefault != PrevDefault || CurValue != PrevValue;
+
+		public bool CurDefault => HasDefault && !OverrideDefault;
+		public bool PrevDefault { get; private set; }
 		#endregion
 
 		#region Public Methods
@@ -90,11 +103,19 @@ namespace Editor
 			}
 		}
 
-		public void ResetPrevValue() => PrevValue = CurValue;
+		public void ResetPrevValue()
+		{
+			PrevValue = CurValue;
+			PrevDefault = CurDefault;
+		}
 		#endregion
 
-		public static event dlg OnValueChanged;
-		public void fireValueChanged() => OnValueChanged?.Invoke(this);
+		#region Events
+		public static event dlg OnValueChanged, OnOverrideDefaultChanged;
+
+		private void fireValueChanged() => OnValueChanged?.Invoke(this);
+		private void fireOverrideDefaultChanged() => OnOverrideDefaultChanged?.Invoke(this);
+		#endregion
 
 		#region Private Methods
 		private static string RemoveQuotation(string S)
