@@ -4,6 +4,8 @@ namespace EasyConfig
 {
 	internal partial class Base
 	{
+		public Base(string Name) { this.Name = Name; }
+
 		public bool HasDesc => Desc != null || MultiLineDesc != null;
 
 		public void WriteDesc()

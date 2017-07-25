@@ -1,5 +1,5 @@
 <EasyConfig
-	Version="4.2"
+	Version="4.6"
 	xmlns="EasyConfig"
 	xsi:schemaLocation="EasyConfig Schema.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -54,8 +54,13 @@
 	</DataType>
 
 	<DataType Name="Enum" Inherit="Base" Partial="Yes">
-		<Attribute Name="Members" Type="string" Desc="Comma Separated Members" />
+		<Attribute Name="Members" Type="string" Default="null" Desc="Comma Separated Members (Value assignment is optional)" />
 		<Attribute Name="Access" Type="string" Default="Defaults.Access" Desc="Access modifier (Default is internal)" />
+		<Field Name="MembersList" Type="EnumMember" TagName="Member" Multiple="Yes" />
+	</DataType>
+
+	<DataType Name="EnumMember" Inherit="Base" Partial="Yes">
+		<Attribute Name="Value" Type="int?" Default="null" />
 	</DataType>
 
 	<Root Name="Schema" TagName="EasyConfig">

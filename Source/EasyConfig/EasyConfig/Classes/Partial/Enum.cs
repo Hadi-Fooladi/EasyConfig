@@ -1,4 +1,6 @@
-﻿namespace EasyConfig
+﻿using System.Collections.Generic;
+
+namespace EasyConfig
 {
 	internal partial class Enum
 	{
@@ -9,12 +11,22 @@
 			var SW = Global.SW;
 			SW.WriteLine($"{Access} enum {Name}");
 
+			var L = new List<EnumMember>();
+
+			if (Members != null)
+				foreach (var Member in Members.Replace(" ", "").Split(','))
+					L.Add(new EnumMember(Member));
+
+			L.AddRange(MembersList);
+
 			SW.Block(() =>
 			{
-				var M = Members.Replace(" ", "").Split(',');
-				int i, n = M.Length - 1;
+				int i, n = L.Count - 1;
 				for (i = 0; i <= n; i++)
-					SW.WriteLine(M[i] + (i == n ? "" : ","));
+				{
+					L[i].WriteDesc();
+					SW.WriteLine(L[i] + (i == n ? "" : ","));
+				}
 			});
 		}
 

@@ -4,9 +4,34 @@
 	xsi:schemaLocation="EasyConfig ../Schema/Schema.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-	<Enum Name="eBlood" Members="A, B, AB, O" />
+	<Enum Name="eBlood" Members="A, B = -2, AB, O = 4" />
 	<Enum Name="eGender" Members="Male, Female" />
-	
+	<Enum Name="eSeason">
+		<Member Name="Spring" Desc="!!!" />
+		<Member Name="Summer" Value="1">
+			<Desc>
+				<Line Value="Line #1" />
+				<Line Value="Line #2" />
+				<Line Value="Line #3" />
+			</Desc>
+		</Member>
+		<Member Name="Autumn" />
+		<Member Name="Winter" Value="-1" />
+	</Enum>
+
+	<Enum Name="eComplex" Members="A, B = -2, AB, O = 4">
+		<Member Name="Spring"  />
+		<Member Name="Summer" Value="1">
+			<Desc>
+				<Line Value="Line #1" />
+				<Line Value="Line #2" />
+				<Line Value="Line #3" />
+			</Desc>
+		</Member>
+		<Member Name="Autumn" />
+		<Member Name="Winter" Value="-1" />
+	</Enum>
+
 	<DataType Name="Complex">
 		<Attribute Name="Real" Type="float" />
 		<Attribute Name="Imaginary" Type="float" />

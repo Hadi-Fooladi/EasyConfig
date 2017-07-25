@@ -122,7 +122,20 @@
 	<complexType name="Enum">
 		<complexContent>
 			<extension base="ec:Base">
-				<attribute name="Members" type="string" use="required" />
+				<sequence>
+					<element name="Member" type="ec:EnumMember" minOccurs="0" maxOccurs="unbounded" />
+				</sequence>
+
+				<!-- Enum Attributes -->
+				<attribute name="Members" type="string" use="optional" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="EnumMember">
+		<complexContent>
+			<extension base="ec:Base">
+				<attribute name="Value" type="string" use="optional" />
 			</extension>
 		</complexContent>
 	</complexType>
