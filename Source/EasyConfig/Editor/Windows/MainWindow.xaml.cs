@@ -229,7 +229,6 @@ namespace Editor
 				Root.ResetPrevValues();
 
 				ConfigFilename = Filename;
-				Msg.Info("Saving completed successfully");
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
 		}
