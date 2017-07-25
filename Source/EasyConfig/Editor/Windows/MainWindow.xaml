@@ -149,10 +149,10 @@
 				</Grid>
 			</Grid>
 
-			<TextBlock Name="lblDesc" DockPanel.Dock="Bottom" Background="Cornsilk" Padding="2,0" TextWrapping="Wrap" />
-			<TextBlock DockPanel.Dock="Bottom" FontWeight="DemiBold" Text="Desc:" Padding="2,0" />
-
-			<Grid />
+			<TextBlock DockPanel.Dock="Top" FontWeight="DemiBold" Text="Desc:" Padding="2,0" Margin="0,10,0,0" />
+			<ScrollViewer VerticalScrollBarVisibility="Auto" Background="Cornsilk">
+				<TextBlock Name="lblDesc" Padding="2,0" TextWrapping="Wrap" />
+			</ScrollViewer>
 		</DockPanel>
 	</DockPanel>
 </Window>

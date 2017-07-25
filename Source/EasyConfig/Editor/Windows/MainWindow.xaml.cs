@@ -405,9 +405,10 @@ namespace Editor
 			// Showing YesNoGrid if Type is yn
 			if (A.Type == "yn")
 			{
-				YNC.Visibility = Visibility.Visible;
 				cbValue.Visibility =
 				tbValue.Visibility = Visibility.Hidden;
+
+				YNC.Visibility = Visibility.Visible;
 				YNC.BindAttributeValue(A);
 				return;
 			}
@@ -428,12 +429,14 @@ namespace Editor
 				tbValue.Visibility = Visibility.Hidden;
 				cbValue.Visibility = Visibility.Visible;
 
+				lblDesc.Text += Enum.Description;
+
 				BindingOperations.ClearBinding(cbValue, ComboBox.TextProperty);
 
 				cbValue.Items.Clear();
 				//cbValue.Items.Add("");
 				foreach (var Member in Enum.MembersArray)
-					cbValue.Items.Add(Member);
+					cbValue.Items.Add(Member.Name);
 
 				cbValue.SetBinding(ComboBox.TextProperty, NewBinding("Value"));
 				return;
@@ -446,6 +449,7 @@ namespace Editor
 			tbValue.Visibility = Visibility.Visible;
 			tbValue.SetBinding(TextBox.TextProperty, NewBinding("Value"));
 
+			// Local Function
 			Binding NewBinding(string PropertyName) => new Binding(PropertyName)
 			{
 				Source = A,

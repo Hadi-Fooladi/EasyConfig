@@ -70,6 +70,7 @@
 			<Attribute Name="Text2" Type="string" Default='"My Name"' />
 			<Attribute Name="Married" Type="yn" />
 			<Attribute Name="Single" Type="yn" Default="true" />
+			<Attribute Name="C" Type="eComplex" Desc="This is a desc!!!" />
 		</Node>
 
 		<Node Name="Second" Desc="Second Class" ReadOnly="No">
@@ -90,6 +91,12 @@
 			<Attribute Name="Blood" Type="eBlood" />
 			<Attribute Name="Gender" Type="eGender" />
 			<Attribute Name="SSN" Type="int?" Default="null" />
+			<Attribute Name="BirthSeason" Type="eSeason">
+				<Desc>
+					<Line Value="Line #1" />
+					<Line Value="Line #2" />
+				</Desc>
+			</Attribute>
 
 			<Field Name="UseNested" Type="Nested2" ReadOnly="No" />
 

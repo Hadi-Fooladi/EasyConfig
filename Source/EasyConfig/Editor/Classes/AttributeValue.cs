@@ -15,8 +15,7 @@ namespace Editor
 			HasDefault = Attr.Default != null;
 			Default = RemoveQuotation(Attr.Default);
 
-			if (Attr.MultiLineDesc == null) Desc = Attr.Desc;
-			else Desc = string.Join(Environment.NewLine, Attr.MultiLineDesc.Lines);
+			Desc = Attr.Description;
 		}
 
 		public AttributeValue(string Type, string Name)
@@ -100,7 +99,7 @@ namespace Editor
 					if (E.Name == Type)
 					{
 						foreach (var Member in E.MembersArray)
-							if (Value == Member)
+							if (Value == Member.Name)
 								return true;
 
 						return false;
