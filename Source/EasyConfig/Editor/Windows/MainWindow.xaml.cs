@@ -37,6 +37,9 @@ namespace Editor
 
 			AttributeValue.OnValueChanged += AttributeValue_OnValueChanged;
 			AttributeValue.OnOverrideDefaultChanged += AttributeValue_OnValueChanged;
+
+			TV.ContextMenu = Global.CM;
+			TV.ContextMenuOpening += TV_ContextMenuOpening;
 		}
 
 		#region Fields
@@ -66,8 +69,6 @@ namespace Editor
 				TVI.IsSelected = true;
 			}
 		}
-
-		private static bool isCtrlDown => Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
 
 		private bool SaveOn
 		{
@@ -308,7 +309,7 @@ namespace Editor
 
 		private void TV_OnPreviewKeyDown(object sender, KeyEventArgs e)
 		{
-			if (!isCtrlDown) return;
+			if (!Fn.isCtrlDown) return;
 			if (e.Key != Key.Up && e.Key != Key.Down) return;
 
 			var TVI = TV.SelectedItem as TreeViewItem;
@@ -510,6 +511,23 @@ namespace Editor
 		}
 
 		private void miSettings_OnClick(object sender, RoutedEventArgs e) => new SettingsWindow().ShowDialog();
+
+		private static void TV_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+		{
+			var TVI = e.Source as TreeViewItem;
+			if (TVI == null)
+			{
+				e.Handled = true;
+				return;
+			}
+
+			var TN = (TreeNode)TVI.Tag;
+			TN.FillContextMenu();
+
+			if (Global.CM.Items.Count == 0)
+				e.Handled = true;
+			else TVI.IsSelected = true;
+		}
 		#endregion
 	}
 }

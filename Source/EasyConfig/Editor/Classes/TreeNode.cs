@@ -19,7 +19,7 @@ namespace Editor
 			Multiple = N.Multiple;
 			this.Container = Container;
 
-			Init(false);
+			Init();
 		}
 
 		public TreeNode(Field F, TreeNode Container)
@@ -29,7 +29,7 @@ namespace Editor
 			Multiple = F.Multiple;
 			this.Container = Container;
 
-			Init(true);
+			Init();
 		}
 
 		public TreeNode(Node N, TreeNode Container, XmlNode XN) : this(N, Container) { AssignAttributeValues(XN); }
@@ -45,10 +45,9 @@ namespace Editor
 
 		private readonly DataType DT;
 		private readonly bool Multiple;
-		private readonly ContextMenu CM = new ContextMenu();
 
 		public string Path { get; private set; }
-		public bool Removable { get; private set; }
+		public bool Removable => Container != null && (Multiple || !Container.CheckNodeMaxCount(Name, 1));
 
 		#region Public Methods
 		public void FillXmlNode(XmlNode Node)
@@ -63,7 +62,7 @@ namespace Editor
 
 		public void Remove()
 		{
-			if (!Removable) return;
+			if (Container == null) return;
 
 			Container.Nodes.Remove(this);
 			Container.TreeViewItem.Items.Remove(TreeViewItem);
@@ -149,12 +148,37 @@ namespace Editor
 			foreach (var N in Nodes) N.ResetPrevValues();
 			foreach (var A in Attributes) A.ResetPrevValues();
 		}
+
+		public void FillContextMenu()
+		{
+			var CM = Global.CM;
+			CM.Items.Clear();
+
+			bool ShowAll = Fn.isCtrlDown;
+
+			foreach (var F in DT.AllFields)
+				if (ShowAll || F.Multiple || !CheckNodeNameExist(F.Tag))
+					AddMenu("Add " + F.Tag, () => new TreeNode(F, this));
+
+			if (DT is Node N)
+				foreach (var X in N.Nodes)
+					if (ShowAll || X.Multiple || !CheckNodeNameExist(X.Tag))
+						AddMenu("Add " + X.Name, () => new TreeNode(X, this));
+
+			// Remove
+			if (ShowAll || Removable)
+			{
+				if (CM.Items.Count > 0)
+					CM.Items.Add(new Separator());
+
+				AddMenu("Remove", Remove);
+			}
+		}
 		#endregion
 
 		#region Private Methods
-		private void Init(bool isField)
+		private void Init()
 		{
-			AddFieldsMenu(DT);
 			AddAttributes(DT);
 
 			if (DT is Node N)
@@ -162,23 +186,8 @@ namespace Editor
 					if (X.Multiple)
 						AddMenu("Add " + X.Name, () => new TreeNode(X, this));
 
-			Removable = isField || Multiple;
-			if (Removable)
-			{
-				if (CM.Items.Count > 0)
-					CM.Items.Add(new Separator());
-
-				AddMenu("Remove", Remove);
-			}
-
 			TreeViewItem.Tag = this;
 			TreeViewItem.Header = Name;
-
-			if (CM.Items.Count > 0)
-			{
-				TreeViewItem.ContextMenu = CM;
-				CM.Opened += (_, __) => TreeViewItem.IsSelected = true;
-			}
 
 			if (Container != null)
 			{
@@ -194,19 +203,13 @@ namespace Editor
 		{
 			var MI = new MenuItem { Header = Header };
 			MI.Click += (_, __) => A();
-			CM.Items.Add(MI);
+			Global.CM.Items.Add(MI);
 		}
 
 		private void AddAttributes(DataType DataType)
 		{
 			foreach (var A in DataType.AllAttributes)
 				Attributes.Add(new AttributeValue(A));
-		}
-
-		private void AddFieldsMenu(DataType DataType)
-		{
-			foreach (var F in DataType.AllFields)
-				AddMenu("Add " + F.Tag, () => new TreeNode(F, this));
 		}
 
 		private void AssignAttributeValues(XmlNode Node)
@@ -220,6 +223,30 @@ namespace Editor
 
 		private ValidationException NewValidationException(string Message) => new ValidationException(this, Message);
 		private AttributeValidationException NewAttributeValidationException(AttributeValue A, string Message) => new AttributeValidationException(this, A, Message);
+
+		private bool CheckNodeNameExist(string Name)
+		{
+			foreach (var X in Nodes)
+				if (X.Name == Name)
+					return true;
+
+			return false;
+		}
+
+		/// <returns>false if there are nodes with this <paramref name="Name"/> more than <paramref name="MaxCount"/>; otherwise true.</returns>
+		private bool CheckNodeMaxCount(string Name, int MaxCount)
+		{
+			int Count = 0;
+			foreach (var X in Nodes)
+				if (X.Name == Name)
+				{
+					Count++;
+					if (Count > MaxCount)
+						return false;
+				}
+
+			return true;
+		}
 		#endregion
 
 		public class ValidationException : Exception

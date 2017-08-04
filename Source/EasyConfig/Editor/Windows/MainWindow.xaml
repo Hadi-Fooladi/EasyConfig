@@ -9,7 +9,7 @@
 	mc:Ignorable="d"
 	FontSize="16"
 	Title="EasyConfig Editor"
-	Width="640" Height="480"
+	Width="800" Height="600"
 	WindowStartupLocation="CenterScreen">
 
 	<DockPanel>

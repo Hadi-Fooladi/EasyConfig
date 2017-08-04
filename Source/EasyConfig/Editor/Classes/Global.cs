@@ -1,4 +1,5 @@
 ﻿using EasyConfig;
+using System.Windows.Controls;
 
 namespace Editor
 {
@@ -7,5 +8,6 @@ namespace Editor
 		public static string[] args;
 		public static Schema Schema;
 		public static DataTypeMap DataTypeMap;
+		public static readonly ContextMenu CM = new ContextMenu();
 	}
 }
