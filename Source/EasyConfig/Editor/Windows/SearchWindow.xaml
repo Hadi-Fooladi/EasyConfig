@@ -14,9 +14,27 @@
 
 	<DockPanel>
 		<DockPanel DockPanel.Dock="Top" Margin="0,5">
-			<TextBlock DockPanel.Dock="Left" Margin="5,0,0,0" Text="Search:" />
-			<TextBox Name="TB" Margin="5,0" SelectionChanged="TB_SelectionChanged" />
+			<TextBlock DockPanel.Dock="Left" Margin="5,0" Text="Name:" VerticalAlignment="Center" />
+			<Button
+				Margin="5,0"
+				FontSize="20"
+				Padding="10,0"
+				IsDefault="True"
+				Content="Search"
+				DockPanel.Dock="Right"
+				VerticalAlignment="Center"
+				Click="bSearch_Click" />
+			
+			<TextBox Name="TB" SelectionChanged="TB_SelectionChanged" VerticalAlignment="Center" />
 		</DockPanel>
+
+		<GroupBox DockPanel.Dock="Top" Header="Options">
+			<Grid>
+				<CheckBox Name="cbInstant" Content="Instant Search" VerticalContentAlignment="Center" />
+			</Grid>
+		</GroupBox>
+
+		<TextBlock Name="lblSearch" DockPanel.Dock="Top" FontSize="18" FontWeight="DemiBold" Margin="0,10,0,0" />
 
 		<DataGrid
 			Name="DG"
