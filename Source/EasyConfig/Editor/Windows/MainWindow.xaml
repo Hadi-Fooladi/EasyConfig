@@ -83,17 +83,32 @@
 		
 		<TextBlock Name="lblFilenames" DockPanel.Dock="Bottom" Background="WhiteSmoke" FontSize="14" />
 
-		<TreeView
-			Name="TV" DockPanel.Dock="Left" Width="175"
-			PreviewKeyUp="TV_OnPreviewKeyUp"
-			PreviewKeyDown="TV_OnPreviewKeyDown"
-			SelectedItemChanged="TV_OnSelectedItemChanged">
+		<DockPanel DockPanel.Dock="Left" Width="200">
+			<ListBox Name="lbSearch" DockPanel.Dock="Bottom" Height="125" SelectionMode="Single" SelectionChanged="lbSearch_SelectionChanged" />
 
-			<TreeView.Resources>
-				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}" />
-				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}" />
-			</TreeView.Resources>
-		</TreeView>
+			<Grid DockPanel.Dock="Bottom" Margin="0,2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<TextBlock Grid.Column="0" Margin="5,0,0,0" Text="Search:" />
+				<TextBox Grid.Column="1" Name="tbSearch" Margin="5,0" TextChanged="tbSearch_TextChanged" />
+			</Grid>
+			
+			<TextBlock DockPanel.Dock="Bottom" Margin="0,2" Background="Black" Height="1" />
+
+			<TreeView
+				Name="TV"
+				PreviewKeyUp="TV_OnPreviewKeyUp"
+				PreviewKeyDown="TV_OnPreviewKeyDown"
+				SelectedItemChanged="TV_OnSelectedItemChanged">
+
+				<TreeView.Resources>
+					<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}" />
+					<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}" />
+				</TreeView.Resources>
+			</TreeView>
+		</DockPanel>
 
 		<TextBlock Name="lblPath" DockPanel.Dock="Top" Text="{Binding Path}" FontSize="20" FontWeight="Bold" Margin="5" />
 

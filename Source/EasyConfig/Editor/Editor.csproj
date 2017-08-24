@@ -51,6 +51,7 @@
     </ApplicationDefinition>
     <Compile Include="Classes\EasyConfig\Base.cs" />
     <Compile Include="Classes\EasyConfig\EnumMember.cs" />
+    <Compile Include="Classes\SearchEngine.cs" />
     <Compile Include="Classes\Singleton.cs" />
     <Compile Include="Controls\YesNoControl.xaml.cs">
       <DependentUpon>YesNoControl.xaml</DependentUpon>

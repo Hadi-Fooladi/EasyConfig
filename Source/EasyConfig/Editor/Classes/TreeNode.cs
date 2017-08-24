@@ -259,7 +259,6 @@ namespace Editor
 		{
 			public readonly AttributeValue AttrVal;
 			public AttributeValidationException(TreeNode Source, AttributeValue AttrVal, string Message) : base(Source, Message) { this.AttrVal = AttrVal; }
-
 		}
 	}
 }

@@ -66,7 +66,8 @@ namespace Editor
 
 				TV.Items.Clear();
 				TV.Items.Add(TVI);
-				TVI.IsSelected = true;
+				TVI.IsSelected =
+				TVI.IsExpanded = true;
 			}
 		}
 
@@ -527,6 +528,27 @@ namespace Editor
 			if (Global.CM.Items.Count == 0)
 				e.Handled = true;
 			else TVI.IsSelected = true;
+		}
+
+		private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			lbSearch.Items.Clear();
+
+			string Word = tbSearch.Text;
+			if (string.IsNullOrEmpty(Word)) return;
+
+			var Results = SearchEngine.Search(Root, Word);
+			foreach (var Result in Results)
+				lbSearch.Items.Add(Result);
+		}
+
+		private void lbSearch_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			var Result = lbSearch.SelectedItem as SearchEngine.Result;
+			if (Result == null) return;
+
+			Result.Node.RevealAndSelect();
+			LB.SelectedItem = Result.AV;
 		}
 		#endregion
 	}
