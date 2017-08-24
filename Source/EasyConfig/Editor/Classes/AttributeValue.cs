@@ -105,7 +105,8 @@ namespace Editor
 						return false;
 					}
 
-				throw new Exception("Unknown data type");
+				return true;
+				//throw new Exception("Unknown data type");
 			}
 		}
 
