@@ -12,7 +12,7 @@ namespace Editor
 
 			void SearchNode(TreeNode TN)
 			{
-				if (TN.Path.icContains(Word))
+				if (TN.Name.icContains(Word))
 					L.Add(new Result(TN));
 
 				foreach (var A in TN.Attributes)

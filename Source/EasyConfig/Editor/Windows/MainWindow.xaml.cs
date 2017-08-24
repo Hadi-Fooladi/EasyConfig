@@ -22,6 +22,7 @@ namespace Editor
 	{
 		public MainWindow()
 		{
+			Instance = this;
 			InitializeComponent();
 			AppVer = Assembly.GetExecutingAssembly().GetName().Version;
 
@@ -42,19 +43,10 @@ namespace Editor
 			TV.ContextMenuOpening += TV_ContextMenuOpening;
 		}
 
-		#region Fields
-		private TreeNode m_Root;
+		#region Public Members
+		public static MainWindow Instance { get; private set; }
 
-		private Schema Schema;
-		private readonly Version AppVer;
-
-		private string m_SchemaFilename, m_ConfigFilename;
-
-		private readonly HashSet<AttributeValue> ChangeSet = new HashSet<AttributeValue>();
-		#endregion
-
-		#region Properties
-		private TreeNode Root
+		public TreeNode Root
 		{
 			get => m_Root;
 			set
@@ -71,6 +63,26 @@ namespace Editor
 			}
 		}
 
+		public void Reveal(SearchEngine.Result R) => Reveal(R.Node, R.AV);
+		public void Reveal(TreeNode Node, AttributeValue AV)
+		{
+			Node.RevealAndSelect();
+			LB.SelectedItem = AV;
+		}
+		#endregion
+
+		#region Fields
+		private TreeNode m_Root;
+
+		private Schema Schema;
+		private readonly Version AppVer;
+
+		private string m_SchemaFilename, m_ConfigFilename;
+
+		private readonly HashSet<AttributeValue> ChangeSet = new HashSet<AttributeValue>();
+		#endregion
+
+		#region Properties
 		private bool SaveOn
 		{
 			set
@@ -477,9 +489,7 @@ namespace Editor
 			}
 			catch (TreeNode.AttributeValidationException E)
 			{
-				E.Source.RevealAndSelect();
-				LB.SelectedItem = E.AttrVal;
-
+				Reveal(E.Source, E.AttrVal);
 				ShowError(E);
 			}
 			catch (TreeNode.ValidationException E)
@@ -530,26 +540,7 @@ namespace Editor
 			else TVI.IsSelected = true;
 		}
 
-		private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			lbSearch.Items.Clear();
-
-			string Word = tbSearch.Text;
-			if (string.IsNullOrEmpty(Word)) return;
-
-			var Results = SearchEngine.Search(Root, Word);
-			foreach (var Result in Results)
-				lbSearch.Items.Add(Result);
-		}
-
-		private void lbSearch_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			var Result = lbSearch.SelectedItem as SearchEngine.Result;
-			if (Result == null) return;
-
-			Result.Node.RevealAndSelect();
-			LB.SelectedItem = Result.AV;
-		}
+		private void miSearch_OnClick(object sender, RoutedEventArgs e) => SearchWindow.Instance.Show();
 		#endregion
 	}
 }

@@ -16,6 +16,7 @@ namespace Editor
 			//}
 
 			Global.args = e.Args;
+			ShutdownMode = ShutdownMode.OnMainWindowClose;
 			StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
 		}
 	}

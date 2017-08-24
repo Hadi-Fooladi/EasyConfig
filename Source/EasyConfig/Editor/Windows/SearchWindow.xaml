@@ -1,0 +1,35 @@
+﻿<Window
+	x:ClassModifier="internal"
+	x:Class="Editor.SearchWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:Editor"
+	mc:Ignorable="d"
+	Title="Search"
+	FontSize="16"
+	Width="640" Height="480"
+	WindowStartupLocation="CenterScreen">
+
+	<DockPanel>
+		<DockPanel DockPanel.Dock="Top" Margin="0,5">
+			<TextBlock DockPanel.Dock="Left" Margin="5,0,0,0" Text="Search:" />
+			<TextBox Name="TB" Margin="5,0" SelectionChanged="TB_SelectionChanged" />
+		</DockPanel>
+
+		<DataGrid
+			Name="DG"
+			SelectionMode="Single"
+			SelectionUnit="FullRow"
+			CanUserDeleteRows="False"
+			AutoGenerateColumns="False"
+			SelectionChanged="DG_SelectionChanged">
+
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" IsReadOnly="True" />
+				<DataGridTextColumn Header="Path" Binding="{Binding Path}" Width="2*" IsReadOnly="True" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</DockPanel>
+</Window>
