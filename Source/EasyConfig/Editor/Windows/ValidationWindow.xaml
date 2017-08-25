@@ -13,6 +13,17 @@
 	WindowStartupLocation="CenterScreen">
 
 	<DockPanel>
+		<ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
+			<ToolBar.Resources>
+				<Style TargetType="Button" x:Key="{x:Static ToolBar.ButtonStyleKey}" BasedOn="{StaticResource ToolbarButtonStyle}" />
+				<Style TargetType="local:GrayableButton" BasedOn="{StaticResource ToolbarButtonStyle}" />
+			</ToolBar.Resources>
+
+			<Button Click="bRefresh_OnClick" ToolTip="Refresh">
+				<Image Source="/Resources/Refresh.png" />
+			</Button>
+		</ToolBar>
+
 		<Button
 			Content="OK"
 			Margin="0,5"

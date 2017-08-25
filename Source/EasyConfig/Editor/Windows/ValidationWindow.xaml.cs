@@ -10,6 +10,11 @@ namespace Editor
 		{
 			InitializeComponent();
 
+			Update(Records);
+		}
+
+		private void Update(List<ValidationRecord> Records)
+		{
 			var L = new List<Item>();
 			foreach (var R in Records)
 				L.Add(new Item(R));
@@ -27,6 +32,13 @@ namespace Editor
 
 			var R = Item.Record;
 			MainWindow.Instance.Reveal(R.Node, R.A);
+		}
+
+		private void bRefresh_OnClick(object sender, RoutedEventArgs e)
+		{
+			var Records = new List<ValidationRecord>();
+			MainWindow.Instance.Root.Validate(Records);
+			Update(Records);
 		}
 		#endregion
 

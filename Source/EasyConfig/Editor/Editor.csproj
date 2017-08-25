@@ -155,6 +155,7 @@
       <Link>Sample.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\Refresh.png" />
     <Resource Include="Resources\Find16.png" />
     <Resource Include="Resources\Find.png" />
     <Resource Include="Resources\Delete.png" />
