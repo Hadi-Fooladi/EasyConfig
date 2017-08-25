@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Xml;
-using System.Text;
 using System.Windows.Controls;
 using System.Collections.Generic;
 
@@ -68,15 +67,15 @@ namespace Editor
 			Container.TreeViewItem.Items.Remove(TreeViewItem);
 		}
 
-		public void Validate(StringBuilder sbWarnings)
+		public void Validate(List<ValidationRecord> Records)
 		{
 			// Checking Attributes Value
 			foreach (var A in Attributes)
 				if (!A.Validate())
-					throw NewAttributeValidationException(A, $"Attribute '{A.Name}' value is incorrect.");
+					AddRecord("Value is incorrect", A);
 
 			foreach (var TN in Nodes)
-				TN.Validate(sbWarnings);
+				TN.Validate(Records);
 
 			// Checking Nodes Count
 			var Dic = new Dictionary<string, int>(); // Map Tag => Count
@@ -102,9 +101,11 @@ namespace Editor
 			}
 
 			foreach (var Key in Dic.Keys)
-				sbWarnings.AppendLine($"Unknown '{Key}' member in '{Path}'");
+				AddRecord($"Unknown '{Key}' member");
 
 			#region Local Functions
+			void AddRecord(string Message, AttributeValue A = null) => Records.Add(new ValidationRecord(this, Message, A));
+
 			void ValidateNodeCount(Node Node) => ValidateCount(Node.Multiple, Node.Tag);
 			void ValidateFieldCount(Field Field) => ValidateCount(Field.Multiple, Field.Tag);
 			void ValidateCount(bool Multiple, string Tag)
@@ -113,12 +114,12 @@ namespace Editor
 
 				if (!Dic.ContainsKey(Tag))
 				{
-					sbWarnings.AppendLine($"'{Tag}' in '{Path}' is missing");
+					AddRecord($"'{Tag}' is missing");
 					return;
 				}
 
 				if (Dic[Tag] != 1)
-					throw NewValidationException($"Only one instance of '{Tag}' is acceptable");
+					AddRecord($"Only one instance of '{Tag}' is acceptable");
 			}
 			#endregion
 		}
@@ -221,9 +222,6 @@ namespace Editor
 			}
 		}
 
-		private ValidationException NewValidationException(string Message) => new ValidationException(this, Message);
-		private AttributeValidationException NewAttributeValidationException(AttributeValue A, string Message) => new AttributeValidationException(this, A, Message);
-
 		private bool CheckNodeNameExist(string Name)
 		{
 			foreach (var X in Nodes)
@@ -248,17 +246,5 @@ namespace Editor
 			return true;
 		}
 		#endregion
-
-		public class ValidationException : Exception
-		{
-			public new readonly TreeNode Source;
-			public ValidationException(TreeNode Source, string Message) : base(Message) { this.Source = Source; }
-		}
-
-		public class AttributeValidationException : ValidationException
-		{
-			public readonly AttributeValue AttrVal;
-			public AttributeValidationException(TreeNode Source, AttributeValue AttrVal, string Message) : base(Source, Message) { this.AttrVal = AttrVal; }
-		}
 	}
 }

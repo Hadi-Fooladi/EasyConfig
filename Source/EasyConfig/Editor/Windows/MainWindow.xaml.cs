@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
-using System.Text;
 using System.Windows;
 using Microsoft.Win32;
 using System.Reflection;
@@ -477,29 +476,14 @@ namespace Editor
 			{
 				if (Schema == null) throw new Exception("No Schema");
 
-				var sbWarnings = new StringBuilder();
-				Root.Validate(sbWarnings);
-
-				var Warnings = sbWarnings.ToString();
-				if (!string.IsNullOrEmpty(Warnings))
-					Msg.Warning(Warnings);
+				var Records = new List<ValidationRecord>();
+				Root.Validate(Records);
+				if (Records.Count > 0)
+					new ValidationWindow(Records).Show();
 				else
 					Msg.Info("Validation succeeded");
-				
 			}
-			catch (TreeNode.AttributeValidationException E)
-			{
-				Reveal(E.Source, E.AttrVal);
-				ShowError(E);
-			}
-			catch (TreeNode.ValidationException E)
-			{
-				E.Source.RevealAndSelect();
-				ShowError(E);
-			}
-			catch (Exception E) { ShowError(E); }
-
-			void ShowError(Exception E) => Msg.Error(E.Message, "Validation failed");
+			catch (Exception E) { Msg.Error(E.Message, "Validation failed"); }
 		}
 
 		private void miChangeLog_OnClick(object sender, RoutedEventArgs e)
