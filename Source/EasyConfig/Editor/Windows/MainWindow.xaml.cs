@@ -40,6 +40,9 @@ namespace Editor
 
 			TV.ContextMenu = Global.CM;
 			TV.ContextMenuOpening += TV_ContextMenuOpening;
+
+			// Event Handlers
+			Modified.OnChanged += Obj => SaveOn = Obj.Value;
 		}
 
 		#region Public Members
@@ -59,6 +62,10 @@ namespace Editor
 				TV.Items.Add(TVI);
 				TVI.IsSelected =
 				TVI.IsExpanded = true;
+
+				TreeSet.Clear();
+				TVI.AddAllItems(TreeSet);
+				TreeModified = false;
 			}
 		}
 
@@ -78,7 +85,14 @@ namespace Editor
 
 		private string m_SchemaFilename, m_ConfigFilename;
 
+		private readonly HashSet<TreeViewItem> TreeSet = new HashSet<TreeViewItem>();
 		private readonly HashSet<AttributeValue> ChangeSet = new HashSet<AttributeValue>();
+
+		private readonly Observer<bool> Modified = new Observer<bool>();
+
+		private bool
+			TreeModified,
+			AttributeModified;
 		#endregion
 
 		#region Properties
@@ -142,6 +156,8 @@ namespace Editor
 
 		private void Open(string FileName)
 		{
+			HandleTreeViewItemEvents(false);
+
 			try
 			{
 				var Doc = new XmlDocument();
@@ -157,6 +173,8 @@ namespace Editor
 				ConfigFilename = FileName;
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
+
+			HandleTreeViewItemEvents(true);
 
 			#region Local Functions
 			TreeNode CreateTreeNode(Node N, TreeNode Container, XmlNode XN)
@@ -189,10 +207,14 @@ namespace Editor
 
 		private void GenerateSchemaTree()
 		{
+			HandleTreeViewItemEvents(false);
+
 			// Tree Node Root
 			var TNR = CreateTreeNode(Schema.Root, null);
 			TNR.Attributes.Insert(0, new AttributeValue("Version", "Version") { Value = Schema.Root.Version.ToString() });
 			Root = TNR;
+
+			HandleTreeViewItemEvents(true);
 
 			TreeNode CreateTreeNode(Node N, TreeNode Container)
 			{
@@ -248,9 +270,36 @@ namespace Editor
 
 		private void ClearChanges()
 		{
-			SaveOn = false;
 			ChangeSet.Clear();
+			AttributeModified = false;
+
+			UpdateModified();
 		}
+
+		private void HandleTreeViewItemEvents(bool Handle)
+		{
+			if (Handle)
+			{
+				TreeViewItemExt.OnItemAdded += TreeViewItemExt_OnItemAdded;
+				TreeViewItemExt.OnItemRemoved += TreeViewItemExt_OnItemRemoved;
+			}
+			else
+			{
+				TreeViewItemExt.OnItemAdded -= TreeViewItemExt_OnItemAdded;
+				TreeViewItemExt.OnItemRemoved -= TreeViewItemExt_OnItemRemoved;
+			}
+		}
+
+		private void CheckTreeModification()
+		{
+			var Set = new HashSet<TreeViewItem>();
+			Root.TreeViewItem.AddAllItems(Set);
+
+			TreeModified = !Fn.isEqual(TreeSet, Set);
+			UpdateModified();
+		}
+
+		private void UpdateModified() => Modified.Value = ConfigFilename != null && (TreeModified || AttributeModified);
 		#endregion
 
 		#region Event Handlers
@@ -501,8 +550,8 @@ namespace Editor
 			if (AV.Changed) ChangeSet.Add(AV);
 			else ChangeSet.Remove(AV);
 
-			if (ConfigFilename != null)
-				SaveOn = ChangeSet.Count > 0;
+			AttributeModified = ChangeSet.Count > 0;
+			UpdateModified();
 		}
 
 		private void miSettings_OnClick(object sender, RoutedEventArgs e) => new SettingsWindow().ShowDialog();
@@ -525,6 +574,19 @@ namespace Editor
 		}
 
 		private void miSearch_OnClick(object sender, RoutedEventArgs e) => SearchWindow.Instance.Show();
+
+		private void TreeViewItemExt_OnItemAdded(TreeViewItem Item) => CheckTreeModification();
+
+		private void TreeViewItemExt_OnItemRemoved(TreeViewItem Item)
+		{
+			var TN = (TreeNode)Item.Tag;
+			foreach (var A in TN.AllAttributes)
+				ChangeSet.Remove(A);
+
+			AttributeModified = ChangeSet.Count > 0;
+
+			CheckTreeModification();
+		}
 		#endregion
 	}
 }

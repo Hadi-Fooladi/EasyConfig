@@ -48,6 +48,21 @@ namespace Editor
 		public string Path { get; private set; }
 		public bool Removable => Container != null && (Multiple || !Container.CheckNodeMaxCount(Name, 1));
 
+		#region Public Properties
+		public IEnumerable<AttributeValue> AllAttributes
+		{
+			get
+			{
+				foreach (var A in Attributes)
+					yield return A;
+
+				foreach (var N in Nodes)
+					foreach (var A in N.AllAttributes)
+						yield return A;
+			}
+		}
+		#endregion
+
 		#region Public Methods
 		public void FillXmlNode(XmlNode Node)
 		{
@@ -64,7 +79,7 @@ namespace Editor
 			if (Container == null) return;
 
 			Container.Nodes.Remove(this);
-			Container.TreeViewItem.Items.Remove(TreeViewItem);
+			Container.TreeViewItem.RemoveItem(TreeViewItem);
 		}
 
 		public void Validate(List<ValidationRecord> Records)
@@ -193,14 +208,14 @@ namespace Editor
 			if (Container != null)
 			{
 				Container.Nodes.Add(this);
-				Container.TreeViewItem.Items.Add(TreeViewItem);
+				Container.TreeViewItem.AddItem(TreeViewItem);
 
 				Path = Container.Path + "/" + Name;
 			}
 			else Path = Name;
 		}
 
-		private void AddMenu(string Header, Action A)
+		private static void AddMenu(string Header, Action A)
 		{
 			var MI = new MenuItem { Header = Header };
 			MI.Click += (_, __) => A();
