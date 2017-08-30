@@ -81,7 +81,7 @@ namespace Editor
 			switch (Type)
 			{
 			case "string": return true;
-			case "char": return Value == null ? false : Value.Length == 1;
+			case "char": return Value != null && Value.Length == 1;
 			case "int": return int.TryParse(Value, out int _);
 			case "float": return float.TryParse(Value, out float _);
 			case "Version": return Version.TryParse(Value, out Version _);

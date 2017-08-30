@@ -62,10 +62,6 @@ namespace Editor
 				TV.Items.Add(TVI);
 				TVI.IsSelected =
 				TVI.IsExpanded = true;
-
-				TreeSet.Clear();
-				TVI.AddAllItems(TreeSet);
-				TreeModified = false;
 			}
 		}
 
@@ -83,7 +79,7 @@ namespace Editor
 		private Schema Schema;
 		private readonly Version AppVer;
 
-		private string m_SchemaFilename, m_ConfigFilename;
+		private string SchemaFilename, ConfigFilename;
 
 		private readonly HashSet<TreeViewItem> TreeSet = new HashSet<TreeViewItem>();
 		private readonly HashSet<AttributeValue> ChangeSet = new HashSet<AttributeValue>();
@@ -106,28 +102,6 @@ namespace Editor
 				((Image)miSave.Icon).Source = new BitmapImage(Fn.GetLocalUri($"Resources/Save16{Gray}.png"));
 			}
 		}
-
-		private string SchemaFilename
-		{
-			get => m_SchemaFilename;
-			set
-			{
-				m_SchemaFilename = value;
-				UpdateFilenames();
-			}
-		}
-
-		private string ConfigFilename
-		{
-			get => m_ConfigFilename;
-			set
-			{
-				m_ConfigFilename = value;
-
-				ClearChanges();
-				UpdateFilenames();
-			}
-		}
 		#endregion
 
 		#region Methods
@@ -145,7 +119,6 @@ namespace Editor
 				if (Ver.Major != AppVer.Major && Ver.Minor > AppVer.Minor)
 					throw new Exception("Version Mismatch");
 
-				ConfigFilename = null;
 				SchemaFilename = Filename;
 				return true;
 			}
@@ -171,6 +144,8 @@ namespace Editor
 
 				Root = TNR;
 				ConfigFilename = FileName;
+				UpdateFilenames();
+				ClearChanges();
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
 
@@ -212,7 +187,11 @@ namespace Editor
 			// Tree Node Root
 			var TNR = CreateTreeNode(Schema.Root, null);
 			TNR.Attributes.Insert(0, new AttributeValue("Version", "Version") { Value = Schema.Root.Version.ToString() });
+
 			Root = TNR;
+			ConfigFilename = null;
+			UpdateFilenames();
+			ClearChanges();
 
 			HandleTreeViewItemEvents(true);
 
@@ -262,15 +241,21 @@ namespace Editor
 				}
 
 				Root.ResetPrevValues();
-
 				ConfigFilename = Filename;
+				UpdateFilenames();
+				ClearChanges();
 			}
 			catch (Exception E) { Msg.Error(E.Message); }
 		}
 
 		private void ClearChanges()
 		{
+			TreeSet.Clear();
 			ChangeSet.Clear();
+
+			Root.TreeViewItem.AddAllItems(TreeSet);
+
+			TreeModified =
 			AttributeModified = false;
 
 			UpdateModified();
@@ -575,7 +560,16 @@ namespace Editor
 
 		private void miSearch_OnClick(object sender, RoutedEventArgs e) => SearchWindow.Instance.Show();
 
-		private void TreeViewItemExt_OnItemAdded(TreeViewItem Item) => CheckTreeModification();
+		private void TreeViewItemExt_OnItemAdded(TreeViewItem Item)
+		{
+			var TN = (TreeNode)Item.Tag;
+			foreach (var A in TN.AllAttributes)
+				if (A.Changed)
+					ChangeSet.Add(A);
+
+			AttributeModified = ChangeSet.Count > 0;
+			CheckTreeModification();
+		}
 
 		private void TreeViewItemExt_OnItemRemoved(TreeViewItem Item)
 		{
@@ -584,7 +578,6 @@ namespace Editor
 				ChangeSet.Remove(A);
 
 			AttributeModified = ChangeSet.Count > 0;
-
 			CheckTreeModification();
 		}
 		#endregion
