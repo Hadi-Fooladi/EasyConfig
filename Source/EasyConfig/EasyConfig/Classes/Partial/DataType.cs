@@ -20,8 +20,15 @@ namespace EasyConfig
 				DeclareFields();
 				SW.WriteLine();
 
-				// Writing Constructor
-				SW.WriteLine("public {0}({1}){2}", T, ConstructorParameters, Inherit != null ? " : base(Node)" : "");
+				#region Writing Constructors
+				// Default Constructor
+				SW.WriteLine($"public {T}() {{ }}");
+				SW.WriteLine();
+
+				ImplementAdditionalConstructor();
+				SW.WriteLine();
+
+				SW.WriteLine("public {0}(XmlNode Node){1}", T, Inherit != null ? " : base(Node)" : "");
 				SW.Block(() =>
 				{
 					ConstructorPre();
@@ -34,6 +41,7 @@ namespace EasyConfig
 
 					ConstructorPost();
 				});
+				#endregion
 
 				// Writing Save Method
 				WriteSaveMethod();
@@ -43,10 +51,10 @@ namespace EasyConfig
 		}
 
 		public virtual string DataTypeName => Name;
-		protected virtual string ConstructorParameters => "XmlNode Node";
 		protected virtual void ConstructorPre() { }
 		protected virtual void ConstructorPost() { }
 		protected virtual void ImplementNestedClasses() { }
+		protected virtual void ImplementAdditionalConstructor() { }
 
 		protected virtual void DeclareFields()
 		{

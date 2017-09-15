@@ -10,36 +10,40 @@ namespace EasyConfig
 		public override string DataTypeName => TypeName ?? Name;
 
 		protected override string SaveMethodParameters => PARAM;
-		protected override string ConstructorParameters => PARAM;
+
+		protected override void ImplementAdditionalConstructor()
+			=> Global.SW.WriteLine($"public {DataTypeName}(string Filename) : this(GetRootNode(Filename)) {{ }}");
 
 		protected override void ConstructorPre()
 		{
+			if (Version == null) return;
+
 			var SW = Global.SW;
-
-			SW.WriteLine("var Doc = new XmlDocument();");
-			SW.WriteLine("Doc.Load(Filename);");
+			SW.WriteLine("// Check version");
+			SW.WriteLine("Version = new Version(Node.Attr(\"Version\"));");
+			SW.WriteLine("if (Version.Major != ExpectedVersion.Major || Version.Minor < ExpectedVersion.Minor)");
+			SW.Inside(() => SW.WriteLine("throw new Exception(\"Version Mismatch\");"));
 			SW.WriteLine();
-			SW.WriteLine("var Node = Doc.DocumentElement;");
-			SW.WriteLine();
-
-			if (Version != null)
-			{
-				SW.WriteLine("// Check version");
-				SW.WriteLine("Version = new Version(Node.Attr(\"Version\"));");
-				SW.WriteLine("if (Version.Major != ExpectedVersion.Major || Version.Minor < ExpectedVersion.Minor)");
-				SW.Inside(() => SW.WriteLine("throw new Exception(\"Version Mismatch\");"));
-				SW.WriteLine();
-			}
 		}
 
 		protected override void DeclareFields()
 		{
+			var SW = Global.SW;
+
+			SW.WriteLine("private static XmlNode GetRootNode(string Filename)");
+			SW.Block(() =>
+			{
+				SW.WriteLine("var Doc = new XmlDocument();");
+				SW.WriteLine("Doc.Load(Filename);");
+				SW.WriteLine("return Doc.DocumentElement;");
+			});
+
 			var V = Version;
 			if (V != null)
 			{
-				Global.SW.WriteLine("public readonly Version Version;");
-				Global.SW.WriteLine("public static readonly Version ExpectedVersion = new Version({0}, {1});", V.Major, V.Minor);
-				Global.SW.WriteLine();
+				SW.WriteLine("public readonly Version Version;");
+				SW.WriteLine("public static readonly Version ExpectedVersion = new Version({0}, {1});", V.Major, V.Minor);
+				SW.WriteLine();
 			}
 
 			base.DeclareFields();
