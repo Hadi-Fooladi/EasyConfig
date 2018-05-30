@@ -64,6 +64,9 @@ namespace EasyConfig
 			SW.WriteLine("var Doc = new XmlDocument();");
 			SW.WriteLine($"var Node = Doc.AppendNode(\"{TagName ?? Name}\");");
 			SW.WriteLine();
+
+			SW.WriteLine("Node.AddAttr(\"Version\", ExpectedVersion);");
+			SW.WriteLine();
 		}
 
 		public override void SaveMethodPost()
