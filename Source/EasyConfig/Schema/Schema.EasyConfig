@@ -1,5 +1,5 @@
 <EasyConfig
-	Version="4.6"
+	Version="4.9"
 	xmlns="EasyConfig"
 	xsi:schemaLocation="EasyConfig Schema.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -30,6 +30,13 @@
 	<DataType Name="Field" Inherit="VarBase" Partial="Yes">
 		<Attribute Name="TagName" Type="string" Default="null" Desc="If null, 'Name' will be used for tag name" />
 		<Attribute Name="Multiple" Type="yn" Default="false" />
+		<Attribute Name="Instantiate" Type="yn" Default="true">
+			<Desc>
+				<Line Value="If true, instantiate the field in the default constructor" />
+				<Line Value="Note: If 'Multiple' is 'Yes', this attribute will be discarded and the field (List) always will be instantiated in the default constructor" />
+				<Line Value="Used to prevent circular recursive instantiation" />
+			</Desc>
+		</Attribute>
 	</DataType>
 
 	<DataType Name="DataType" Inherit="Base" Partial="Yes">
@@ -45,6 +52,14 @@
 		<Attribute Name="Multiple" Type="yn" Default="false" />
 		<Attribute Name="TypeName" Type="string" Default="null" />
 		<Attribute Name="TagName" Type="string" Default="null" Desc="If null, 'Name' will be used for tag name" />
+		<Attribute Name="Instantiate" Type="yn" Default="true">
+			<Desc>
+				<Line Value="If true, instantiate the field in the default constructor" />
+				<Line Value="Note: If 'Multiple' is 'Yes', this attribute will be discarded and the field (List) always will be instantiated in the default constructor" />
+				<Line Value="Used to prevent circular recursive instantiation" />
+			</Desc>
+		</Attribute>
+
 		<Field Name="Nodes" Type="Node" TagName="Node" Multiple="Yes" />
 		<Field Name="Types" Type="DataType" TagName="DataType" Multiple="Yes" />
 	</DataType>

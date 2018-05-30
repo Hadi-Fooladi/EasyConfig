@@ -59,5 +59,13 @@ namespace EasyConfig
 			foreach (var N in Nodes)
 				N.WriteSave(N.TagName ?? N.Name, N.Multiple);
 		}
+
+		public void WriteAssignment() => WriteAssignment(DataTypeName, Multiple, Instantiate);
+
+		protected override void DefaultConstructorPost()
+		{
+			foreach (var N in Nodes)
+				N.WriteAssignment();
+		}
 	}
 }

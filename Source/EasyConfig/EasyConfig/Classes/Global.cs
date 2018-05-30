@@ -8,6 +8,8 @@ namespace EasyConfig
 
 		public static IndentedStreamWriter SW;
 
-		public static FlagParameter NoSaveFlag = new FlagParameter("NoSave", "Do not implement 'Save' method");
+		public static FlagParameter
+			NoSaveFlag = new FlagParameter("NoSave", "Do not implement 'Save' method"),
+			DefaultConstructorFlag = new FlagParameter("dc", "Implement default constructor");
 	}
 }

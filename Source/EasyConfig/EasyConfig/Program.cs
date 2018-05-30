@@ -41,6 +41,7 @@ namespace EasyConfig
 				P.Add(pPublic);
 				P.Add(pWritable);
 				P.Add(Global.NoSaveFlag);
+				P.Add(Global.DefaultConstructorFlag);
 				#endregion
 
 				#region Arguments Analysis

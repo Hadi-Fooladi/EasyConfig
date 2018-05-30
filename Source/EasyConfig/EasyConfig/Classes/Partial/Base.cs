@@ -47,13 +47,20 @@ namespace EasyConfig
 
 		public void WriteSave(string TagName, bool isList)
 		{
-			var SW = Global.SW;
-
 			var Format = isList
 				? "foreach (var X in {0}) X.Save(Node.AppendNode(\"{1}\"));"
 				: "if ({0} != null) {0}.Save(Node.AppendNode(\"{1}\"));";
 
-			SW.WriteLine(Format, Name, TagName);
+			Global.SW.WriteLine(Format, Name, TagName);
+		}
+
+		public void WriteAssignment(string Type, bool isList, bool Instantiate)
+		{
+			if (isList)
+				Global.SW.WriteLine($"{Name} = new List<{Type}>();");
+			else
+				if (Instantiate)
+					Global.SW.WriteLine($"{Name} = new {Type}();");
 		}
 	}
 }

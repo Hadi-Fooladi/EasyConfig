@@ -21,9 +21,18 @@ namespace EasyConfig
 				SW.WriteLine();
 
 				#region Writing Constructors
-				// Default Constructor
-				SW.WriteLine($"public {T}() {{ }}");
-				SW.WriteLine();
+				if (Global.DefaultConstructorFlag.Exist)
+				{
+					// Default Constructor
+					SW.WriteLine($"public {T}()");
+					SW.Block(() =>
+					{
+						foreach (var A in Attributes) A.WriteAssignment();
+						foreach (var F in Fields) F.WriteAssignment();
+
+						DefaultConstructorPost();
+					});
+				}
 
 				ImplementAdditionalConstructor();
 				SW.WriteLine();
@@ -55,6 +64,8 @@ namespace EasyConfig
 		protected virtual void ConstructorPost() { }
 		protected virtual void ImplementNestedClasses() { }
 		protected virtual void ImplementAdditionalConstructor() { }
+		protected virtual void DefaultConstructorPost() { }
+
 
 		protected virtual void DeclareFields()
 		{
