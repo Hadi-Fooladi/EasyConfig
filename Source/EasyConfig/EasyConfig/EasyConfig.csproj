@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{911761FF-9E73-4503-A21A-AA05803848B3}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>EasyConfig</RootNamespace>
     <AssemblyName>EasyConfig</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,32 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Parameters\FlagParameter.cs" />
-    <Compile Include="Classes\Partial\Attribute.cs" />
-    <Compile Include="Classes\Partial\DataType.cs" />
-    <Compile Include="Classes\Ext\Misc.cs" />
-    <Compile Include="Classes\Global.cs" />
-    <Compile Include="Classes\IndentedStreamWriter.cs" />
-    <Compile Include="Classes\Partial\Enum.cs" />
-    <Compile Include="Classes\Partial\EnumMember.cs" />
-    <Compile Include="Classes\Partial\Field.cs" />
-    <Compile Include="Classes\Partial\Node.cs" />
-    <Compile Include="Classes\Parameters\OneStringParameter.cs" />
-    <Compile Include="Classes\Partial\CRoot.cs" />
-    <Compile Include="Classes\Parameters\ZeroParameter.cs" />
-    <Compile Include="Classes\Partial\Base.cs" />
-    <Compile Include="Interfaces\IParameter.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Attribute Types\IAttributeType.cs" />
+    <Compile Include="Attributes\EasyConfigAttribute.cs" />
+    <Compile Include="Attribute Types\Primitives.cs" />
+    <Compile Include="EasyConfig.cs" />
+    <Compile Include="Ext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Sample.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

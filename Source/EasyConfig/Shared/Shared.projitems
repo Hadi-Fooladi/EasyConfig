@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Defaults.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Schema.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)XML.cs" />
   </ItemGroup>
 </Project>
