@@ -6,7 +6,7 @@ namespace XmlExt
 	/// <summary>
 	/// Useful extension methods for working with XML documents
 	/// </summary>
-	public static class XmlExt
+	internal static class XmlExt
 	{
 		public static bool ConvertToYN(string S) => string.Equals(S, "Yes", StringComparison.OrdinalIgnoreCase);
 

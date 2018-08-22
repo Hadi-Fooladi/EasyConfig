@@ -18,6 +18,9 @@ namespace Test
 			public int Age;
 			public string Name;
 
+			[EasyConfig(Tag = "Child")]
+			public List<Person> Children;
+
 			public Person() { }
 
 			public Person(string Name, int Age)
@@ -26,7 +29,15 @@ namespace Test
 				this.Name = Name;
 			}
 
-			public override string ToString() => $"{Name} ({Age})";
+			public override string ToString()
+			{
+				var S = $"{Name} ({Age})";
+
+				if (Children != null && Children.Count > 0)
+					S += $"<{string.Join(", ", Children)}>";
+
+				return S;
+			}
 		}
 	}
 }

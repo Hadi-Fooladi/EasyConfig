@@ -58,9 +58,7 @@ namespace EasyConfig
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 			{
 				var FieldValue = F.GetValue(Value);
-				if (FieldValue == null)
-
-					continue;
+				if (FieldValue == null) continue;
 
 				var AttributeType = AttributeMap.GetValueOrNull(F.FieldType);
 				if (AttributeType != null)
@@ -83,7 +81,7 @@ namespace EasyConfig
 		private static void CreateAndFillNode(XmlNode Container, string TagName, object Value)
 			=> FillNode(Container.AppendNode(TagName), Value);
 
-		public object Load(XmlNode Tag, Type T)
+		private static object Load(XmlNode Tag, Type T)
 		{
 			var Result = Activator.CreateInstance(T);
 
