@@ -43,8 +43,6 @@ namespace EasyConfig
 		#region Constants
 		private const BindingFlags PUBLIC_INSTANCE_FLAG = BindingFlags.Instance | BindingFlags.Public;
 
-		private static readonly EasyConfigAttribute DefaultAttribute = new EasyConfigAttribute();
-
 		private static readonly IReadOnlyDictionary<Type, IAttributeType> AttributeMap = new Dictionary<Type, IAttributeType>
 		{
 			{ typeof(int), new IntAttr() },
@@ -60,33 +58,35 @@ namespace EasyConfig
 		private static void FillNode(XmlNode Tag, object Value)
 		{
 			var T = Value.GetType();
+			bool AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
 
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 			{
-				var A = F.GetCustomAttribute<EasyConfigAttribute>() ?? DefaultAttribute;
-
+				var FieldType = F.FieldType;
 				var FieldValue = F.GetValue(Value);
+
 				if (FieldValue == null)
 				{
-					if (A.Necessary)
+					if (!FieldType.IsCollection() && IsNecessary(F, AllFieldsNecessary))
 						throw new NecessaryFieldIsNullException();
 
 					continue;
 				}
 
-				var AttributeType = AttributeMap.GetValueOrNull(F.FieldType);
+				var Name = GetConfigName(F);
+
+				var AttributeType = AttributeMap.GetValueOrNull(FieldType);
 				if (AttributeType != null)
 				{
-					Tag.AddAttr(F.Name, AttributeType.ToString(FieldValue));
+					Tag.AddAttr(Name, AttributeType.ToString(FieldValue));
 					continue;
 				}
 
-				var TagName = A.Tag ?? F.Name;
 				if (FieldValue is ICollection C)
 					foreach (var X in C)
-						CreateAndFillNode(Tag, TagName, X);
+						CreateAndFillNode(Tag, Name, X);
 				else
-					CreateAndFillNode(Tag, TagName, FieldValue);
+					CreateAndFillNode(Tag, Name, FieldValue);
 			}
 		}
 
@@ -97,29 +97,36 @@ namespace EasyConfig
 		{
 			var Result = Activator.CreateInstance(T);
 
+			bool AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
+
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 			{
+				var Name = GetConfigName(F);
 				var FieldType = F.FieldType;
-				var A = F.GetCustomAttribute<EasyConfigAttribute>() ?? DefaultAttribute;
 
 				// Check field is primitive
 				var AttributeType = AttributeMap.GetValueOrNull(FieldType);
 				if (AttributeType != null)
 				{
-					var Attr = Tag.Attributes[F.Name];
+					var Attr = Tag.Attributes[Name];
 					if (Attr != null)
+						// Set value by config
 						F.SetValue(Result, AttributeType.FromString(Attr.Value));
 					else
-						if (A.Default != null)
-							F.SetValue(Result, A.Default);
+					{
+						var DefaultAttr = F.GetCustomAttribute<DefaultAttribute>();
+						if (DefaultAttr != null)
+							// Set value by default
+							F.SetValue(Result, DefaultAttr.Value);
 						else
-							if (A.Necessary)
+							// Throw exception if field is necessary
+							if (IsNecessary(F, AllFieldsNecessary))
 								throw new NecessaryFieldNotFoundException();
+					}
 
 					continue;
 				}
 
-				var TagName = A.Tag ?? F.Name;
 				if (FieldType.IsCollection())
 				{
 					Type
@@ -128,24 +135,35 @@ namespace EasyConfig
 
 					var L = (IList)Activator.CreateInstance(CollectionType);
 
-					foreach (XmlNode Node in Tag.SelectNodes($"*[local-name()='{TagName}']"))
+					foreach (XmlNode Node in Tag.SelectNodes($"*[local-name()='{Name}']"))
 						L.Add(Load(Node, ElementType));
 
 					F.SetValue(Result, L);
 				}
 				else
 				{
-					var Node = Tag.SelectSingleNode(TagName);
+					var Node = Tag.SelectSingleNode(Name);
 					if (Node != null)
 						F.SetValue(Result, Load(Node, FieldType));
 					else
-						if (A.Necessary)
+						if (IsNecessary(F, AllFieldsNecessary))
 							throw new NecessaryFieldNotFoundException();
 				}
 			}
 
 			return Result;
 		}
+
+		private static string GetConfigName(MemberInfo MI)
+		{
+			var A = MI.GetCustomAttribute<NameAttribute>();
+			return A == null ? MI.Name : A.Name;
+		}
+
+		private static bool IsNecessary(MemberInfo MI, bool Necessary)
+			=> Necessary ?
+				!MI.HasAttribute<OptionalAttribute>() :
+				MI.HasAttribute<NecessaryAttribute>();
 		#endregion
 	}
 }

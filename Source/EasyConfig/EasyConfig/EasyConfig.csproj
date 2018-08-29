@@ -51,6 +51,7 @@
     <Compile Include="EasyConfig.cs" />
     <Compile Include="Exceptions\Exceptions.cs" />
     <Compile Include="Ext.cs" />
+    <Compile Include="Ext\Misc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

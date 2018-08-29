@@ -8,23 +8,25 @@ namespace Test
 		public int Num;
 		public string Text;
 
-		[EasyConfig(Tag = "Person")]
+		[Name("Person")]
 		public List<Person> Persons;
 
 		public override string ToString() => $"Num = {Num}, Text = {Text}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
 
+		[AllFieldsNecessary]
 		public class Person
 		{
 			public int Age;
 			public string Name;
 
-			[EasyConfig(Default = 5)]
+			[Default(5)]
 			public int DefaultTest;
 
-			[EasyConfig(Necessary = true)]
+			[Optional]
+			[Name("Test")]
 			public string Necessary = "a";
 
-			[EasyConfig(Tag = "Child")]
+			[Name("Child")]
 			public List<Person> Children;
 
 			public Person() { }

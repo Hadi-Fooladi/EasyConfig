@@ -38,13 +38,13 @@ namespace Test
 				}
 			};
 
-			//Hadi.Necessary = null;
+			Hadi.Necessary = null;
 
 			var EasyConfig = new EasyConfig.EasyConfig();
 
 			try
 			{
-				EasyConfig.Save(Config, FILEPATH, "Config", VER);
+				//EasyConfig.Save(Config, FILEPATH, "Config", VER);
 
 				var C2 = EasyConfig.Load<Config>(FILEPATH, VER);
 
