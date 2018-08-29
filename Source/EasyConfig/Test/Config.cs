@@ -18,6 +18,13 @@ namespace Test
 			public int Age;
 			public string Name;
 
+
+			[EasyConfig(Default = 5)]
+			public int DefaultTest;
+
+			[EasyConfig(Necessary = true)]
+			public int Necessary;
+
 			[EasyConfig(Tag = "Child")]
 			public List<Person> Children;
 
@@ -31,7 +38,7 @@ namespace Test
 
 			public override string ToString()
 			{
-				var S = $"{Name} ({Age})";
+				var S = $"{Name} ({Age}, {DefaultTest})";
 
 				if (Children != null && Children.Count > 0)
 					S += $"<{string.Join(", ", Children)}>";

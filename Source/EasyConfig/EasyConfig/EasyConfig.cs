@@ -8,9 +8,11 @@ using System.Collections.Generic;
 namespace EasyConfig
 {
 	using Attributes;
+	using Exceptions;
 
 	public class EasyConfig
 	{
+		#region Public Methods
 		public void Save(object Config, string FilePath, string RootTagName, Version Version)
 		{
 			var Doc = new XmlDocument();
@@ -32,11 +34,13 @@ namespace EasyConfig
 			var V = Root.verAttr("Version");
 
 			if (V.Major != ExpectedVersion.Major || V.Minor > ExpectedVersion.Minor)
-				throw new Exception("Version Mismatch");
+				throw new VersionMismatchException();
 
 			return Load(Root, T);
 		}
+		#endregion
 
+		#region Constants
 		private const BindingFlags PUBLIC_INSTANCE_FLAG = BindingFlags.Instance | BindingFlags.Public;
 
 		private static readonly EasyConfigAttribute DefaultAttribute = new EasyConfigAttribute();
@@ -50,7 +54,9 @@ namespace EasyConfig
 			{ typeof(double), new DoubleAttr() },
 			{ typeof(string), new StringAttr() }
 		};
+		#endregion
 
+		#region Private Methods
 		private static void FillNode(XmlNode Tag, object Value)
 		{
 			var T = Value.GetType();
@@ -88,18 +94,25 @@ namespace EasyConfig
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 			{
 				var FieldType = F.FieldType;
+				var A = F.GetCustomAttribute<EasyConfigAttribute>() ?? DefaultAttribute;
 
+				// Check field is primitive
 				var AttributeType = AttributeMap.GetValueOrNull(FieldType);
 				if (AttributeType != null)
 				{
 					var Attr = Tag.Attributes[F.Name];
 					if (Attr != null)
 						F.SetValue(Result, AttributeType.FromString(Attr.Value));
+					else
+						if (A.Default != null)
+							F.SetValue(Result, A.Default);
+						else
+							if (A.Necessary)
+								throw new NecessaryFieldNotFoundException();
 
 					continue;
 				}
 
-				var A = F.GetCustomAttribute<EasyConfigAttribute>() ?? DefaultAttribute;
 				var TagName = A.Tag ?? F.Name;
 
 				if (FieldType.IsCollection())
@@ -120,10 +133,14 @@ namespace EasyConfig
 					var Node = Tag.SelectSingleNode(TagName);
 					if (Node != null)
 						F.SetValue(Result, Load(Node, FieldType));
+					else
+						if (A.Necessary)
+							throw new NecessaryFieldNotFoundException();
 				}
 			}
 
 			return Result;
 		}
+		#endregion
 	}
 }

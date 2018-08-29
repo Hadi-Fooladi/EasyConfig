@@ -49,6 +49,7 @@
     <Compile Include="Attributes\EasyConfigAttribute.cs" />
     <Compile Include="Attribute Types\Primitives.cs" />
     <Compile Include="EasyConfig.cs" />
+    <Compile Include="Exceptions\Exceptions.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

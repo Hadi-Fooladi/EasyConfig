@@ -42,9 +42,17 @@ namespace Test
 
 			EasyConfig.Save(Config, FILEPATH, "Config", VER);
 
-			var C2 = EasyConfig.Load<Config>(FILEPATH, VER);
+			try
+			{
+				var C2 = EasyConfig.Load<Config>(FILEPATH, VER);
 
-			Console.WriteLine(C2);
+				Console.WriteLine(C2);
+			}
+			catch (Exception Ex)
+			{
+				Console.WriteLine($"Error: {Ex.Message}");
+			}
+
 			Console.WriteLine();
 			Console.WriteLine();
 			Console.WriteLine("Press any key to exit...");
