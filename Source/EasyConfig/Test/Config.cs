@@ -18,12 +18,11 @@ namespace Test
 			public int Age;
 			public string Name;
 
-
 			[EasyConfig(Default = 5)]
 			public int DefaultTest;
 
 			[EasyConfig(Necessary = true)]
-			public int Necessary;
+			public string Necessary = "a";
 
 			[EasyConfig(Tag = "Child")]
 			public List<Person> Children;

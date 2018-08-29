@@ -63,8 +63,16 @@ namespace EasyConfig
 
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 			{
+				var A = F.GetCustomAttribute<EasyConfigAttribute>() ?? DefaultAttribute;
+
 				var FieldValue = F.GetValue(Value);
-				if (FieldValue == null) continue;
+				if (FieldValue == null)
+				{
+					if (A.Necessary)
+						throw new NecessaryFieldIsNullException();
+
+					continue;
+				}
 
 				var AttributeType = AttributeMap.GetValueOrNull(F.FieldType);
 				if (AttributeType != null)
@@ -73,9 +81,7 @@ namespace EasyConfig
 					continue;
 				}
 
-				var A = F.GetCustomAttribute<EasyConfigAttribute>() ?? DefaultAttribute;
 				var TagName = A.Tag ?? F.Name;
-
 				if (FieldValue is ICollection C)
 					foreach (var X in C)
 						CreateAndFillNode(Tag, TagName, X);
@@ -114,7 +120,6 @@ namespace EasyConfig
 				}
 
 				var TagName = A.Tag ?? F.Name;
-
 				if (FieldType.IsCollection())
 				{
 					Type
