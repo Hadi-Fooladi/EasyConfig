@@ -13,28 +13,23 @@ namespace EasyConfig
 	public class EasyConfig
 	{
 		#region Public Methods
-		public void Save(object Config, string FilePath, string RootTagName, Version Version)
+		public void Save(object Config, string FilePath, string RootTagName)
 		{
 			var Doc = new XmlDocument();
 			var Root = Doc.AppendNode(RootTagName);
 
-			Root.AddAttr("Version", Version);
 			FillNode(Root, Config);
 
 			Doc.Save(FilePath);
 		}
 
-		public T Load<T>(string FilePath, Version ExpectedVersion) => (T)Load(FilePath, typeof(T), ExpectedVersion);
-		public object Load(string FilePath, Type T, Version ExpectedVersion)
+		public T Load<T>(string FilePath) => (T)Load(FilePath, typeof(T));
+		public object Load(string FilePath, Type T)
 		{
 			var Doc = new XmlDocument();
 			Doc.Load(FilePath);
 
 			var Root = Doc.DocumentElement;
-			var V = Root.verAttr("Version");
-
-			if (V.Major != ExpectedVersion.Major || V.Minor > ExpectedVersion.Minor)
-				throw new VersionMismatchException();
 
 			return Load(Root, T);
 		}
@@ -50,7 +45,8 @@ namespace EasyConfig
 			{ typeof(char), new CharAttr() },
 			{ typeof(float), new SingleAttr() },
 			{ typeof(double), new DoubleAttr() },
-			{ typeof(string), new StringAttr() }
+			{ typeof(string), new StringAttr() },
+			{ typeof(Version), new VersionAttr() }
 		};
 		#endregion
 
@@ -75,6 +71,12 @@ namespace EasyConfig
 
 				var Name = GetConfigName(F);
 
+				if (FieldType.IsEnum)
+				{
+					Tag.AddAttr(Name, FieldValue);
+					continue;
+				}
+
 				var AttributeType = AttributeMap.GetValueOrNull(FieldType);
 				if (AttributeType != null)
 				{
@@ -96,7 +98,6 @@ namespace EasyConfig
 		private static object Load(XmlNode Tag, Type T)
 		{
 			var Result = Activator.CreateInstance(T);
-
 			bool AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
 
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
@@ -104,14 +105,29 @@ namespace EasyConfig
 				var Name = GetConfigName(F);
 				var FieldType = F.FieldType;
 
+				#region Enum Or Primitive
+				// Check field is enum
+				if (FieldType.IsEnum)
+				{
+					SetValue(Value => Enum.Parse(FieldType, Value));
+					continue;
+				}
+
 				// Check field is primitive
 				var AttributeType = AttributeMap.GetValueOrNull(FieldType);
 				if (AttributeType != null)
 				{
+					SetValue(Value => AttributeType.FromString(Value));
+					continue;
+				}
+
+				// Nested Method
+				void SetValue(Func<string, object> Converter)
+				{
 					var Attr = Tag.Attributes[Name];
 					if (Attr != null)
 						// Set value by config
-						F.SetValue(Result, AttributeType.FromString(Attr.Value));
+						F.SetValue(Result, Converter(Attr.Value));
 					else
 					{
 						var DefaultAttr = F.GetCustomAttribute<DefaultAttribute>();
@@ -123,9 +139,8 @@ namespace EasyConfig
 							if (IsNecessary(F, AllFieldsNecessary))
 								throw new NecessaryFieldNotFoundException();
 					}
-
-					continue;
 				}
+				#endregion
 
 				if (FieldType.IsCollection())
 				{

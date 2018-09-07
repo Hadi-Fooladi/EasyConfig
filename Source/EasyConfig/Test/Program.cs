@@ -7,7 +7,6 @@ namespace Test
 	{
 		static void Main(string[] args)
 		{
-			Version VER = new Version(1, 0);
 			const string FILEPATH = "Test.xml";
 
 			var Hadi = new Config.Person("Hadi", 34);
@@ -27,7 +26,7 @@ namespace Test
 			var Config = new Config
 			{
 				Num = 23,
-				Text = "Easy<Config> \"@@!!~~'\"AA\nNew Line!!!",
+				Text = "123",
 				Persons = new List<Config.Person>
 				{
 					Hadi,
@@ -35,7 +34,8 @@ namespace Test
 					A,
 					B,
 					C
-				}
+				},
+				Version = new Version(2, 4)
 			};
 
 			Hadi.Necessary = null;
@@ -44,9 +44,9 @@ namespace Test
 
 			try
 			{
-				//EasyConfig.Save(Config, FILEPATH, "Config", VER);
+				//EasyConfig.Save(Config, FILEPATH, "Config");
 
-				var C2 = EasyConfig.Load<Config>(FILEPATH, VER);
+				var C2 = EasyConfig.Load<Config>(FILEPATH);
 
 				Console.WriteLine(C2);
 			}

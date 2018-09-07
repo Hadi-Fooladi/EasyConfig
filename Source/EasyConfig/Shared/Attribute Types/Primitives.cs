@@ -37,4 +37,10 @@ namespace EasyConfig
 		public object FromString(string S) => double.Parse(S);
 		public string ToString(object Value) => Value.ToString();
 	}
+
+	internal class VersionAttr : IAttributeType
+	{
+		public object FromString(string S) => new Version(S);
+		public string ToString(object Value) => Value.ToString();
+	}
 }

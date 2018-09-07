@@ -15,6 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Defaults.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\Exceptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Ext\Misc.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)XML.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Ext\XML.cs" />
   </ItemGroup>
 </Project>

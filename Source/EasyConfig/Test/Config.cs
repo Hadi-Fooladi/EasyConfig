@@ -1,17 +1,29 @@
-﻿using EasyConfig.Attributes;
+﻿using System;
+using EasyConfig.Attributes;
 using System.Collections.Generic;
 
 namespace Test
 {
+	internal enum eBloodType
+	{
+		Unknown,
+		A,
+		B,
+		O,
+		AB
+	}
+
 	internal class Config
 	{
+		public Version Version;
+
 		public int Num;
 		public string Text;
 
 		[Name("Person")]
 		public List<Person> Persons;
 
-		public override string ToString() => $"Num = {Num}, Text = {Text}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
+		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
 
 		[AllFieldsNecessary]
 		public class Person
@@ -29,6 +41,9 @@ namespace Test
 			[Name("Child")]
 			public List<Person> Children;
 
+			[Optional]
+			public eBloodType BloodType;
+
 			public Person() { }
 
 			public Person(string Name, int Age)
@@ -39,7 +54,7 @@ namespace Test
 
 			public override string ToString()
 			{
-				var S = $"{Name} ({Age}, {DefaultTest})";
+				var S = $"{Name} ({Age}, {DefaultTest}, {BloodType})";
 
 				if (Children != null && Children.Count > 0)
 					S += $"<{string.Join(", ", Children)}>";
