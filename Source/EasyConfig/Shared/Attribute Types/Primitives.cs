@@ -5,7 +5,7 @@ namespace EasyConfig
 	internal class StringAttr : IAttributeType
 	{
 		public object FromString(string S) => S;
-		public string ToString(object Value) => Value.ToString();
+		public string ToString(object Value) => Convert.ToString(Value);
 	}
 
 	internal class IntAttr : IAttributeType
@@ -41,6 +41,6 @@ namespace EasyConfig
 	internal class VersionAttr : IAttributeType
 	{
 		public object FromString(string S) => new Version(S);
-		public string ToString(object Value) => Value.ToString();
+		public string ToString(object Value) => Convert.ToString(Value);
 	}
 }

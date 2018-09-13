@@ -63,13 +63,13 @@ namespace EasyConfig
 
 				if (FieldValue == null)
 				{
-					if (!FieldType.IsCollection() && IsNecessary(F, AllFieldsNecessary))
+					if (!FieldType.IsCollection() && F.IsNecessary(AllFieldsNecessary))
 						throw new NecessaryFieldIsNullException();
 
 					continue;
 				}
 
-				var Name = GetConfigName(F);
+				var Name = F.GetConfigName();
 
 				if (FieldType.IsEnum)
 				{
@@ -102,7 +102,7 @@ namespace EasyConfig
 
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 			{
-				var Name = GetConfigName(F);
+				var Name = F.GetConfigName();
 				var FieldType = F.FieldType;
 
 				#region Enum Or Primitive
@@ -136,7 +136,7 @@ namespace EasyConfig
 							F.SetValue(Result, DefaultAttr.Value);
 						else
 							// Throw exception if field is necessary
-							if (IsNecessary(F, AllFieldsNecessary))
+							if (F.IsNecessary(AllFieldsNecessary))
 								throw new NecessaryFieldNotFoundException();
 					}
 				}
@@ -161,24 +161,13 @@ namespace EasyConfig
 					if (Node != null)
 						F.SetValue(Result, Load(Node, FieldType));
 					else
-						if (IsNecessary(F, AllFieldsNecessary))
+						if (F.IsNecessary(AllFieldsNecessary))
 							throw new NecessaryFieldNotFoundException();
 				}
 			}
 
 			return Result;
 		}
-
-		private static string GetConfigName(MemberInfo MI)
-		{
-			var A = MI.GetCustomAttribute<NameAttribute>();
-			return A == null ? MI.Name : A.Name;
-		}
-
-		private static bool IsNecessary(MemberInfo MI, bool Necessary)
-			=> Necessary ?
-				!MI.HasAttribute<OptionalAttribute>() :
-				MI.HasAttribute<NecessaryAttribute>();
 		#endregion
 	}
 }

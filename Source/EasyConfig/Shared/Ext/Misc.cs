@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 namespace EasyConfig
 {
+	using Attributes;
+
 	internal static class MiscExt
 	{
 		private static readonly Type CollectionType = typeof(ICollection);
@@ -41,5 +43,16 @@ namespace EasyConfig
 		public static bool HasAttribute<T>(this MemberInfo MI)
 			where T : Attribute
 			=> MI.GetCustomAttribute<T>() != null;
+
+		public static string GetConfigName(this MemberInfo MI)
+		{
+			var A = MI.GetCustomAttribute<NameAttribute>();
+			return A == null ? MI.Name : A.Name;
+		}
+
+		public static bool IsNecessary(this MemberInfo MI, bool Necessary)
+			=> Necessary ?
+				!MI.HasAttribute<OptionalAttribute>() :
+				MI.HasAttribute<NecessaryAttribute>();
 	}
 }
