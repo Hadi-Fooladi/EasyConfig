@@ -26,7 +26,8 @@ namespace Editor_Test
 			{
 				Num = 5,
 				Text = "OK",
-				Version = new Version(5, 4)
+				Version = new Version(5, 4),
+				Oct = eOctal.Five
 			};
 
 			G.Children.Add(new EditorControl(C));

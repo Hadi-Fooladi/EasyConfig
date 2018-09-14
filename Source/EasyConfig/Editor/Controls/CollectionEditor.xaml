@@ -8,7 +8,31 @@
 	xmlns:local="clr-namespace:EasyConfig.Editor"
 	mc:Ignorable="d" 
 	d:DesignHeight="450" d:DesignWidth="800">
-	<Grid>
-			
-	</Grid>
+
+	<StackPanel Orientation="Horizontal">
+		<DockPanel>
+			<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+				<StackPanel.Resources>
+					<Style TargetType="Button">
+						<Setter Property="Width" Value="32" />
+						<Setter Property="Height" Value="32" />
+						<Setter Property="BorderThickness" Value="0" />
+						<Setter Property="Background" Value="Transparent" />
+					</Style>
+				</StackPanel.Resources>
+
+				<Button Click="bAdd_OnClick">
+					<Image Source="../Resources/Blue-Plus.png" />
+				</Button>
+
+				<Button Click="bDel_OnClick">
+					<Image Source="../Resources/Red-Cross.png" />
+				</Button>
+			</StackPanel>
+
+			<ListBox Name="LB" Width="200" SelectionChanged="LB_OnSelectionChanged" />
+		</DockPanel>
+		
+		<ContentControl Name="FieldEditorContainer" />
+	</StackPanel>
 </UserControl>

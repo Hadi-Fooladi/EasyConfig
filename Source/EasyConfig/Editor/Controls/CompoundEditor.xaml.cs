@@ -69,6 +69,12 @@ namespace EasyConfig.Editor
 				this.FI = FI;
 				Type = FI.FieldType;
 
+				if (Type.IsEnum)
+				{
+					Editor = new EnumEditor(Value);
+					return;
+				}
+
 				var AttributeType = AttributeMap.GetValueOrNull(Type);
 				if (AttributeType != null)
 				{
@@ -107,9 +113,7 @@ namespace EasyConfig.Editor
 		private void LB_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			var FI = LB.SelectedItem as FieldItem;
-			if (FI == null) return;
-
-			FieldEditorContainer.Content = FI.Editor.Control;
+			FieldEditorContainer.Content = FI?.Editor.Control;
 		}
 		#endregion
 	}

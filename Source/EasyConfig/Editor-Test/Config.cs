@@ -13,6 +13,19 @@ namespace Editor_Test
 		AB
 	}
 
+	[Flags]
+	internal enum eOctal
+	{
+		Zero = 0,
+		One = 1,
+		Two = 2,
+		Three = 3,
+		Four = 4,
+		Five,
+		Six,
+		Seven
+	}
+
 	internal class Config
 	{
 		public Version Version;
@@ -22,6 +35,8 @@ namespace Editor_Test
 
 		[Name("Person")]
 		public List<Person> Persons;
+
+		public eOctal Oct;
 
 		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
 

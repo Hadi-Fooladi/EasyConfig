@@ -51,6 +51,9 @@
     <Compile Include="Controls\PrimitiveEditor.xaml.cs">
       <DependentUpon>PrimitiveEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\EnumEditor.xaml.cs">
+      <DependentUpon>EnumEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -71,8 +74,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\EnumEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Blue-Plus.png" />
+    <Resource Include="Resources\Red-Cross.png" />
+  </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
