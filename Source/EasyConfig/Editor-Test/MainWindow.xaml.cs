@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 using EasyConfig.Editor;
 
@@ -18,19 +8,34 @@ namespace Editor_Test
 {
 	internal partial class MainWindow
 	{
+		private const string FILENAME = "Config.xml";
+
 		public MainWindow()
 		{
 			InitializeComponent();
 
-			var C = new Config
-			{
-				Num = 5,
-				Text = "OK",
-				Version = new Version(5, 4),
-				Oct = eOctal.Five
-			};
+			object C;
+			if (File.Exists(FILENAME))
+				C = EasyConfig.Load<Config>(FILENAME);
+			else
+				C = new Config
+				{
+					Num = 5,
+					Text = "OK",
+					Version = new Version(5, 4),
+					Oct = eOctal.Five
+				};
 
-			G.Children.Add(new EditorControl(C));
+			CC.Content = EC = new EditorControl(C);
+		}
+
+		private readonly EditorControl EC;
+		private readonly EasyConfig.EasyConfig EasyConfig = new EasyConfig.EasyConfig();
+
+		private void bSave_OnClick(object sender, RoutedEventArgs e)
+		{
+			EasyConfig.Save(EC.Value, FILENAME, "Config");
+			MessageBox.Show("Save Completed!");
 		}
 	}
 }

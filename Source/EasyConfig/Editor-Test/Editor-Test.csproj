@@ -89,6 +89,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EasyConfig\EasyConfig.csproj">
+      <Project>{911761ff-9e73-4503-a21a-aa05803848b3}</Project>
+      <Name>EasyConfig</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Editor\Editor.csproj">
       <Project>{0f9a6009-e66c-40e6-9da9-2ce8eb4f50df}</Project>
       <Name>Editor</Name>

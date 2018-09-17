@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Reflection;
-using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Collections.Generic;
 
 namespace EasyConfig.Editor
 {
@@ -54,7 +54,22 @@ namespace EasyConfig.Editor
 				Items.Add(new FieldItem(F, F.GetValue(Value)));
 		}
 
+		#region IEditor Members
 		public Control Control => this;
+
+		public object Value
+		{
+			get
+			{
+				var Result = Activator.CreateInstance(T);
+
+				foreach (FieldItem FI in LB.Items)
+					FI.Save(Result);
+
+				return Result;
+			}
+		}
+		#endregion
 
 		#region Nested Class
 		private class FieldItem
@@ -89,6 +104,8 @@ namespace EasyConfig.Editor
 			}
 
 			public override string ToString() => FI.Name;
+
+			public void Save(object Obj) => FI.SetValue(Obj, Editor.Value);
 		}
 		#endregion
 

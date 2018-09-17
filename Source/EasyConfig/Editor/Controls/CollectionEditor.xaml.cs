@@ -22,10 +22,24 @@ namespace EasyConfig.Editor
 				LB.Items.Add(new ListItem(ElementType, X));
 		}
 
-		private readonly IList L;
 		private readonly Type ElementType, ListType;
 
+		#region IEditor Members
 		public Control Control => this;
+
+		public object Value
+		{
+			get
+			{
+				var L = (IList)Activator.CreateInstance(ListType);
+
+				foreach (ListItem Item in LB.Items)
+					L.Add(Item.Editor.Value);
+
+				return L;
+			}
+		}
+		#endregion
 
 		#region Nested Class
 		private class ListItem

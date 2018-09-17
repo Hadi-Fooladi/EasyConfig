@@ -54,6 +54,7 @@
     <Compile Include="Controls\EnumEditor.xaml.cs">
       <DependentUpon>EnumEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ext\Misc.cs" />
     <Compile Include="IEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -82,6 +83,12 @@
   <ItemGroup>
     <Resource Include="Resources\Blue-Plus.png" />
     <Resource Include="Resources\Red-Cross.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EasyConfig\EasyConfig.csproj">
+      <Project>{911761ff-9e73-4503-a21a-aa05803848b3}</Project>
+      <Name>EasyConfig</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

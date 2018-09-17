@@ -11,9 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Attribute Types\IAttributeType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Attribute Types\Primitives.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Attributes\EasyConfigAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Defaults.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\Exceptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Ext\Misc.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Ext\XML.cs" />
   </ItemGroup>

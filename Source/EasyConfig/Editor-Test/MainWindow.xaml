@@ -9,8 +9,14 @@
 	mc:Ignorable="d"
 	Title="MainWindow"
 	Width="800" Height="450"
+	FontSize="16"
 	WindowStartupLocation="CenterScreen">
 	
-	<Grid Name="G" />
-
+	<DockPanel>
+		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
+			<Button Padding="10,5" Click="bSave_OnClick">Save</Button>
+		</StackPanel>
+		
+		<ContentControl Name="CC" />
+	</DockPanel>
 </Window>

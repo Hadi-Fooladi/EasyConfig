@@ -39,6 +39,29 @@ namespace EasyConfig.Editor
 		private readonly Type T;
 		private readonly bool Flags;
 
+		#region IEditor Members
 		public Control Control => this;
+
+		public object Value
+		{
+			get
+			{
+				int Result = 0;
+
+				foreach (ToggleButton X in SP.Children)
+				{
+					if (X.IsChecked.isFalse()) continue;
+
+					var Member = (string)X.Content;
+					Result |= (int)Enum.Parse(T, Member);
+
+					if (!Flags)
+						break;
+				}
+
+				return Enum.ToObject(T, Result);
+			}
+		}
+		#endregion
 	}
 }
