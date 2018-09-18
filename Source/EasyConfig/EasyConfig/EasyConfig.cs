@@ -86,7 +86,10 @@ namespace EasyConfig
 
 				if (FieldValue is ICollection C)
 					foreach (var X in C)
-						CreateAndFillNode(Tag, Name, X);
+					{
+						if (X != null)
+							CreateAndFillNode(Tag, Name, X);
+					}
 				else
 					CreateAndFillNode(Tag, Name, FieldValue);
 			}
