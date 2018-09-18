@@ -12,5 +12,30 @@
 		private readonly CompoundEditor CE;
 
 		public object Value => CE.Value;
+
+		public void Validate()
+		{
+			try
+			{
+				CE.Validate();
+				Msg.Info("Validation Succeeded");
+			}
+			catch (ValidationException VE)
+			{
+				for(;;)
+				{
+					VE.ShowItemInEditor();
+
+					var E = VE.InnerException;
+					if (E is ValidationException Ex)
+						VE = Ex;
+					else
+					{
+						Msg.Error(E.Message);
+						break;
+					}
+				}
+			}
+		}
 	}
 }

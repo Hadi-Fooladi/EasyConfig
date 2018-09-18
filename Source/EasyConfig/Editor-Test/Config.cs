@@ -40,6 +40,8 @@ namespace Editor_Test
 
 		public eOctal Oct;
 
+		public Person Root;
+
 		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
 
 		[AllFieldsNecessary]

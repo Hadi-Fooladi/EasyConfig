@@ -61,6 +61,8 @@ namespace EasyConfig.Editor
 		{
 			get
 			{
+				if (LB.Visibility != Visibility.Visible) return null;
+
 				var Result = Activator.CreateInstance(T);
 
 				foreach (FieldItem FI in LB.Items)
@@ -69,6 +71,21 @@ namespace EasyConfig.Editor
 				return Result;
 			}
 		}
+
+		public void Validate()
+		{
+			foreach (FieldItem FI in LB.Items)
+				try
+				{
+					FI.Editor.Validate();
+				}
+				catch (Exception E)
+				{
+					throw new ValidationException(this, FI, E);
+				}
+		}
+
+		public void ShowItem(object Item) => LB.SelectedItem = Item;
 		#endregion
 
 		#region Nested Class

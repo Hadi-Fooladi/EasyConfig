@@ -54,8 +54,10 @@
     <Compile Include="Controls\EnumEditor.xaml.cs">
       <DependentUpon>EnumEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Exceptions\ValidationException.cs" />
     <Compile Include="Ext\Misc.cs" />
     <Compile Include="IEditor.cs" />
+    <Compile Include="Msg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

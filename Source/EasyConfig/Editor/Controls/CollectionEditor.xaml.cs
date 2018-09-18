@@ -39,6 +39,21 @@ namespace EasyConfig.Editor
 				return L;
 			}
 		}
+
+		public void Validate()
+		{
+			foreach (ListItem Item in LB.Items)
+				try
+				{
+					Item.Editor.Validate();
+				}
+				catch (Exception E)
+				{
+					throw new ValidationException(this, Item, E);
+				}
+		}
+
+		public void ShowItem(object Item) => LB.SelectedItem = Item;
 		#endregion
 
 		#region Nested Class

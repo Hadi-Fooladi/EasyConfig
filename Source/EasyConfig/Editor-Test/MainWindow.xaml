@@ -14,7 +14,15 @@
 	
 	<DockPanel>
 		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="5">
-			<Button Padding="10,5" Click="bSave_OnClick">Save</Button>
+			<StackPanel.Resources>
+				<Style TargetType="Button">
+					<Setter Property="Padding" Value="10,5" />
+					<Setter Property="Margin" Value="0,0,5,0" />
+				</Style>
+			</StackPanel.Resources>
+
+			<Button Click="bSave_OnClick">Save</Button>
+			<Button Click="bValidate_OnClick">Validate</Button>
 		</StackPanel>
 		
 		<ContentControl Name="CC" />

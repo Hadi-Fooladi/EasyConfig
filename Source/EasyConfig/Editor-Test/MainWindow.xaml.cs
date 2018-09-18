@@ -32,10 +32,17 @@ namespace Editor_Test
 		private readonly EditorControl EC;
 		private readonly EasyConfig.EasyConfig EasyConfig = new EasyConfig.EasyConfig();
 
+		#region Event Handlers
 		private void bSave_OnClick(object sender, RoutedEventArgs e)
 		{
 			EasyConfig.Save(EC.Value, FILENAME, "Config");
 			MessageBox.Show("Save Completed!");
 		}
+
+		private void bValidate_OnClick(object sender, RoutedEventArgs e)
+		{
+			EC.Validate();
+		}
+		#endregion
 	}
 }

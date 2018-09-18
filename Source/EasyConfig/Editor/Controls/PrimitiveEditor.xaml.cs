@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace EasyConfig.Editor
@@ -33,6 +34,22 @@ namespace EasyConfig.Editor
 			=> isBool ?
 				rbYes.IsChecked.isTrue() :
 				TypeConverter.FromString(TB.Text);
+
+		public void Validate()
+		{
+			if (isBool) return;
+
+			try
+			{
+				TypeConverter.FromString(TB.Text);
+			}
+			catch (Exception E)
+			{
+				throw new ValidationException(this, null, E);
+			}
+		}
+
+		public void ShowItem(object Item) { }
 		#endregion
 	}
 }

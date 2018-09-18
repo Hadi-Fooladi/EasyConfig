@@ -62,6 +62,9 @@ namespace EasyConfig.Editor
 				return Enum.ToObject(T, Result);
 			}
 		}
+
+		public void Validate() { }
+		public void ShowItem(object Item) { }
 		#endregion
 	}
 }
