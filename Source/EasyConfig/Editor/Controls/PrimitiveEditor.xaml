@@ -7,7 +7,6 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:EasyConfig.Editor"
 	mc:Ignorable="d"
-	FontSize="16"
 	Width="200" d:DesignHeight="450" Padding="5">
 
 	<StackPanel>

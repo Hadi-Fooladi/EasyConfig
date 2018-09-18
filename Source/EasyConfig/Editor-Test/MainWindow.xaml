@@ -9,7 +9,7 @@
 	mc:Ignorable="d"
 	Title="MainWindow"
 	Width="800" Height="450"
-	FontSize="16"
+	FontSize="18"
 	WindowStartupLocation="CenterScreen">
 	
 	<DockPanel>
