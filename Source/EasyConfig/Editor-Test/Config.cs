@@ -33,6 +33,8 @@ namespace Editor_Test
 		public int Num = 7;
 		public string Text = "N/A";
 
+		public bool Boolean;
+
 		[Name("Person")]
 		public List<Person> Persons;
 
@@ -45,6 +47,8 @@ namespace Editor_Test
 		{
 			public int Age;
 			public string Name;
+
+			public bool Married;
 
 			[Default(5)]
 			public int DefaultTest;

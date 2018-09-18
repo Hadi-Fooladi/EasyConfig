@@ -12,8 +12,21 @@
 
 	<StackPanel>
 		<DockPanel>
-			<TextBlock Text="Value:" Margin="5,0" />
-			<TextBox Name="TB" />
+			<TextBlock DockPanel.Dock="Left" Text="Value:" Margin="5,0" VerticalAlignment="Center" />
+			
+			<Grid>
+				<TextBox Name="TB" />
+
+				<Grid Name="gYesNo" Visibility="Collapsed">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<RadioButton Name="rbYes"  Grid.Column="0" VerticalContentAlignment="Center" HorizontalAlignment="Center">Yes</RadioButton>
+					<RadioButton Name="rbNo" Grid.Column="1" VerticalContentAlignment="Center" HorizontalAlignment="Center">No</RadioButton>
+				</Grid>
+			</Grid>
 		</DockPanel>
 	</StackPanel>
 </UserControl>
