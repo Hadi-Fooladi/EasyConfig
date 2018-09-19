@@ -20,6 +20,8 @@ namespace EasyConfig.Editor
 				gYesNo.Visibility = Visibility.Visible;
 			}
 
+			lblType.Text = TypeConverter.TypeName;
+
 			if (Default == null)
 				DefaultPanel.Visibility = Visibility.Collapsed;
 			else

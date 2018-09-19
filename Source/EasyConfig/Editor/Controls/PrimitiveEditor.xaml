@@ -28,6 +28,11 @@
 			</Grid>
 		</DockPanel>
 
+		<DockPanel Margin="0,10,0,0">
+			<TextBlock DockPanel.Dock="Left" Text="Type:" FontWeight="DemiBold" Margin="5,0" />
+			<TextBlock Name="lblType" />
+		</DockPanel>
+
 		<DockPanel Name="DefaultPanel" Margin="0,10,0,0">
 			<TextBlock DockPanel.Dock="Left" Text="Default:" FontWeight="DemiBold" Margin="5,0" />
 			<TextBlock Name="lblDefault" TextWrapping="Wrap" />
