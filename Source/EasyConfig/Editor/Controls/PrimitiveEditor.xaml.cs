@@ -28,17 +28,29 @@ namespace EasyConfig.Editor
 				lblDefault.Text = isBool ? TypeConverter.ToString(Default) : Default.ToString();
 		}
 
-		public PrimitiveEditor(object Value, IAttributeType TypeConverter, object Default) : this(TypeConverter, Default)
+		public PrimitiveEditor(object Value, IAttributeType TypeConverter, object Default)
+			: this(TypeConverter, Default)
 		{
+			if (Value == null)
+			{
+				cbIgnore.IsChecked = true;
+				return;
+			}
+
 			if (isBool)
 				((bool)Value ? rbYes : rbNo).IsChecked = true;
 			else
 				TB.Text = TypeConverter.ToString(Value);
 		}
 
-		public PrimitiveEditor(IAttributeType TypeConverter, XmlAttribute Attr, object Default) : this(TypeConverter, Default)
+		public PrimitiveEditor(IAttributeType TypeConverter, XmlAttribute Attr, object Default)
+			: this(TypeConverter, Default)
 		{
-			if (Attr == null) return;
+			if (Attr == null)
+			{
+				cbIgnore.IsChecked = true;
+				return;
+			}
 
 			if (isBool)
 				((bool)TypeConverter.FromString(Attr.Value) ? rbYes : rbNo).IsChecked = true;
@@ -58,6 +70,8 @@ namespace EasyConfig.Editor
 			=> isBool ?
 				rbYes.IsChecked.isTrue() :
 				TypeConverter.FromString(TB.Text);
+
+		public bool Ignored => cbIgnore.IsChecked.isTrue();
 
 		public void Validate()
 		{

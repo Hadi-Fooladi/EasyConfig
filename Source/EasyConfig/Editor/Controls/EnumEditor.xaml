@@ -10,7 +10,9 @@
 	d:DesignHeight="450">
 
 	<DockPanel>
-		<DockPanel DockPanel.Dock="Top" Name="DefaultPanel" Margin="5">
+		<CheckBox Name="cbIgnore" DockPanel.Dock="Top" Margin="5,5,0,10" FontWeight="DemiBold" VerticalContentAlignment="Center">Ignore</CheckBox>
+
+		<DockPanel DockPanel.Dock="Top" Name="DefaultPanel" Margin="0,0,0,10">
 			<TextBlock DockPanel.Dock="Left" Text="Default:" FontWeight="DemiBold" Margin="5,0" />
 			<TextBlock Name="lblDefault" TextWrapping="Wrap" />
 		</DockPanel>

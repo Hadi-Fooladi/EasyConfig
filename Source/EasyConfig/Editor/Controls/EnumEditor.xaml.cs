@@ -78,6 +78,8 @@ namespace EasyConfig.Editor
 			}
 		}
 
+		public bool Ignored => cbIgnore.IsChecked.isTrue();
+
 		public void Validate() { }
 		public void ShowItem(object Item) { }
 		#endregion

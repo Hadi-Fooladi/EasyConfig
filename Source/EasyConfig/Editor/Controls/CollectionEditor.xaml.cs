@@ -52,6 +52,8 @@ namespace EasyConfig.Editor
 			}
 		}
 
+		public bool Ignored => false;
+
 		public void Validate()
 		{
 			foreach (ListItem Item in LB.Items)

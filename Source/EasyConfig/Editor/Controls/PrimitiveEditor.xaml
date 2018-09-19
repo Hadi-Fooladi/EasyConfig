@@ -10,7 +10,9 @@
 	Width="200" d:DesignHeight="450" Padding="5">
 
 	<StackPanel>
-		<DockPanel>
+		<CheckBox Name="cbIgnore" Margin="5,0,0,0" FontWeight="DemiBold" VerticalContentAlignment="Center">Ignore</CheckBox>
+
+		<DockPanel Margin="0,10,0,0">
 			<TextBlock DockPanel.Dock="Left" Text="Value:" Margin="5,0" FontWeight="DemiBold" VerticalAlignment="Center" />
 			
 			<Grid>

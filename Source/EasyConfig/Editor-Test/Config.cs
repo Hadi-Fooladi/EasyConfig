@@ -26,6 +26,11 @@ namespace Editor_Test
 		Seven
 	}
 
+	internal struct Point
+	{
+		public float x, y;
+	}
+
 	internal class Config
 	{
 		public Version Version;
@@ -45,6 +50,9 @@ namespace Editor_Test
 		public eOctal Oct;
 
 		public Person Root;
+
+		[Necessary]
+		public Point Position;
 
 		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
 

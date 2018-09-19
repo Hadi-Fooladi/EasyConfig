@@ -103,7 +103,7 @@ namespace EasyConfig.Editor
 		{
 			get
 			{
-				if (LB.Visibility != Visibility.Visible) return null;
+				if (Ignored) return null;
 
 				var Result = Activator.CreateInstance(T);
 
@@ -114,16 +114,23 @@ namespace EasyConfig.Editor
 			}
 		}
 
+		public bool Ignored => LB.Visibility != Visibility.Visible;
+
 		public void Validate()
 		{
 			foreach (FieldItem FI in LB.Items)
 				try
 				{
-					FI.Editor.Validate();
+					var E = FI.Editor;
+
+					if (FI.Necessary && E.Ignored)
+						throw new NecessaryFieldIgnoredException();
+
+					E.Validate();
 				}
-				catch (Exception E)
+				catch (Exception Ex)
 				{
-					throw new ValidationException(this, FI, E);
+					throw new ValidationException(this, FI, Ex);
 				}
 		}
 
@@ -134,8 +141,8 @@ namespace EasyConfig.Editor
 		private class FieldItem
 		{
 			private readonly FieldInfo FI;
-			private readonly bool Necessary;
 
+			public readonly bool Necessary;
 			public readonly IEditor Editor;
 
 			public string Name => FI.Name;
@@ -199,17 +206,27 @@ namespace EasyConfig.Editor
 			}
 			#endregion
 
-			public void Save(object Obj) => FI.SetValue(Obj, Editor.Value);
+			public void Save(object Obj)
+			{
+				if (!Editor.Ignored)
+					FI.SetValue(Obj, Editor.Value);
+				else
+				{
+					var D = Default;
+					if (D != null)
+						FI.SetValue(Obj, D);
+				}
+			}
 		}
 		#endregion
 
 		#region Event Handlers
 		private void bNewDel_OnClick(object sender, RoutedEventArgs e)
 		{
-			if (LB.Visibility == Visibility.Visible)
-				Delete();
-			else
+			if (Ignored)
 				New(Activator.CreateInstance(T));
+			else
+				Delete();
 		}
 
 		private void LB_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -8,6 +8,8 @@ namespace EasyConfig.Editor
 
 		object Value { get; }
 
+		bool Ignored { get; }
+
 		/// <summary>
 		/// Must throw <see cref="ValidationException"/> in case of validation error
 		/// </summary>

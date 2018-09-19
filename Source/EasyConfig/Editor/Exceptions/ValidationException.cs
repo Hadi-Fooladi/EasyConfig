@@ -16,4 +16,9 @@ namespace EasyConfig.Editor
 
 		public void ShowItemInEditor() => Editor.ShowItem(EditorItem);
 	}
+
+	internal class NecessaryFieldIgnoredException : Exception
+	{
+		public NecessaryFieldIgnoredException() : base("Necessary Field Ignored") { }
+	}
 }
