@@ -35,11 +35,13 @@ namespace Editor_Test
 		[Necessary]
 		public string Text = "N/A";
 
+		[Default(false)]
 		public bool Boolean;
 
 		[Name("Person")]
 		public List<Person> Persons;
 
+		[Default(eOctal.Six)]
 		public eOctal Oct;
 
 		public Person Root;

@@ -11,7 +11,7 @@
 
 	<StackPanel>
 		<DockPanel>
-			<TextBlock DockPanel.Dock="Left" Text="Value:" Margin="5,0" VerticalAlignment="Center" />
+			<TextBlock DockPanel.Dock="Left" Text="Value:" Margin="5,0" FontWeight="DemiBold" VerticalAlignment="Center" />
 			
 			<Grid>
 				<TextBox Name="TB" />
@@ -26,6 +26,11 @@
 					<RadioButton Name="rbNo" Grid.Column="1" VerticalContentAlignment="Center" HorizontalAlignment="Center">No</RadioButton>
 				</Grid>
 			</Grid>
+		</DockPanel>
+
+		<DockPanel Name="DefaultPanel" Margin="0,10,0,0">
+			<TextBlock DockPanel.Dock="Left" Text="Default:" FontWeight="DemiBold" Margin="5,0" />
+			<TextBlock Name="lblDefault" TextWrapping="Wrap" />
 		</DockPanel>
 	</StackPanel>
 </UserControl>

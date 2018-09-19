@@ -142,6 +142,8 @@ namespace EasyConfig.Editor
 			public Brush Color => Necessary ? Brushes.DarkRed : Brushes.Black;
 			public FontWeight FontWeight => Necessary ? FontWeights.SemiBold : FontWeights.Normal;
 
+			private object Default => FI.GetCustomAttribute<DefaultAttribute>()?.Value;
+
 			#region Constructors
 			private FieldItem(FieldInfo FI, bool Necessary)
 			{
@@ -155,14 +157,14 @@ namespace EasyConfig.Editor
 
 				if (Type.IsEnum)
 				{
-					Editor = new EnumEditor(Value);
+					Editor = new EnumEditor(Value, Default);
 					return;
 				}
 
 				var AttributeType = AttributeMap.GetValueOrNull(Type);
 				if (AttributeType != null)
 				{
-					Editor = new PrimitiveEditor(Value, AttributeType);
+					Editor = new PrimitiveEditor(Value, AttributeType, Default);
 					return;
 				}
 
@@ -179,14 +181,14 @@ namespace EasyConfig.Editor
 
 				if (Type.IsEnum)
 				{
-					Editor = new EnumEditor(Type, Node.Attributes[ConfigName]);
+					Editor = new EnumEditor(Type, Node.Attributes[ConfigName], Default);
 					return;
 				}
 
 				var AttributeType = AttributeMap.GetValueOrNull(Type);
 				if (AttributeType != null)
 				{
-					Editor = new PrimitiveEditor(AttributeType, Node.Attributes[ConfigName]);
+					Editor = new PrimitiveEditor(AttributeType, Node.Attributes[ConfigName], Default);
 					return;
 				}
 

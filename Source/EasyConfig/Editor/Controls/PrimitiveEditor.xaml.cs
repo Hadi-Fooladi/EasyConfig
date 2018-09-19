@@ -8,7 +8,7 @@ namespace EasyConfig.Editor
 	internal partial class PrimitiveEditor : IEditor
 	{
 		#region Constructors
-		public PrimitiveEditor(IAttributeType TypeConverter)
+		private PrimitiveEditor(IAttributeType TypeConverter, object Default)
 		{
 			InitializeComponent();
 			this.TypeConverter = TypeConverter;
@@ -19,9 +19,14 @@ namespace EasyConfig.Editor
 				TB.Visibility = Visibility.Collapsed;
 				gYesNo.Visibility = Visibility.Visible;
 			}
+
+			if (Default == null)
+				DefaultPanel.Visibility = Visibility.Collapsed;
+			else
+				lblDefault.Text = isBool ? TypeConverter.ToString(Default) : Default.ToString();
 		}
 
-		public PrimitiveEditor(object Value, IAttributeType TypeConverter) : this(TypeConverter)
+		public PrimitiveEditor(object Value, IAttributeType TypeConverter, object Default) : this(TypeConverter, Default)
 		{
 			if (isBool)
 				((bool)Value ? rbYes : rbNo).IsChecked = true;
@@ -29,7 +34,7 @@ namespace EasyConfig.Editor
 				TB.Text = TypeConverter.ToString(Value);
 		}
 
-		public PrimitiveEditor(IAttributeType TypeConverter, XmlAttribute Attr) : this(TypeConverter)
+		public PrimitiveEditor(IAttributeType TypeConverter, XmlAttribute Attr, object Default) : this(TypeConverter, Default)
 		{
 			if (Attr == null) return;
 

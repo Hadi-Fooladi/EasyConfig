@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
@@ -8,7 +9,7 @@ namespace EasyConfig.Editor
 	internal partial class EnumEditor : IEditor
 	{
 		#region Constructors
-		private EnumEditor(Type T, object Value)
+		private EnumEditor(Type T, object Value, object Default)
 		{
 			this.T = T;
 			InitializeComponent();
@@ -38,11 +39,16 @@ namespace EasyConfig.Editor
 				B.Content = Member;
 				SP.Children.Add(B);
 			}
+
+			if (Default == null)
+				DefaultPanel.Visibility = Visibility.Collapsed;
+			else
+				lblDefault.Text = Default.ToString();
 		}
 
-		public EnumEditor(object Value) : this(Value.GetType(), Value) { }
+		public EnumEditor(object Value, object Default) : this(Value.GetType(), Value, Default) { }
 
-		public EnumEditor(Type T, XmlAttribute Attr) : this(T, Attr == null ? null : Enum.Parse(T, Attr.Value)) { }
+		public EnumEditor(Type T, XmlAttribute Attr, object Default) : this(T, Attr == null ? null : Enum.Parse(T, Attr.Value), Default) { }
 		#endregion
 
 		private readonly Type T;
