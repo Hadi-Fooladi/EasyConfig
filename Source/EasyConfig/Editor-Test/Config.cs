@@ -31,6 +31,8 @@ namespace Editor_Test
 		public Version Version;
 
 		public int Num = 7;
+
+		[Necessary]
 		public string Text = "N/A";
 
 		public bool Boolean;

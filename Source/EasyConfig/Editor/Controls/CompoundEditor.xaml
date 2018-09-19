@@ -18,7 +18,16 @@
 		
 		<DockPanel Grid.Column="0">
 			<Button Name="bNewDel" DockPanel.Dock="Top" Click="bNewDel_OnClick" />
-			<ListBox Name="LB" SelectionChanged="LB_OnSelectionChanged" />
+			<ListBox Name="LB" SelectionChanged="LB_OnSelectionChanged">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock
+							Text="{Binding Name}"
+							Foreground="{Binding Color}"
+							FontWeight="{Binding FontWeight}" />
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
 		</DockPanel>
 		
 		<GridSplitter Grid.Column="1" Width="2" Background="Black" HorizontalAlignment="Center" Margin="0,10" />

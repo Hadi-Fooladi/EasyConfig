@@ -2,31 +2,36 @@
 using System.Xml;
 using System.Windows;
 using System.Reflection;
+using System.Windows.Media;
 using System.Windows.Controls;
 using System.Collections.Generic;
+
+using EasyConfig.Attributes;
 
 namespace EasyConfig.Editor
 {
 	internal partial class CompoundEditor : IEditor
 	{
 		private readonly Type T;
+		private readonly bool AllFieldsNecessary;
 
 		#region Constructors
-		public CompoundEditor() => InitializeComponent();
-
-		public CompoundEditor(Type T, object Value) : this()
+		public CompoundEditor(Type T)
 		{
 			this.T = T;
+			InitializeComponent();
+			AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
+		}
 
+		public CompoundEditor(Type T, object Value) : this(T)
+		{
 			if (Value == null)
 				Delete();
 			else New(Value);
 		}
 
-		public CompoundEditor(Type T, XmlNode Node) : this()
+		public CompoundEditor(Type T, XmlNode Node) : this(T)
 		{
-			this.T = T;
-
 			if (Node == null)
 				Delete();
 			else
@@ -78,7 +83,7 @@ namespace EasyConfig.Editor
 
 			Items.Clear();
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
-				Items.Add(new FieldItem(F, F.GetValue(Value)));
+				Items.Add(new FieldItem(F, F.GetValue(Value), AllFieldsNecessary));
 		}
 
 		private void PopulateFields(XmlNode Node)
@@ -87,7 +92,7 @@ namespace EasyConfig.Editor
 
 			Items.Clear();
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
-				Items.Add(new FieldItem(F, Node));
+				Items.Add(new FieldItem(F, Node, AllFieldsNecessary));
 		}
 		#endregion
 
@@ -129,13 +134,23 @@ namespace EasyConfig.Editor
 		private class FieldItem
 		{
 			private readonly FieldInfo FI;
+			private readonly bool Necessary;
 
 			public readonly IEditor Editor;
 
-			public FieldItem(FieldInfo FI, object Value)
+			public string Name => FI.Name;
+			public Brush Color => Necessary ? Brushes.DarkRed : Brushes.Black;
+			public FontWeight FontWeight => Necessary ? FontWeights.SemiBold : FontWeights.Normal;
+
+			#region Constructors
+			private FieldItem(FieldInfo FI, bool Necessary)
 			{
 				this.FI = FI;
+				this.Necessary = FI.IsNecessary(Necessary);
+			}
 
+			public FieldItem(FieldInfo FI, object Value, bool Necessary) : this(FI, Necessary)
+			{
 				var Type = FI.FieldType;
 
 				if (Type.IsEnum)
@@ -157,33 +172,30 @@ namespace EasyConfig.Editor
 					Editor = new CompoundEditor(Type, Value);
 			}
 
-			public FieldItem(FieldInfo FI, XmlNode Node)
+			public FieldItem(FieldInfo FI, XmlNode Node, bool Necessary) : this(FI, Necessary)
 			{
-				this.FI = FI;
-
 				var Type = FI.FieldType;
-				var Name = FI.GetConfigName();
+				var ConfigName = FI.GetConfigName();
 
 				if (Type.IsEnum)
 				{
-					Editor = new EnumEditor(Type, Node.Attributes[Name]);
+					Editor = new EnumEditor(Type, Node.Attributes[ConfigName]);
 					return;
 				}
 
 				var AttributeType = AttributeMap.GetValueOrNull(Type);
 				if (AttributeType != null)
 				{
-					Editor = new PrimitiveEditor(AttributeType, Node.Attributes[Name]);
+					Editor = new PrimitiveEditor(AttributeType, Node.Attributes[ConfigName]);
 					return;
 				}
 
 				if (Type.IsCollection())
-					Editor = new CollectionEditor(Type, Node.SelectNodes(Name));
+					Editor = new CollectionEditor(Type, Node.SelectNodes(ConfigName));
 				else
-					Editor = new CompoundEditor(Type, Node.SelectSingleNode(Name));
+					Editor = new CompoundEditor(Type, Node.SelectSingleNode(ConfigName));
 			}
-
-			public override string ToString() => FI.Name;
+			#endregion
 
 			public void Save(object Obj) => FI.SetValue(Obj, Editor.Value);
 		}
