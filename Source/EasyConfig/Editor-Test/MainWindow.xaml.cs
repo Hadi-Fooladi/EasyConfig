@@ -14,19 +14,21 @@ namespace Editor_Test
 		{
 			InitializeComponent();
 
-			object C;
-			if (File.Exists(FILENAME))
-				C = EasyConfig.Load<Config>(FILENAME);
-			else
-				C = new Config
-				{
-					Num = 5,
-					Text = "OK",
-					Version = new Version(5, 4),
-					Oct = eOctal.Five
-				};
+			CC.Content = EC = EditorControl.New<Config>(FILENAME);
 
-			CC.Content = EC = new EditorControl(C);
+			//object C;
+			//if (File.Exists(FILENAME))
+			//	C = EasyConfig.Load<Config>(FILENAME);
+			//else
+			//	C = new Config
+			//	{
+			//		Num = 5,
+			//		Text = "OK",
+			//		Version = new Version(5, 4),
+			//		Oct = eOctal.Five
+			//	};
+
+			//CC.Content = EC = new EditorControl(C);
 		}
 
 		private readonly EditorControl EC;

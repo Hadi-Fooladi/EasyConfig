@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
@@ -6,14 +7,17 @@ namespace EasyConfig.Editor
 {
 	internal partial class EnumEditor : IEditor
 	{
-		public EnumEditor(object Value)
+		#region Constructors
+		private EnumEditor(Type T, object Value)
 		{
+			this.T = T;
 			InitializeComponent();
-
-			T = Value.GetType();
 
 			GB.Header = T.Name;
 			Flags = T.HasAttribute<FlagsAttribute>();
+
+			if (Value == null)
+				Value = Activator.CreateInstance(T);
 
 			foreach (var Member in T.GetEnumNames())
 			{
@@ -35,6 +39,11 @@ namespace EasyConfig.Editor
 				SP.Children.Add(B);
 			}
 		}
+
+		public EnumEditor(object Value) : this(Value.GetType(), Value) { }
+
+		public EnumEditor(Type T, XmlAttribute Attr) : this(T, Attr == null ? null : Enum.Parse(T, Attr.Value)) { }
+		#endregion
 
 		private readonly Type T;
 		private readonly bool Flags;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using System.Windows;
 using System.Collections;
 using System.Windows.Controls;
@@ -8,19 +9,30 @@ namespace EasyConfig.Editor
 {
 	internal partial class CollectionEditor : IEditor
 	{
-		public CollectionEditor(Type CollectionType, object Value)
+		#region Constructors
+		public CollectionEditor(Type CollectionType)
 		{
 			InitializeComponent();
 
 			ElementType = CollectionType.GetCollectionElementType();
 			ListType = typeof(List<>).MakeGenericType(ElementType);
+		}
 
+		public CollectionEditor(Type CollectionType, object Value) : this(CollectionType)
+		{
 			if (Value == null) return;
 
 			var C = (ICollection)Value;
 			foreach (var X in C)
 				LB.Items.Add(new ListItem(ElementType, X));
 		}
+
+		public CollectionEditor(Type CollectionType, XmlNodeList Nodes) : this(CollectionType)
+		{
+			foreach (XmlNode Node in Nodes)
+				LB.Items.Add(new ListItem(ElementType, Node));
+		}
+		#endregion
 
 		private readonly Type ElementType, ListType;
 
@@ -59,14 +71,10 @@ namespace EasyConfig.Editor
 		#region Nested Class
 		private class ListItem
 		{
-			private readonly Type T;
 			public readonly IEditor Editor;
 
-			public ListItem(Type ValueType, object Value)
-			{
-				T = ValueType;
-				Editor = new CompoundEditor(ValueType, Value);
-			}
+			public ListItem(Type ValueType, object Value) => Editor = new CompoundEditor(ValueType, Value);
+			public ListItem(Type ValueType, XmlNode Node) => Editor = new CompoundEditor(ValueType, Node);
 
 			public override string ToString() => "Item";
 		}

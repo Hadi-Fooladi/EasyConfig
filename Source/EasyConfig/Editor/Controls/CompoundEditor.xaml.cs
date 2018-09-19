@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using System.Windows;
 using System.Reflection;
 using System.Windows.Controls;
@@ -8,25 +9,33 @@ namespace EasyConfig.Editor
 {
 	internal partial class CompoundEditor : IEditor
 	{
-		public CompoundEditor(Type T, object Value)
+		private readonly Type T;
+
+		#region Constructors
+		public CompoundEditor() => InitializeComponent();
+
+		public CompoundEditor(Type T, object Value) : this()
 		{
 			this.T = T;
-			InitializeComponent();
 
 			if (Value == null)
-			{
-				bNewDel.Content = "New";
-				LB.Visibility = Visibility.Hidden;
-				return;
-			}
-
-			if (T.IsValueType)
-				bNewDel.Visibility = Visibility.Collapsed;
-			else
-				bNewDel.Content = "Delete";
-
-			PopulateFields(Value);
+				Delete();
+			else New(Value);
 		}
+
+		public CompoundEditor(Type T, XmlNode Node) : this()
+		{
+			this.T = T;
+
+			if (Node == null)
+				Delete();
+			else
+			{
+				New();
+				PopulateFields(Node);
+			}
+		}
+		#endregion
 
 		#region Constants
 		private const BindingFlags PUBLIC_INSTANCE_FLAG = BindingFlags.Instance | BindingFlags.Public;
@@ -43,7 +52,25 @@ namespace EasyConfig.Editor
 		};
 		#endregion
 
-		private readonly Type T;
+		#region Private Methods
+		private void Delete()
+		{
+			bNewDel.Content = "New";
+			LB.Visibility = Visibility.Hidden;
+			FieldEditorContainer.Content = null;
+		}
+
+		private void New()
+		{
+			bNewDel.Content = "Delete";
+			LB.Visibility = Visibility.Visible;
+		}
+
+		private void New(object Value)
+		{
+			New();
+			PopulateFields(Value);
+		}
 
 		private void PopulateFields(object Value)
 		{
@@ -53,6 +80,16 @@ namespace EasyConfig.Editor
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 				Items.Add(new FieldItem(F, F.GetValue(Value)));
 		}
+
+		private void PopulateFields(XmlNode Node)
+		{
+			var Items = LB.Items;
+
+			Items.Clear();
+			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
+				Items.Add(new FieldItem(F, Node));
+		}
+		#endregion
 
 		#region IEditor Members
 		public Control Control => this;
@@ -91,7 +128,6 @@ namespace EasyConfig.Editor
 		#region Nested Class
 		private class FieldItem
 		{
-			private readonly Type Type;
 			private readonly FieldInfo FI;
 
 			public readonly IEditor Editor;
@@ -99,7 +135,8 @@ namespace EasyConfig.Editor
 			public FieldItem(FieldInfo FI, object Value)
 			{
 				this.FI = FI;
-				Type = FI.FieldType;
+
+				var Type = FI.FieldType;
 
 				if (Type.IsEnum)
 				{
@@ -120,6 +157,32 @@ namespace EasyConfig.Editor
 					Editor = new CompoundEditor(Type, Value);
 			}
 
+			public FieldItem(FieldInfo FI, XmlNode Node)
+			{
+				this.FI = FI;
+
+				var Type = FI.FieldType;
+				var Name = FI.GetConfigName();
+
+				if (Type.IsEnum)
+				{
+					Editor = new EnumEditor(Type, Node.Attributes[Name]);
+					return;
+				}
+
+				var AttributeType = AttributeMap.GetValueOrNull(Type);
+				if (AttributeType != null)
+				{
+					Editor = new PrimitiveEditor(AttributeType, Node.Attributes[Name]);
+					return;
+				}
+
+				if (Type.IsCollection())
+					Editor = new CollectionEditor(Type, Node.SelectNodes(Name));
+				else
+					Editor = new CompoundEditor(Type, Node.SelectSingleNode(Name));
+			}
+
 			public override string ToString() => FI.Name;
 
 			public void Save(object Obj) => FI.SetValue(Obj, Editor.Value);
@@ -130,18 +193,9 @@ namespace EasyConfig.Editor
 		private void bNewDel_OnClick(object sender, RoutedEventArgs e)
 		{
 			if (LB.Visibility == Visibility.Visible)
-			{
-				LB.Items.Clear();
-				LB.Visibility = Visibility.Hidden;
-				bNewDel.Content = "New";
-				FieldEditorContainer.Content = null;
-			}
+				Delete();
 			else
-			{
-				bNewDel.Content = "Delete";
-				LB.Visibility = Visibility.Visible;
-				PopulateFields(Activator.CreateInstance(T));
-			}
+				New(Activator.CreateInstance(T));
 		}
 
 		private void LB_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

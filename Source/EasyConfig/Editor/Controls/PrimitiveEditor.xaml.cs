@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -6,7 +7,8 @@ namespace EasyConfig.Editor
 {
 	internal partial class PrimitiveEditor : IEditor
 	{
-		public PrimitiveEditor(object Value, IAttributeType TypeConverter)
+		#region Constructors
+		public PrimitiveEditor(IAttributeType TypeConverter)
 		{
 			InitializeComponent();
 			this.TypeConverter = TypeConverter;
@@ -16,12 +18,27 @@ namespace EasyConfig.Editor
 			{
 				TB.Visibility = Visibility.Collapsed;
 				gYesNo.Visibility = Visibility.Visible;
-
-				((bool)Value ? rbYes : rbNo).IsChecked = true;
 			}
+		}
+
+		public PrimitiveEditor(object Value, IAttributeType TypeConverter) : this(TypeConverter)
+		{
+			if (isBool)
+				((bool)Value ? rbYes : rbNo).IsChecked = true;
 			else
 				TB.Text = TypeConverter.ToString(Value);
 		}
+
+		public PrimitiveEditor(IAttributeType TypeConverter, XmlAttribute Attr) : this(TypeConverter)
+		{
+			if (Attr == null) return;
+
+			if (isBool)
+				((bool)TypeConverter.FromString(Attr.Value) ? rbYes : rbNo).IsChecked = true;
+			else
+				TB.Text = Attr.Value;
+		}
+		#endregion
 
 		private readonly IAttributeType TypeConverter;
 
