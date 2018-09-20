@@ -5,6 +5,8 @@ using System.Collections;
 using System.Windows.Controls;
 using System.Collections.Generic;
 
+using XmlExt;
+
 namespace EasyConfig.Editor
 {
 	internal partial class CollectionEditor : IEditor
@@ -68,6 +70,15 @@ namespace EasyConfig.Editor
 		}
 
 		public void ShowItem(object Item) => LB.SelectedItem = Item;
+
+		public void SaveToXmlNode(XmlNode Node, string Name)
+		{
+			foreach (ListItem Item in LB.Items)
+			{
+				var ChildNode = Node.AppendNode(Name);
+				Item.Editor.SaveToXmlNode(ChildNode, null);
+			}
+		}
 		#endregion
 
 		#region Nested Class

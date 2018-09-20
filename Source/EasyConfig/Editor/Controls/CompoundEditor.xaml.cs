@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using System.Collections.Generic;
 
+using XmlExt;
 using EasyConfig.Attributes;
 
 namespace EasyConfig.Editor
@@ -123,10 +124,13 @@ namespace EasyConfig.Editor
 				{
 					var E = FI.Editor;
 
-					if (FI.Necessary && E.Ignored)
-						throw new NecessaryFieldIgnoredException();
-
-					E.Validate();
+					if (E.Ignored)
+					{
+						if (FI.Necessary)
+							throw new NecessaryFieldIgnoredException();
+					}
+					else
+						E.Validate();
 				}
 				catch (Exception Ex)
 				{
@@ -135,6 +139,23 @@ namespace EasyConfig.Editor
 		}
 
 		public void ShowItem(object Item) => LB.SelectedItem = Item;
+
+		public void SaveToXmlNode(XmlNode Node, string Name)
+		{
+			foreach (FieldItem FI in LB.Items)
+			{
+				var E = FI.Editor;
+				if (E.Ignored) continue;
+
+				if (E is CompoundEditor)
+				{
+					var ChildNode = Node.AppendNode(FI.ConfigName);
+					E.SaveToXmlNode(ChildNode, null);
+				}
+				else
+					E.SaveToXmlNode(Node, FI.ConfigName);
+			}
+		}
 		#endregion
 
 		#region Nested Class
@@ -146,6 +167,8 @@ namespace EasyConfig.Editor
 			public readonly IEditor Editor;
 
 			public string Name => FI.Name;
+			public string ConfigName => FI.GetConfigName();
+
 			public Brush Color => Necessary ? Brushes.DarkRed : Brushes.Black;
 			public FontWeight FontWeight => Necessary ? FontWeights.SemiBold : FontWeights.Normal;
 
@@ -184,7 +207,6 @@ namespace EasyConfig.Editor
 			public FieldItem(FieldInfo FI, XmlNode Node, bool Necessary) : this(FI, Necessary)
 			{
 				var Type = FI.FieldType;
-				var ConfigName = FI.GetConfigName();
 
 				if (Type.IsEnum)
 				{

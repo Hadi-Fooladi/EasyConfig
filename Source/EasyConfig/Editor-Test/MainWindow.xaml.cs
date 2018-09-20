@@ -37,8 +37,16 @@ namespace Editor_Test
 		#region Event Handlers
 		private void bSave_OnClick(object sender, RoutedEventArgs e)
 		{
-			EasyConfig.Save(EC.Value, FILENAME, "Config");
-			MessageBox.Show("Save Completed!");
+			try
+			{
+				//EasyConfig.Save(EC.Value, FILENAME, "Config");
+				EC.GetXml("Config").Save(FILENAME);
+				MessageBox.Show("Save Completed!");
+			}
+			catch
+			{
+				Msg.Error($"Something went wrong.{Environment.NewLine}Please validate.");
+			}
 		}
 
 		private void bValidate_OnClick(object sender, RoutedEventArgs e)

@@ -3,6 +3,8 @@ using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
 
+using XmlExt;
+
 namespace EasyConfig.Editor
 {
 	internal partial class PrimitiveEditor : IEditor
@@ -63,31 +65,35 @@ namespace EasyConfig.Editor
 
 		private readonly bool isBool;
 
+		private object GetValue()
+		{
+			if (isBool)
+			{
+				bool
+					No = rbNo.IsChecked.isTrue(),
+					Yes = rbYes.IsChecked.isTrue();
+
+				if (!Yes && !No)
+					throw new Exception("Value not set");
+
+				return Yes;
+			}
+
+			return TypeConverter.FromString(TB.Text);
+		}
+
 		#region IEditor Members
 		public Control Control => this;
 
-		public object Value
-			=> isBool ?
-				rbYes.IsChecked.isTrue() :
-				TypeConverter.FromString(TB.Text);
+		public object Value => GetValue();
 
 		public bool Ignored => cbIgnore.IsChecked.isTrue();
 
-		public void Validate()
-		{
-			if (isBool) return;
-
-			try
-			{
-				TypeConverter.FromString(TB.Text);
-			}
-			catch (Exception E)
-			{
-				throw new ValidationException(this, null, E);
-			}
-		}
+		public void Validate() => GetValue();
 
 		public void ShowItem(object Item) { }
+
+		public void SaveToXmlNode(XmlNode Node, string Name) => Node.AddAttr(Name, TypeConverter.ToString(Value));
 		#endregion
 	}
 }

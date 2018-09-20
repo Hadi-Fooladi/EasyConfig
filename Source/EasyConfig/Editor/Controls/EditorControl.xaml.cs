@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Xml;
 
+using XmlExt;
+
 namespace EasyConfig.Editor
 {
 	public partial class EditorControl
@@ -28,6 +30,7 @@ namespace EasyConfig.Editor
 
 		private readonly CompoundEditor CE;
 
+		#region Public Members
 		public object Value => CE.Value;
 
 		public void Validate()
@@ -54,6 +57,19 @@ namespace EasyConfig.Editor
 				}
 			}
 		}
+
+		public XmlDocument GetXml(string RootTagName)
+		{
+			if (CE.Ignored) return null;
+
+			var Doc = new XmlDocument();
+
+			var Root = Doc.AppendNode(RootTagName);
+			CE.SaveToXmlNode(Root, null);
+
+			return Doc;
+		}
+		#endregion
 
 		private static XmlDocument LoadXml(string Path)
 		{

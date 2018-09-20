@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
+using XmlExt;
+
 namespace EasyConfig.Editor
 {
 	internal partial class EnumEditor : IEditor
@@ -82,6 +84,8 @@ namespace EasyConfig.Editor
 
 		public void Validate() { }
 		public void ShowItem(object Item) { }
+
+		public void SaveToXmlNode(XmlNode Node, string Name) => Node.AddAttr(Name, Value);
 		#endregion
 	}
 }

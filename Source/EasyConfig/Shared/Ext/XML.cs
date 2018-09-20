@@ -57,7 +57,14 @@ namespace XmlExt
 			return A;
 		}
 
-		public static XmlAttribute AddAttr(this XmlNode Node, string Name, object Value) => Node.AddAttr(Name, Value.ToString());
+		public static XmlAttribute AddAttr(this XmlNode Node, string Name, object Value)
+		{
+			if (Value is bool B)
+				return Node.AddAttr(Name, B);
+
+			return Node.AddAttr(Name, Value.ToString());
+		}
+
 		public static XmlAttribute AddAttr(this XmlNode Node, string Name, bool Value) => Node.AddAttr(Name, Value ? "Yes" : "No");
 
 		#region Nullable Types
