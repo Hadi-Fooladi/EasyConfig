@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EasyConfig.Editor</RootNamespace>
     <AssemblyName>EasyConfig-Editor</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -87,9 +88,9 @@
     <Resource Include="Resources\Red-Cross.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EasyConfig\EasyConfig.csproj">
-      <Project>{911761ff-9e73-4503-a21a-aa05803848b3}</Project>
-      <Name>EasyConfig</Name>
+    <ProjectReference Include="..\Attributes\Attributes.csproj">
+      <Project>{0f87ff39-6340-488a-b362-85e491f266d0}</Project>
+      <Name>Attributes</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

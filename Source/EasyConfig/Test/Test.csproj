@@ -8,9 +8,10 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Test</RootNamespace>
     <AssemblyName>Test</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -45,6 +46,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Attributes\Attributes.csproj">
+      <Project>{0f87ff39-6340-488a-b362-85e491f266d0}</Project>
+      <Name>Attributes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyConfig\EasyConfig.csproj">
       <Project>{911761ff-9e73-4503-a21a-aa05803848b3}</Project>
       <Name>EasyConfig</Name>
