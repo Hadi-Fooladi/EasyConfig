@@ -1,0 +1,32 @@
+﻿<Window
+	x:Class="EasyConfig.Editor.EditorWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	FontSize="18"
+	Width="800" Height="600"
+	Title="EasyConfig Editor"
+	WindowStartupLocation="CenterScreen">
+	
+	<DockPanel>
+		<ToolBar DockPanel.Dock="Top">
+			<ToolBar.Resources>
+				<Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+					<Setter Property="Width" Value="64" />
+					<Setter Property="Height" Value="64" />
+					<Setter Property="Padding" Value="0" />
+					<Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+				</Style>
+			</ToolBar.Resources>
+			
+			<Button ToolTip="Save" Click="bSave_OnClick">
+				<Image Source="../Resources/Save.png" />
+			</Button>
+
+			<Button ToolTip="Validate" Click="bValidate_OnClick">
+				<Image Source="../Resources/Validation.png" />
+			</Button>
+		</ToolBar>
+		
+		<ContentControl Name="CC" />
+	</DockPanel>
+</Window>

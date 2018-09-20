@@ -10,7 +10,7 @@ namespace EasyConfig.Editor
 		#region Constructors
 		public EditorControl() => InitializeComponent();
 
-		public EditorControl(string XmlPath, Type T) : this(LoadXml(XmlPath), T) { }
+		public EditorControl(string XmlPath, Type T) : this(Fn.LoadXml(XmlPath), T) { }
 
 		public EditorControl(XmlDocument Doc, Type T) : this()
 		{
@@ -24,7 +24,7 @@ namespace EasyConfig.Editor
 			SV.Content = CE = new CompoundEditor(Obj.GetType(), Obj);
 		}
 
-		public static EditorControl New<T>(string XmlPath) => New<T>(LoadXml(XmlPath));
+		public static EditorControl New<T>(string XmlPath) => New<T>(Fn.LoadXml(XmlPath));
 		public static EditorControl New<T>(XmlDocument Doc) => new EditorControl(Doc, typeof(T));
 		#endregion
 
@@ -70,12 +70,5 @@ namespace EasyConfig.Editor
 			return Doc;
 		}
 		#endregion
-
-		private static XmlDocument LoadXml(string Path)
-		{
-			var Doc = new XmlDocument();
-			Doc.Load(Path);
-			return Doc;
-		}
 	}
 }
