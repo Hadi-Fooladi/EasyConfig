@@ -77,11 +77,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Attributes\Attributes.csproj">
-      <Project>{0f87ff39-6340-488a-b362-85e491f266d0}</Project>
+      <Project>{07292f12-1018-4fdb-a127-c464042f89b7}</Project>
       <Name>Attributes</Name>
     </ProjectReference>
     <ProjectReference Include="..\EasyConfig\EasyConfig.csproj">
-      <Project>{911761ff-9e73-4503-a21a-aa05803848b3}</Project>
+      <Project>{3bce72cd-09cd-47b4-8b01-267f9469d684}</Project>
       <Name>EasyConfig</Name>
     </ProjectReference>
     <ProjectReference Include="..\Editor\Editor.csproj">
