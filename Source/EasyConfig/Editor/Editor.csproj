@@ -100,10 +100,6 @@
       <Project>{07292f12-1018-4fdb-a127-c464042f89b7}</Project>
       <Name>Attributes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EasyConfig\EasyConfig.csproj">
-      <Project>{3bce72cd-09cd-47b4-8b01-267f9469d684}</Project>
-      <Name>EasyConfig</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Save.png" />
