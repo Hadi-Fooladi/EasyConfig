@@ -12,11 +12,15 @@ namespace EasyConfig
 
 	public class EasyConfig
 	{
+		public delegate void dlgVersion(XmlElement Root);
+
 		#region Public Methods
 		public void Save(object Config, string FilePath, string RootTagName)
 		{
 			var Doc = new XmlDocument();
 			var Root = Doc.AppendNode(RootTagName);
+
+			SaveVersion?.Invoke(Root);
 
 			FillNode(Root, Config);
 
@@ -31,8 +35,14 @@ namespace EasyConfig
 
 			var Root = Doc.DocumentElement;
 
+			CheckVersion?.Invoke(Root);
+
 			return Load(Root, T);
 		}
+
+		public dlgVersion
+			CheckVersion,
+			SaveVersion;
 		#endregion
 
 		#region Constants
