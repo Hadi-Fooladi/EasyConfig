@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>HaFT.EasyConfig.Editor</id>
-    <version>7.0.16</version>
+    <version>7.0.17</version>
     <title>EasyConfig Editor</title>
     <authors>Hadi Fooladi Talari</authors>
     <owners>Hadi Fooladi Talari</owners>
@@ -10,7 +10,7 @@
     <description>EasyConfig Editor</description>
     <copyright>Copyright © HaFT 2018</copyright>
     <dependencies>
-      <dependency id="HaFT.EasyConfig.Attributes" version="1.0.1" />
+      <dependency id="HaFT.EasyConfig.Attributes" version="1.0.2" />
     </dependencies>
   </metadata>
 </package>
