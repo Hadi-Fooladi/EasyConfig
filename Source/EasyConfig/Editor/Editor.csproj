@@ -56,6 +56,8 @@
     <Compile Include="Controls\EnumEditor.xaml.cs">
       <DependentUpon>EnumEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VersionWriter\IVersionWriter.cs" />
+    <Compile Include="VersionWriter\SimpleVersionWriter.cs" />
     <Compile Include="Windows\EditorWindow.xaml.cs">
       <DependentUpon>EditorWindow.xaml</DependentUpon>
     </Compile>

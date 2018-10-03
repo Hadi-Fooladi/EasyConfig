@@ -28,13 +28,19 @@ namespace EasyConfig.Editor
 		private readonly EditorControl EC;
 
 		#region Public Methods
-		public void SaveXml(string XmlPath, string RootTagName)
+		/// <summary>
+		/// Save Xml without version
+		/// </summary>
+		public void SaveXml(string XmlPath, string RootTagName) => SaveXml(XmlPath, RootTagName, null);
+
+		public void SaveXml(string XmlPath, string RootTagName, IVersionWriter VersionWriter)
 		{
 			XmlDocument Doc;
 
 			try
 			{
 				Doc = EC.GetXml(RootTagName);
+				VersionWriter?.Write(Doc.DocumentElement);
 			}
 			catch (Exception Ex)
 			{
