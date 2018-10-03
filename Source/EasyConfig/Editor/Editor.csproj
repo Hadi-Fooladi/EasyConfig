@@ -105,6 +105,9 @@
     <Resource Include="Resources\Save.png" />
     <Resource Include="Resources\Validation.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Editor.nuspec" />
+  </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

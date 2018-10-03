@@ -12,7 +12,24 @@ namespace Editor_Test
 		internal static void Main()
 		{
 			var App = new Application();
-			App.Run(EditorWindow.New<Config>(FILENAME));
+
+			var EW = EditorWindow.New<Config>(FILENAME);
+			EW.OnSaveRequested += OnSaveRequested;
+
+			App.Run(EW);
+		}
+
+		private static void OnSaveRequested(EditorWindow EW)
+		{
+			try
+			{
+				Msg.Info(EW.Value);
+				EW.SaveXml(FILENAME, "Config");
+			}
+			catch (Exception Ex)
+			{
+				Msg.Error(Ex.Message);
+			}
 		}
 	}
 }

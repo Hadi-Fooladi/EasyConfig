@@ -49,6 +49,7 @@
     <Compile Include="Config.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Msg.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
