@@ -6,34 +6,43 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 	mc:Ignorable="d"
-	Width="200"
 	d:DesignHeight="450">
 
-	<DockPanel>
-		<CheckBox Name="cbIgnore" DockPanel.Dock="Top" Margin="5,5,0,10" FontWeight="DemiBold" VerticalContentAlignment="Center">Ignore</CheckBox>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="200" />
+			<ColumnDefinition Width="6" />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
 
-		<DockPanel DockPanel.Dock="Top" Name="DefaultPanel" Margin="0,0,0,10">
-			<TextBlock DockPanel.Dock="Left" Text="Default:" FontWeight="DemiBold" Margin="5,0" />
-			<TextBlock Name="lblDefault" TextWrapping="Wrap" />
+		<DockPanel Grid.Column="0" Margin="3,0,0,0">
+			<CheckBox Name="cbIgnore" DockPanel.Dock="Top" Margin="5,5,0,10" FontWeight="DemiBold" VerticalContentAlignment="Center">Ignore</CheckBox>
+
+			<DockPanel DockPanel.Dock="Top" Name="DefaultPanel" Margin="0,0,0,10">
+				<TextBlock DockPanel.Dock="Left" Text="Default:" FontWeight="DemiBold" Margin="5,0" />
+				<TextBlock Name="lblDefault" />
+			</DockPanel>
+
+			<GroupBox Name="GB">
+				<GroupBox.Resources>
+					<Style TargetType="RadioButton">
+						<Setter Property="VerticalContentAlignment" Value="Center" />
+					</Style>
+					<Style TargetType="CheckBox">
+						<Setter Property="VerticalContentAlignment" Value="Center" />
+					</Style>
+				</GroupBox.Resources>
+
+				<ScrollViewer
+					Margin="0,10,0,0"
+					VerticalScrollBarVisibility="Auto"
+					HorizontalScrollBarVisibility="Auto">
+					
+					<StackPanel Name="SP" />
+				</ScrollViewer>
+			</GroupBox>
 		</DockPanel>
 
-		<GroupBox Name="GB">
-			<GroupBox.Resources>
-				<Style TargetType="RadioButton">
-					<Setter Property="VerticalContentAlignment" Value="Center" />
-				</Style>
-				<Style TargetType="CheckBox">
-					<Setter Property="VerticalContentAlignment" Value="Center" />
-				</Style>
-			</GroupBox.Resources>
-
-			<ScrollViewer
-				Margin="0,10,0,0"
-				VerticalScrollBarVisibility="Auto"
-				HorizontalScrollBarVisibility="Auto">
-				
-				<StackPanel Name="SP" />
-			</ScrollViewer>
-		</GroupBox>
-	</DockPanel>
+		<GridSplitter Grid.Column="1" Width="2" Background="Black" HorizontalAlignment="Center" Margin="0,10" />
+	</Grid>
 </UserControl>

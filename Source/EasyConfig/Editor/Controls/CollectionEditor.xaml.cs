@@ -12,7 +12,7 @@ namespace EasyConfig.Editor
 	internal partial class CollectionEditor : IEditor
 	{
 		#region Constructors
-		public CollectionEditor(Type CollectionType)
+		private CollectionEditor(Type CollectionType)
 		{
 			InitializeComponent();
 
@@ -27,12 +27,16 @@ namespace EasyConfig.Editor
 			var C = (ICollection)Value;
 			foreach (var X in C)
 				LB.Items.Add(new ListItem(ElementType, X));
+
+			LB.SelectedIndex = 0;
 		}
 
 		public CollectionEditor(Type CollectionType, XmlNodeList Nodes) : this(CollectionType)
 		{
 			foreach (XmlNode Node in Nodes)
 				LB.Items.Add(new ListItem(ElementType, Node));
+
+			LB.SelectedIndex = 0;
 		}
 		#endregion
 

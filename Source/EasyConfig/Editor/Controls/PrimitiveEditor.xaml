@@ -7,37 +7,47 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:EasyConfig.Editor"
 	mc:Ignorable="d"
-	Width="200" d:DesignHeight="450" Padding="5">
+	d:DesignHeight="450">
 
-	<StackPanel>
-		<CheckBox Name="cbIgnore" Margin="5,0,0,0" FontWeight="DemiBold" VerticalContentAlignment="Center">Ignore</CheckBox>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="300" />
+			<ColumnDefinition Width="6" />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
 
-		<DockPanel Margin="0,10,0,0">
-			<TextBlock DockPanel.Dock="Left" Text="Value:" Margin="5,0" FontWeight="DemiBold" VerticalAlignment="Center" />
-			
-			<Grid>
-				<TextBox Name="TB" />
+		<StackPanel Grid.Row="0" Margin="5">
+			<CheckBox Name="cbIgnore" Margin="5,0,0,0" FontWeight="DemiBold" VerticalContentAlignment="Center">Ignore</CheckBox>
 
-				<Grid Name="gYesNo" Visibility="Collapsed">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
+			<DockPanel Margin="0,10,0,0">
+				<TextBlock DockPanel.Dock="Left" Text="Value:" Margin="5,0" FontWeight="DemiBold" VerticalAlignment="Center" />
+				
+				<Grid>
+					<TextBox Name="TB" />
 
-					<RadioButton Name="rbYes"  Grid.Column="0" VerticalContentAlignment="Center" HorizontalAlignment="Center">Yes</RadioButton>
-					<RadioButton Name="rbNo" Grid.Column="1" VerticalContentAlignment="Center" HorizontalAlignment="Center">No</RadioButton>
+					<Grid Name="gYesNo" Visibility="Collapsed">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<RadioButton Name="rbYes"  Grid.Column="0" VerticalContentAlignment="Center" HorizontalAlignment="Center">Yes</RadioButton>
+						<RadioButton Name="rbNo" Grid.Column="1" VerticalContentAlignment="Center" HorizontalAlignment="Center">No</RadioButton>
+					</Grid>
 				</Grid>
-			</Grid>
-		</DockPanel>
+			</DockPanel>
 
-		<DockPanel Margin="0,10,0,0">
-			<TextBlock DockPanel.Dock="Left" Text="Type:" FontWeight="DemiBold" Margin="5,0" />
-			<TextBlock Name="lblType" />
-		</DockPanel>
+			<DockPanel Margin="0,10,0,0">
+				<TextBlock DockPanel.Dock="Left" Text="Type:" FontWeight="DemiBold" Margin="5,0" />
+				<TextBlock Name="lblType" />
+			</DockPanel>
 
-		<DockPanel Name="DefaultPanel" Margin="0,10,0,0">
-			<TextBlock DockPanel.Dock="Left" Text="Default:" FontWeight="DemiBold" Margin="5,0" />
-			<TextBlock Name="lblDefault" TextWrapping="Wrap" />
-		</DockPanel>
-	</StackPanel>
+			<DockPanel Name="DefaultPanel" Margin="0,10,0,0">
+				<TextBlock DockPanel.Dock="Left" Text="Default:" FontWeight="DemiBold" Margin="5,0" />
+				<TextBlock Name="lblDefault" TextWrapping="Wrap" />
+			</DockPanel>
+		</StackPanel>
+
+		<GridSplitter Grid.Column="1" Width="2" Background="Black" HorizontalAlignment="Center" Margin="0,10" />
+	</Grid>
 </UserControl>

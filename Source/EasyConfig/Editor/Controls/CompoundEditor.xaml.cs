@@ -17,7 +17,7 @@ namespace EasyConfig.Editor
 		private readonly bool AllFieldsNecessary;
 
 		#region Constructors
-		public CompoundEditor(Type T)
+		private CompoundEditor(Type T)
 		{
 			this.T = T;
 			InitializeComponent();
@@ -85,6 +85,8 @@ namespace EasyConfig.Editor
 			Items.Clear();
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 				Items.Add(new FieldItem(F, F.GetValue(Value), AllFieldsNecessary));
+
+			LB.SelectedIndex = 0;
 		}
 
 		private void PopulateFields(XmlNode Node)
@@ -94,6 +96,8 @@ namespace EasyConfig.Editor
 			Items.Clear();
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 				Items.Add(new FieldItem(F, Node, AllFieldsNecessary));
+
+			LB.SelectedIndex = 0;
 		}
 		#endregion
 
