@@ -6,6 +6,36 @@
 	Width="800" Height="600"
 	Title="EasyConfig Editor"
 	WindowStartupLocation="CenterScreen">
+
+	<Window.Resources>
+		<Style TargetType="ListBoxItem">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ListBoxItem">
+						<Border
+							Name="Border"
+							Padding="4,2"
+							BorderThickness="2"
+							SnapsToDevicePixels="True">
+							
+							<ContentPresenter />
+						</Border>
+						
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter TargetName="Border" Property="Background" Value="#E5F3FB"/>
+								<Setter TargetName="Border" Property="BorderBrush" Value="#70C0E7"/>
+							</Trigger>
+							<Trigger Property="IsSelected" Value="true">
+								<Setter TargetName="Border" Property="Background" Value="#CBE8F6"/>
+								<Setter TargetName="Border" Property="BorderBrush" Value="#26A0DA"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Window.Resources>
 	
 	<DockPanel>
 		<ToolBar DockPanel.Dock="Top">
