@@ -10,4 +10,10 @@ namespace EasyConfig.Attributes
 
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 	public class AllFieldsNecessaryAttribute : Attribute { }
+
+	/// <summary>
+	/// Ignores the field
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Field)]
+	public class IgnoreAttribute : Attribute { }
 }

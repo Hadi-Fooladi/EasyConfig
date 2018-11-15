@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>HaFT.EasyConfig.Attributes</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.1.3</Version>
     <Authors>Hadi Fooladi Talari</Authors>
     <Product>EasyConfig Attributes</Product>
     <Company>HaFT</Company>
