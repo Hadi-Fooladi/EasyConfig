@@ -84,7 +84,8 @@ namespace EasyConfig.Editor
 
 			Items.Clear();
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
-				Items.Add(new FieldItem(F, F.GetValue(Value), AllFieldsNecessary));
+				if (!F.HasAttribute<IgnoreAttribute>())
+					Items.Add(new FieldItem(F, F.GetValue(Value), AllFieldsNecessary));
 
 			LB.SelectedIndex = 0;
 		}
@@ -95,7 +96,8 @@ namespace EasyConfig.Editor
 
 			Items.Clear();
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
-				Items.Add(new FieldItem(F, Node, AllFieldsNecessary));
+				if (!F.HasAttribute<IgnoreAttribute>())
+					Items.Add(new FieldItem(F, Node, AllFieldsNecessary));
 
 			LB.SelectedIndex = 0;
 		}
