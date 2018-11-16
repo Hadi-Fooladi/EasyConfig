@@ -42,7 +42,7 @@ namespace Test
 			public string Necessary = "a";
 
 			[Name("Child")]
-			public List<Person> Children;
+			public IReadOnlyList<Person> Children;
 
 			[Optional]
 			public eBloodType BloodType;

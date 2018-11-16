@@ -96,7 +96,7 @@ namespace EasyConfig
 					continue;
 				}
 
-				if (FieldValue is ICollection C)
+				if (FieldValue is IEnumerable C)
 					foreach (var X in C)
 					{
 						if (X != null)
@@ -174,7 +174,7 @@ namespace EasyConfig
 				}
 				else
 				{
-					var Node = Tag.SelectSingleNode(Name);
+					var Node = Tag.SelectSingleNode($"*[local-name()='{Name}']");
 					if (Node != null)
 						F.SetValue(Result, Load(Node, FieldType));
 					else

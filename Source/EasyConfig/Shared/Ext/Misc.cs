@@ -10,13 +10,7 @@ namespace EasyConfig
 
 	internal static class MiscExt
 	{
-		private static readonly Type CollectionType = typeof(ICollection);
-
-		private static readonly Type[] GenericCollectionTypes =
-		{
-			typeof(ICollection<>),
-			typeof(IReadOnlyCollection<>)
-		};
+		private static readonly Type CollectionType = typeof(IEnumerable);
 
 		public static Type GetCollectionElementType(this Type T)
 			=> T.IsGenericType ?
@@ -25,14 +19,6 @@ namespace EasyConfig
 
 		public static bool IsCollection(this Type T)
 		{
-			if (T.IsGenericType)
-			{
-				var GTD = T.GetGenericTypeDefinition();
-				foreach (var GCT in GenericCollectionTypes)
-					if (GTD == GCT)
-						return true;
-			}
-
 			return T.GetInterface(CollectionType.Name) != null;
 		}
 
