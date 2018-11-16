@@ -28,6 +28,9 @@ namespace Test
 		[AllFieldsNecessary]
 		public class Person
 		{
+			[Ignore]
+			public int SSN;
+
 			public int Age;
 			public string Name;
 

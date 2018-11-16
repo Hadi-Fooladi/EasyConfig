@@ -68,6 +68,8 @@ namespace EasyConfig
 
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 			{
+				if (F.HasAttribute<IgnoreAttribute>()) continue;
+
 				var FieldType = F.FieldType;
 				var FieldValue = F.GetValue(Value);
 
@@ -115,6 +117,8 @@ namespace EasyConfig
 
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
 			{
+				if (F.HasAttribute<IgnoreAttribute>()) continue;
+
 				var Name = F.GetConfigName();
 				var FieldType = F.FieldType;
 
