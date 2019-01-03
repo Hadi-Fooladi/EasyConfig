@@ -67,44 +67,46 @@ namespace EasyConfig
 			bool AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
 
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
-			{
-				if (F.HasAttribute<IgnoreAttribute>()) continue;
-
-				var FieldType = F.FieldType;
-				var FieldValue = F.GetValue(Value);
-
-				if (FieldValue == null)
+				try
 				{
-					if (!FieldType.IsCollection() && F.IsNecessary(AllFieldsNecessary))
-						throw new NecessaryFieldIsNullException();
+					if (F.HasAttribute<IgnoreAttribute>()) continue;
 
-					continue;
-				}
+					var FieldType = F.FieldType;
+					var FieldValue = F.GetValue(Value);
 
-				var Name = F.GetConfigName();
-
-				if (FieldType.IsEnum)
-				{
-					Tag.AddAttr(Name, FieldValue);
-					continue;
-				}
-
-				var AttributeType = AttributeMap.GetValueOrNull(FieldType);
-				if (AttributeType != null)
-				{
-					Tag.AddAttr(Name, AttributeType.ToString(FieldValue));
-					continue;
-				}
-
-				if (FieldValue is IEnumerable C)
-					foreach (var X in C)
+					if (FieldValue == null)
 					{
-						if (X != null)
-							CreateAndFillNode(Tag, Name, X);
+						if (!FieldType.IsCollection() && F.IsNecessary(AllFieldsNecessary))
+							throw new NecessaryFieldIsNullException();
+
+						continue;
 					}
-				else
-					CreateAndFillNode(Tag, Name, FieldValue);
-			}
+
+					var Name = F.GetConfigName();
+
+					if (FieldType.IsEnum)
+					{
+						Tag.AddAttr(Name, FieldValue);
+						continue;
+					}
+
+					var AttributeType = AttributeMap.GetValueOrNull(FieldType);
+					if (AttributeType != null)
+					{
+						Tag.AddAttr(Name, AttributeType.ToString(FieldValue));
+						continue;
+					}
+
+					if (FieldValue is IEnumerable C)
+						foreach (var X in C)
+						{
+							if (X != null)
+								CreateAndFillNode(Tag, Name, X);
+						}
+					else
+						CreateAndFillNode(Tag, Name, FieldValue);
+				}
+				catch (Exception E) { throw new SaveFailedException(Tag, F, E); }
 		}
 
 		private static void CreateAndFillNode(XmlNode Container, string TagName, object Value)
@@ -116,72 +118,74 @@ namespace EasyConfig
 			bool AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
 
 			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
-			{
-				if (F.HasAttribute<IgnoreAttribute>()) continue;
-
-				var Name = F.GetConfigName();
-				var FieldType = F.FieldType;
-
-				#region Enum Or Primitive
-				// Check field is enum
-				if (FieldType.IsEnum)
+				try
 				{
-					SetValue(Value => Enum.Parse(FieldType, Value));
-					continue;
-				}
+					if (F.HasAttribute<IgnoreAttribute>()) continue;
 
-				// Check field is primitive
-				var AttributeType = AttributeMap.GetValueOrNull(FieldType);
-				if (AttributeType != null)
-				{
-					SetValue(Value => AttributeType.FromString(Value));
-					continue;
-				}
+					var Name = F.GetConfigName();
+					var FieldType = F.FieldType;
 
-				// Nested Method
-				void SetValue(Func<string, object> Converter)
-				{
-					var Attr = Tag.Attributes[Name];
-					if (Attr != null)
-						// Set value by config
-						F.SetValue(Result, Converter(Attr.Value));
+					#region Enum Or Primitive
+					// Check field is enum
+					if (FieldType.IsEnum)
+					{
+						SetValue(Value => Enum.Parse(FieldType, Value));
+						continue;
+					}
+
+					// Check field is primitive
+					var AttributeType = AttributeMap.GetValueOrNull(FieldType);
+					if (AttributeType != null)
+					{
+						SetValue(Value => AttributeType.FromString(Value));
+						continue;
+					}
+
+					// Nested Method
+					void SetValue(Func<string, object> Converter)
+					{
+						var Attr = Tag.Attributes[Name];
+						if (Attr != null)
+							// Set value by config
+							F.SetValue(Result, Converter(Attr.Value));
+						else
+						{
+							var DefaultAttr = F.GetCustomAttribute<DefaultAttribute>();
+							if (DefaultAttr != null)
+								// Set value by default
+								F.SetValue(Result, DefaultAttr.Value);
+							else
+								// Throw exception if field is necessary
+								if (F.IsNecessary(AllFieldsNecessary))
+									throw new NecessaryFieldNotFoundException();
+						}
+					}
+					#endregion
+
+					if (FieldType.IsCollection())
+					{
+						Type
+							ElementType = FieldType.GetCollectionElementType(),
+							CollectionType = typeof(List<>).MakeGenericType(ElementType);
+
+						var L = (IList)Activator.CreateInstance(CollectionType);
+
+						foreach (XmlNode Node in Tag.SelectNodes($"*[local-name()='{Name}']"))
+							L.Add(Load(Node, ElementType));
+
+						F.SetValue(Result, L);
+					}
 					else
 					{
-						var DefaultAttr = F.GetCustomAttribute<DefaultAttribute>();
-						if (DefaultAttr != null)
-							// Set value by default
-							F.SetValue(Result, DefaultAttr.Value);
+						var Node = Tag.SelectSingleNode($"*[local-name()='{Name}']");
+						if (Node != null)
+							F.SetValue(Result, Load(Node, FieldType));
 						else
-							// Throw exception if field is necessary
 							if (F.IsNecessary(AllFieldsNecessary))
 								throw new NecessaryFieldNotFoundException();
 					}
 				}
-				#endregion
-
-				if (FieldType.IsCollection())
-				{
-					Type
-						ElementType = FieldType.GetCollectionElementType(),
-						CollectionType = typeof(List<>).MakeGenericType(ElementType);
-
-					var L = (IList)Activator.CreateInstance(CollectionType);
-
-					foreach (XmlNode Node in Tag.SelectNodes($"*[local-name()='{Name}']"))
-						L.Add(Load(Node, ElementType));
-
-					F.SetValue(Result, L);
-				}
-				else
-				{
-					var Node = Tag.SelectSingleNode($"*[local-name()='{Name}']");
-					if (Node != null)
-						F.SetValue(Result, Load(Node, FieldType));
-					else
-						if (F.IsNecessary(AllFieldsNecessary))
-							throw new NecessaryFieldNotFoundException();
-				}
-			}
+				catch (Exception E) { throw new LoadFailedException(Tag, F, E); }
 
 			return Result;
 		}

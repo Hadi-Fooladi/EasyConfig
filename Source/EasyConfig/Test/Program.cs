@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Xml;
+using System.Linq;
 using System.Collections.Generic;
+
+using EasyConfig.Exceptions;
 
 namespace Test
 {
@@ -10,8 +14,10 @@ namespace Test
 			const string FILEPATH = "Test.xml";
 
 			var Hadi = new Config.Person("Hadi", 34);
-			var Payam = new Config.Person("Payam", 32);
-			Payam.Children = new List<Config.Person> { new Config.Person("Faraeen", 0) };
+			var Payam = new Config.Person("Payam", 32)
+			{
+				Children = new List<Config.Person> { new Config.Person("Faraeen", 0) }
+			};
 
 			var A = new Config.Person("A", 1);
 			var B = new Config.Person("B", 2);
@@ -50,15 +56,72 @@ namespace Test
 
 				Console.WriteLine(C2);
 			}
-			catch (Exception Ex)
+			catch (LoadFailedException Ex)
 			{
-				Console.WriteLine($"Error: {Ex.Message}");
+				//Console.WriteLine($"Error: {Ex.Message}");
+				//Console.WriteLine(GetPath(Ex.Tag));
+
+				Show(Ex);
+
 			}
 
 			Console.WriteLine();
 			Console.WriteLine();
 			Console.WriteLine("Press any key to exit...");
 			Console.ReadKey();
+		}
+
+		private static void Show(Exception Ex)
+		{
+			var E = Ex;
+			var Path = new List<string>();
+
+			LoadFailedException Last = null;
+			for (;;)
+			{
+				if (E is LoadFailedException LFE)
+				{
+					Last = LFE;
+					Path.Add($"{LFE.Tag.LocalName}[{FindIndex(LFE.Tag) + 1}]");
+				}
+
+				if (E.InnerException == null)
+					break;
+
+				E = E.InnerException;
+			}
+
+			Console.WriteLine($"Path: {string.Join(" / ", Path)}");
+
+			if (Last != null)
+				Console.WriteLine($"Field: {Last.Field.Name}");
+
+			Console.WriteLine($"Message: {E.Message}");
+		}
+
+		private static IEnumerable<XmlNode> IterateNodes(XmlNode Node)
+		{
+			foreach (XmlNode X in Node.ChildNodes)
+				if (X.NodeType == XmlNodeType.Element)
+					yield return X;
+		}
+
+		private static int FindIndex(XmlNode Node)
+		{
+			XmlNode P = Node.ParentNode;
+
+			if (P == null) return -1;
+
+			int Num = 0;
+			foreach (var X in IterateNodes(P))
+			{
+				if (X == Node)
+					return Num;
+
+				Num++;
+			}
+
+			return -1;
 		}
 	}
 }
