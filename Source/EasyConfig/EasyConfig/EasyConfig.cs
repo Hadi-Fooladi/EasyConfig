@@ -90,6 +90,11 @@ namespace EasyConfig
 						continue;
 					}
 
+					// T? => T
+					var NullableUnderlyingType = Nullable.GetUnderlyingType(FieldType);
+					if (NullableUnderlyingType != null)
+						FieldType = NullableUnderlyingType;
+
 					var AttributeType = AttributeMap.GetValueOrNull(FieldType);
 					if (AttributeType != null)
 					{
@@ -132,6 +137,11 @@ namespace EasyConfig
 						SetValue(Value => Enum.Parse(FieldType, Value));
 						continue;
 					}
+
+					// T? => T
+					var NullableUnderlyingType = Nullable.GetUnderlyingType(FieldType);
+					if (NullableUnderlyingType != null)
+						FieldType = NullableUnderlyingType;
 
 					// Check field is primitive
 					var AttributeType = AttributeMap.GetValueOrNull(FieldType);

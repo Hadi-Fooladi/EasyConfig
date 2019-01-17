@@ -13,6 +13,13 @@ namespace Test
 		AB
 	}
 
+	internal struct Point
+	{
+		public int x, y;
+
+		public override string ToString() => $"({x}, {y})";
+	}
+
 	internal class Config
 	{
 		public Version Version;
@@ -23,7 +30,11 @@ namespace Test
 		[Name("Person")]
 		public List<Person> Persons;
 
-		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
+		public int? NullableInt;
+
+		public Point? P;
+
+		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, int? = {NullableInt}, P = {P}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
 
 		[AllFieldsNecessary]
 		public class Person

@@ -33,6 +33,8 @@ namespace Test
 			{
 				Num = 23,
 				Text = "123",
+				NullableInt = 12,
+				P = new Point { x = 4, y = 5 },
 				Persons = new List<Config.Person>
 				{
 					Hadi,
@@ -50,7 +52,7 @@ namespace Test
 
 			try
 			{
-				//EasyConfig.Save(Config, FILEPATH, "Config");
+				EasyConfig.Save(Config, FILEPATH, "Config");
 
 				var C2 = EasyConfig.Load<Config>(FILEPATH);
 
