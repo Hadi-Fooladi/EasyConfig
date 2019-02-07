@@ -102,12 +102,15 @@ namespace EasyConfig
 						continue;
 					}
 
-					if (FieldValue is IEnumerable C)
+					if (FieldType.IsCollection())
+					{
+						var C = (IEnumerable)FieldValue;
 						foreach (var X in C)
 						{
 							if (X != null)
 								CreateAndFillNode(Tag, Name, X);
 						}
+					}
 					else
 						CreateAndFillNode(Tag, Name, FieldValue);
 				}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using EasyConfig.Attributes;
 using System.Collections.Generic;
 
@@ -23,6 +24,7 @@ namespace Test
 	internal class Config
 	{
 		public Version Version;
+		private static readonly Person Adam = new Person("Adam", 10000000)/* { Spouse = null }*/;
 
 		public int Num;
 		public string Text;
@@ -37,7 +39,7 @@ namespace Test
 		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, int? = {NullableInt}, P = {P}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
 
 		[AllFieldsNecessary]
-		public class Person
+		public class Person : IEnumerable<Person>
 		{
 			[Ignore]
 			public int SSN;
@@ -56,6 +58,9 @@ namespace Test
 			public IReadOnlyList<Person> Children;
 
 			[Optional]
+			public Person Spouse = Adam;
+
+			[Optional]
 			public eBloodType BloodType;
 
 			public Person() { }
@@ -66,6 +71,7 @@ namespace Test
 				this.Name = Name;
 			}
 
+
 			public override string ToString()
 			{
 				var S = $"{Name} ({Age}, {DefaultTest}, {BloodType})";
@@ -75,6 +81,9 @@ namespace Test
 
 				return S;
 			}
+
+			IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+			public IEnumerator<Person> GetEnumerator() { throw new NotImplementedException(); }
 		}
 	}
 }
