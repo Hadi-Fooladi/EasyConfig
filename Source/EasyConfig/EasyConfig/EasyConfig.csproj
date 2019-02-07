@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>HaFT.EasyConfig</PackageId>
-    <Version>7.4.46</Version>
+    <Version>8.0.47</Version>
     <Authors>Hadi Fooladi Talari</Authors>
     <Company>HaFT</Company>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>

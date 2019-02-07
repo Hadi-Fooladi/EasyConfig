@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace EasyConfig
@@ -10,16 +9,29 @@ namespace EasyConfig
 
 	internal static class MiscExt
 	{
-		private static readonly Type CollectionType = typeof(IEnumerable);
+		private static readonly Type[] AcceptedGenericCollectionTypes =
+		{
+			typeof(List<>),
+			typeof(IList<>),
+			typeof(IEnumerable<>),
+			typeof(ICollection<>),
+			typeof(IReadOnlyList<>),
+			typeof(IReadOnlyCollection<>)
+		};
 
-		public static Type GetCollectionElementType(this Type T)
-			=> T.IsGenericType ?
-				T.GetGenericArguments().Single() :
-				T.GetElementType();
+		public static Type GetCollectionElementType(this Type T) => T.GetGenericArguments().Single();
 
 		public static bool IsCollection(this Type T)
 		{
-			return T.GetInterface(CollectionType.Name) != null;
+			if (T.IsGenericType)
+			{
+				var GTD = T.GetGenericTypeDefinition();
+				foreach (var GCT in AcceptedGenericCollectionTypes)
+					if (GTD == GCT)
+						return true;
+			}
+
+			return false;
 		}
 
 		public static TValue GetValueOrNull<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> Dic, TKey Key)
