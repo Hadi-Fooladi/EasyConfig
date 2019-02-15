@@ -18,6 +18,14 @@ namespace EasyConfig
 		public string TypeName => "int";
 	}
 
+	internal class Int64Attr : IAttributeType
+	{
+		public object FromString(string S) => long.Parse(S);
+		public string ToString(object Value) => Value.ToString();
+
+		public string TypeName => "long";
+	}
+
 	internal class SingleAttr : IAttributeType
 	{
 		public object FromString(string S) => float.Parse(S);

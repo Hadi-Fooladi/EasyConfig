@@ -61,6 +61,9 @@ namespace Test
 			public Person Spouse = Adam;
 
 			[Optional]
+			public long Long = 45;
+
+			[Optional]
 			public eBloodType BloodType;
 
 			public Person() { }
@@ -70,7 +73,6 @@ namespace Test
 				this.Age = Age;
 				this.Name = Name;
 			}
-
 
 			public override string ToString()
 			{

@@ -51,6 +51,7 @@ namespace EasyConfig
 		private static readonly IReadOnlyDictionary<Type, IAttributeType> AttributeMap = new Dictionary<Type, IAttributeType>
 		{
 			{ typeof(int), new IntAttr() },
+			{ typeof(long), new Int64Attr() },
 			{ typeof(bool), new BoolAttr() },
 			{ typeof(char), new CharAttr() },
 			{ typeof(float), new SingleAttr() },

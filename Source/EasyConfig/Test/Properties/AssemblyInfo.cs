@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HaFT")]
 [assembly: AssemblyProduct("Test")]
-[assembly: AssemblyCopyright("Copyright © HaFT 2018")]
+[assembly: AssemblyCopyright("Copyright © HaFT 2018-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("7.3.6.0")]
-[assembly: AssemblyFileVersion("7.3.6.0")]
+[assembly: AssemblyVersion("8.1.7.0")]
+[assembly: AssemblyFileVersion("8.1.7.0")]
