@@ -17,24 +17,24 @@ namespace EasyConfig.Exceptions
 	public class LoadFailedException : Exception
 	{
 		public readonly XmlNode Tag;
-		public readonly FieldInfo Field;
+		public readonly MemberInfo Member;
 
-		public LoadFailedException(XmlNode Tag, FieldInfo Field, Exception Inner) : base("Load failed", Inner)
+		public LoadFailedException(XmlNode Tag, MemberInfo Member, Exception Inner) : base("Load failed", Inner)
 		{
 			this.Tag = Tag;
-			this.Field = Field;
+			this.Member = Member;
 		}
 	}
 
 	public class SaveFailedException : Exception
 	{
 		public readonly XmlNode Tag;
-		public readonly FieldInfo Field;
+		public readonly MemberInfo Member;
 
-		public SaveFailedException(XmlNode Tag, FieldInfo Field, Exception Inner) : base("Save failed", Inner)
+		public SaveFailedException(XmlNode Tag, MemberInfo Member, Exception Inner) : base("Save failed", Inner)
 		{
 			this.Tag = Tag;
-			this.Field = Field;
+			this.Member = Member;
 		}
 	}
 }

@@ -14,6 +14,12 @@ namespace EasyConfig
 	{
 		public delegate void dlgVersion(XmlElement Root);
 
+		#region Options
+		public bool
+			UseFields = true,
+			UseProperties = false;
+		#endregion
+
 		#region Public Methods
 		public void Save(object Config, string FilePath, string RootTagName)
 		{
@@ -62,50 +68,56 @@ namespace EasyConfig
 		#endregion
 
 		#region Private Methods
-		private static void FillNode(XmlNode Tag, object Value)
+		private void FillNode(XmlNode Tag, object Value)
 		{
 			var T = Value.GetType();
 			bool AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
 
-			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
+			if (UseFields)
+				foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
+					if (!F.HasAttribute<IgnoreAttribute>())
+						Do(F, F.FieldType, F.GetValue(Value));
+
+			if (UseProperties)
+				foreach (var P in T.GetProperties(PUBLIC_INSTANCE_FLAG))
+					if (P.CanRead && P.CanWrite && P.GetIndexParameters().Length == 0 && !P.HasAttribute<IgnoreAttribute>())
+						Do(P, P.PropertyType, P.GetValue(Value));
+
+			void Do(MemberInfo Member, Type MemberType, object MemberValue)
+			{
 				try
 				{
-					if (F.HasAttribute<IgnoreAttribute>()) continue;
-
-					var FieldType = F.FieldType;
-					var FieldValue = F.GetValue(Value);
-
-					if (FieldValue == null)
+					if (MemberValue == null)
 					{
-						if (!FieldType.IsCollection() && F.IsNecessary(AllFieldsNecessary))
+						if (!MemberType.IsCollection() && Member.IsNecessary(AllFieldsNecessary))
 							throw new NecessaryFieldIsNullException();
 
-						continue;
+						return;
 					}
 
-					var Name = F.GetConfigName();
+					var Name = Member.GetConfigName();
 
-					if (FieldType.IsEnum)
+					if (MemberType.IsEnum)
 					{
-						Tag.AddAttr(Name, FieldValue);
-						continue;
+						Tag.AddAttr(Name, MemberValue);
+						return;
 					}
 
 					// T? => T
-					var NullableUnderlyingType = Nullable.GetUnderlyingType(FieldType);
+					var NullableUnderlyingType = Nullable.GetUnderlyingType(MemberType);
 					if (NullableUnderlyingType != null)
-						FieldType = NullableUnderlyingType;
+						MemberType = NullableUnderlyingType;
 
-					var AttributeType = AttributeMap.GetValueOrNull(FieldType);
+					var AttributeType = AttributeMap.GetValueOrNull(MemberType);
 					if (AttributeType != null)
 					{
-						Tag.AddAttr(Name, AttributeType.ToString(FieldValue));
-						continue;
+						Tag.AddAttr(Name, AttributeType.ToString(MemberValue));
+						return;
 					}
 
-					if (FieldType.IsCollection())
+					if (MemberType.IsCollection())
 					{
-						var C = (IEnumerable)FieldValue;
+						var C = (IEnumerable)MemberValue;
 						foreach (var X in C)
 						{
 							if (X != null)
@@ -113,46 +125,58 @@ namespace EasyConfig
 						}
 					}
 					else
-						CreateAndFillNode(Tag, Name, FieldValue);
+						CreateAndFillNode(Tag, Name, MemberValue);
 				}
-				catch (Exception E) { throw new SaveFailedException(Tag, F, E); }
+				catch (Exception E)
+				{
+					throw new SaveFailedException(Tag, Member, E);
+				}
+			}
 		}
 
-		private static void CreateAndFillNode(XmlNode Container, string TagName, object Value)
+		private void CreateAndFillNode(XmlNode Container, string TagName, object Value)
 			=> FillNode(Container.AppendNode(TagName), Value);
 
-		private static object Load(XmlNode Tag, Type T)
+		private object Load(XmlNode Tag, Type T)
 		{
 			var Result = Activator.CreateInstance(T);
 			bool AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
 
-			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
+			if (UseFields)
+				foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
+					if (!F.HasAttribute<IgnoreAttribute>())
+						Do(F, F.FieldType, obj => F.SetValue(Result, obj));
+
+			if (UseProperties)
+				foreach (var P in T.GetProperties(PUBLIC_INSTANCE_FLAG))
+					if (P.CanRead && P.CanWrite && P.GetIndexParameters().Length == 0 && !P.HasAttribute<IgnoreAttribute>())
+						Do(P, P.PropertyType, obj => P.SetValue(Result, obj));
+
+			void Do(MemberInfo Member, Type MemberType, Action<object> Setter)
+			{
 				try
 				{
-					if (F.HasAttribute<IgnoreAttribute>()) continue;
-
-					var Name = F.GetConfigName();
-					var FieldType = F.FieldType;
+					var Name = Member.GetConfigName();
 
 					#region Enum Or Primitive
 					// Check field is enum
-					if (FieldType.IsEnum)
+					if (MemberType.IsEnum)
 					{
-						SetValue(Value => Enum.Parse(FieldType, Value));
-						continue;
+						SetValue(Value => Enum.Parse(MemberType, Value));
+						return;
 					}
 
 					// T? => T
-					var NullableUnderlyingType = Nullable.GetUnderlyingType(FieldType);
+					var NullableUnderlyingType = Nullable.GetUnderlyingType(MemberType);
 					if (NullableUnderlyingType != null)
-						FieldType = NullableUnderlyingType;
+						MemberType = NullableUnderlyingType;
 
 					// Check field is primitive
-					var AttributeType = AttributeMap.GetValueOrNull(FieldType);
+					var AttributeType = AttributeMap.GetValueOrNull(MemberType);
 					if (AttributeType != null)
 					{
 						SetValue(Value => AttributeType.FromString(Value));
-						continue;
+						return;
 					}
 
 					// Nested Method
@@ -161,25 +185,25 @@ namespace EasyConfig
 						var Attr = Tag.Attributes[Name];
 						if (Attr != null)
 							// Set value by config
-							F.SetValue(Result, Converter(Attr.Value));
+							Setter(Converter(Attr.Value));
 						else
 						{
-							var DefaultAttr = F.GetCustomAttribute<DefaultAttribute>();
+							var DefaultAttr = Member.GetCustomAttribute<DefaultAttribute>();
 							if (DefaultAttr != null)
 								// Set value by default
-								F.SetValue(Result, DefaultAttr.Value);
+								Setter(DefaultAttr.Value);
 							else
 								// Throw exception if field is necessary
-								if (F.IsNecessary(AllFieldsNecessary))
+								if (Member.IsNecessary(AllFieldsNecessary))
 									throw new NecessaryFieldNotFoundException();
 						}
 					}
 					#endregion
 
-					if (FieldType.IsCollection())
+					if (MemberType.IsCollection())
 					{
 						Type
-							ElementType = FieldType.GetCollectionElementType(),
+							ElementType = MemberType.GetCollectionElementType(),
 							CollectionType = typeof(List<>).MakeGenericType(ElementType);
 
 						var L = (IList)Activator.CreateInstance(CollectionType);
@@ -187,19 +211,23 @@ namespace EasyConfig
 						foreach (XmlNode Node in Tag.SelectNodes($"*[local-name()='{Name}']"))
 							L.Add(Load(Node, ElementType));
 
-						F.SetValue(Result, L);
+						Setter(L);
 					}
 					else
 					{
 						var Node = Tag.SelectSingleNode($"*[local-name()='{Name}']");
 						if (Node != null)
-							F.SetValue(Result, Load(Node, FieldType));
+							Setter(Load(Node, MemberType));
 						else
-							if (F.IsNecessary(AllFieldsNecessary))
+							if (Member.IsNecessary(AllFieldsNecessary))
 								throw new NecessaryFieldNotFoundException();
 					}
 				}
-				catch (Exception E) { throw new LoadFailedException(Tag, F, E); }
+				catch (Exception E)
+				{
+					throw new LoadFailedException(Tag, Member, E);
+				}
+			}
 
 			return Result;
 		}

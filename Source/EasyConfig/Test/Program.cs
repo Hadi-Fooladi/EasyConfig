@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Xml;
-using System.Linq;
 using System.Collections.Generic;
 
 using EasyConfig.Exceptions;
@@ -48,7 +47,11 @@ namespace Test
 
 			Hadi.Necessary = null;
 
-			var EasyConfig = new EasyConfig.EasyConfig();
+			var EasyConfig = new EasyConfig.EasyConfig
+			{
+				UseFields = true,
+				UseProperties = true
+			};
 
 			try
 			{
@@ -96,7 +99,7 @@ namespace Test
 			Console.WriteLine($"Path: {string.Join(" / ", Path)}");
 
 			if (Last != null)
-				Console.WriteLine($"Field: {Last.Field.Name}");
+				Console.WriteLine($"Field: {Last.Member.Name}");
 
 			Console.WriteLine($"Message: {E.Message}");
 		}

@@ -18,7 +18,21 @@ namespace Test
 	{
 		public int x, y;
 
-		public override string ToString() => $"({x}, {y})";
+		public int Sum => x + y;
+
+		public string Name { get; private set; }
+
+		public int this[int ndx]
+		{
+			get => 1;
+			set
+			{
+				x = ndx;
+				y = value;
+			}
+		}
+
+		public override string ToString() => $"({x}, {y}) [{Name}]";
 	}
 
 	internal class Config
@@ -36,7 +50,13 @@ namespace Test
 
 		public Point? P;
 
-		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, int? = {NullableInt}, P = {P}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
+		private string ABC { get; set; }
+
+		[Name("DDD")]
+		[Default("EEE")]
+		public string Name { get; set; }
+
+		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, int? = {NullableInt}, P = {P}, Name = {Name}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
 
 		[AllFieldsNecessary]
 		public class Person : IEnumerable<Person>
