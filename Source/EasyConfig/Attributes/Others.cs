@@ -2,10 +2,10 @@
 
 namespace EasyConfig.Attributes
 {
-	[AttributeUsage(AttributeTargets.Field)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class NecessaryAttribute : Attribute { }
 
-	[AttributeUsage(AttributeTargets.Field)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class OptionalAttribute : Attribute { }
 
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
@@ -14,6 +14,6 @@ namespace EasyConfig.Attributes
 	/// <summary>
 	/// Ignores the field
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Field)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class IgnoreAttribute : Attribute { }
 }

@@ -8,7 +8,7 @@ namespace EasyConfig.Attributes
 	/// Useful for 'struct' data-types which fields can not be initialized like a 'class'.<br />
 	/// If set, 'Necessary' attribute will be discarded
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Field)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class DefaultAttribute : Attribute
 	{
 		public object Value { get; }
