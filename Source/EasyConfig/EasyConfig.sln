@@ -11,9 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor", "Editor\Editor.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor-Test", "Editor-Test\Editor-Test.csproj", "{D1441C52-3E7C-442E-883A-1822E690919D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Attributes", "Attributes\Attributes.csproj", "{07292F12-1018-4FDB-A127-C464042F89B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attributes", "Attributes\Attributes.csproj", "{07292F12-1018-4FDB-A127-C464042F89B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyConfig", "EasyConfig\EasyConfig.csproj", "{3BCE72CD-09CD-47B4-8B01-267F9469D684}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyConfig", "EasyConfig\EasyConfig.csproj", "{3BCE72CD-09CD-47B4-8B01-267F9469D684}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{C81E6E09-B536-4E3D-8B65-346D92C3A69E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -45,6 +47,10 @@ Global
 		{3BCE72CD-09CD-47B4-8B01-267F9469D684}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BCE72CD-09CD-47B4-8B01-267F9469D684}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BCE72CD-09CD-47B4-8B01-267F9469D684}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C81E6E09-B536-4E3D-8B65-346D92C3A69E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C81E6E09-B536-4E3D-8B65-346D92C3A69E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C81E6E09-B536-4E3D-8B65-346D92C3A69E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C81E6E09-B536-4E3D-8B65-346D92C3A69E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

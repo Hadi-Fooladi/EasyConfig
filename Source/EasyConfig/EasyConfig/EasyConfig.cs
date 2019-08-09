@@ -18,9 +18,28 @@ namespace EasyConfig
 		public bool
 			UseFields = true,
 			UseProperties = false;
+
+		public string RootTagName = "Config";
+
+		public dlgVersion
+			CheckVersion,
+			SaveVersion;
 		#endregion
 
 		#region Public Methods
+		public XmlDocument GetXmlDocument(object Config)
+		{
+			var Doc = new XmlDocument();
+			var Root = Doc.AppendNode(RootTagName);
+
+			SaveVersion?.Invoke(Root);
+
+			FillNode(Root, Config);
+
+			return Doc;
+		}
+
+		[Obsolete("Use 'GetXmlDocument' method instead.")]
 		public void Save(object Config, string FilePath, string RootTagName)
 		{
 			var Doc = new XmlDocument();
@@ -39,16 +58,18 @@ namespace EasyConfig
 			var Doc = new XmlDocument();
 			Doc.Load(FilePath);
 
+			return Load(Doc, T);
+		}
+
+		public T Load<T>(XmlDocument Doc) => (T)Load(Doc, typeof(T));
+		public object Load(XmlDocument Doc, Type T)
+		{
 			var Root = Doc.DocumentElement;
 
 			CheckVersion?.Invoke(Root);
 
 			return Load(Root, T);
 		}
-
-		public dlgVersion
-			CheckVersion,
-			SaveVersion;
 		#endregion
 
 		#region Constants
@@ -68,6 +89,12 @@ namespace EasyConfig
 		#endregion
 
 		#region Private Methods
+		private static bool CanUseProperty(PropertyInfo P) =>
+			P.CanRead && // has getter
+			P.CanWrite && // has setter
+			P.GetIndexParameters().Length == 0 && // it's not indexer
+			!P.HasAttribute<IgnoreAttribute>(); // Doesn't have 'IgnoreAttribute'
+
 		private void FillNode(XmlNode Tag, object Value)
 		{
 			var T = Value.GetType();
@@ -80,7 +107,7 @@ namespace EasyConfig
 
 			if (UseProperties)
 				foreach (var P in T.GetProperties(PUBLIC_INSTANCE_FLAG))
-					if (P.CanRead && P.CanWrite && P.GetIndexParameters().Length == 0 && !P.HasAttribute<IgnoreAttribute>())
+					if (CanUseProperty(P))
 						Do(P, P.PropertyType, P.GetValue(Value));
 
 			void Do(MemberInfo Member, Type MemberType, object MemberValue)
@@ -149,7 +176,7 @@ namespace EasyConfig
 
 			if (UseProperties)
 				foreach (var P in T.GetProperties(PUBLIC_INSTANCE_FLAG))
-					if (P.CanRead && P.CanWrite && P.GetIndexParameters().Length == 0 && !P.HasAttribute<IgnoreAttribute>())
+					if (CanUseProperty(P))
 						Do(P, P.PropertyType, obj => P.SetValue(Result, obj));
 
 			void Do(MemberInfo Member, Type MemberType, Action<object> Setter)
