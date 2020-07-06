@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.4
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "Shared\Shared.shproj", "{C96FAD70-AB50-4E2F-BCD6-353553C138C2}"
 EndProject
@@ -15,11 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Attributes", "Attributes\At
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyConfig", "EasyConfig\EasyConfig.csproj", "{3BCE72CD-09CD-47B4-8B01-267F9469D684}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{C81E6E09-B536-4E3D-8B65-346D92C3A69E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{C81E6E09-B536-4E3D-8B65-346D92C3A69E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Shared\Shared.projitems*{0f9a6009-e66c-40e6-9da9-2ce8eb4f50df}*SharedItemsImports = 4
+		Shared\Shared.projitems*{3bce72cd-09cd-47b4-8b01-267f9469d684}*SharedItemsImports = 5
 		Shared\Shared.projitems*{c96fad70-ab50-4e2f-bcd6-353553c138c2}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

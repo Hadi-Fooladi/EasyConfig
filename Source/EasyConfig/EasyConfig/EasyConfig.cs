@@ -122,6 +122,11 @@ namespace EasyConfig
 						return;
 					}
 
+					// T? => T
+					var NullableUnderlyingType = Nullable.GetUnderlyingType(MemberType);
+					if (NullableUnderlyingType != null)
+						MemberType = NullableUnderlyingType;
+
 					var Name = Member.GetConfigName();
 
 					if (MemberType.IsEnum)
@@ -129,11 +134,6 @@ namespace EasyConfig
 						Tag.AddAttr(Name, MemberValue);
 						return;
 					}
-
-					// T? => T
-					var NullableUnderlyingType = Nullable.GetUnderlyingType(MemberType);
-					if (NullableUnderlyingType != null)
-						MemberType = NullableUnderlyingType;
 
 					var AttributeType = AttributeMap.GetValueOrNull(MemberType);
 					if (AttributeType != null)
@@ -186,17 +186,17 @@ namespace EasyConfig
 					var Name = Member.GetConfigName();
 
 					#region Enum Or Primitive
+					// T? => T
+					var NullableUnderlyingType = Nullable.GetUnderlyingType(MemberType);
+					if (NullableUnderlyingType != null)
+						MemberType = NullableUnderlyingType;
+
 					// Check field is enum
 					if (MemberType.IsEnum)
 					{
 						SetValue(Value => Enum.Parse(MemberType, Value));
 						return;
 					}
-
-					// T? => T
-					var NullableUnderlyingType = Nullable.GetUnderlyingType(MemberType);
-					if (NullableUnderlyingType != null)
-						MemberType = NullableUnderlyingType;
 
 					// Check field is primitive
 					var AttributeType = AttributeMap.GetValueOrNull(MemberType);
