@@ -27,19 +27,23 @@ namespace EasyConfig
 		#endregion
 
 		#region Public Methods
-		public XmlDocument GetXmlDocument(object Config)
+		public XmlDocument GetXmlDocument(object config)
 		{
-			var Doc = new XmlDocument();
-			var Root = Doc.AppendNode(RootTagName);
+			var doc = new XmlDocument();
+			var root = doc.AppendNode(RootTagName);
 
-			SaveVersion?.Invoke(Root);
+			SaveTo(root, config);
 
-			FillNode(Root, Config);
-
-			return Doc;
+			return doc;
 		}
 
-		[Obsolete("Use 'GetXmlDocument' method instead.")]
+		public void SaveTo(XmlElement tag, object config)
+		{
+			SaveVersion?.Invoke(tag);
+			FillNode(tag, config);
+		}
+
+		[Obsolete("Use 'GetXmlDocument/SaveTo' methods instead.")]
 		public void Save(object Config, string FilePath, string RootTagName)
 		{
 			var Doc = new XmlDocument();
@@ -61,14 +65,15 @@ namespace EasyConfig
 			return Load(Doc, T);
 		}
 
-		public T Load<T>(XmlDocument Doc) => (T)Load(Doc, typeof(T));
-		public object Load(XmlDocument Doc, Type T)
+		public T Load<T>(XmlDocument Doc) => Load<T>(Doc.DocumentElement);
+		public object Load(XmlDocument Doc, Type T) => Load(Doc.DocumentElement, T);
+
+		public T Load<T>(XmlElement tag) => (T)Load(tag, typeof(T));
+		public object Load(XmlElement tag, Type t)
 		{
-			var Root = Doc.DocumentElement;
+			CheckVersion?.Invoke(tag);
 
-			CheckVersion?.Invoke(Root);
-
-			return Load(Root, T);
+			return Load((XmlNode)tag, t);
 		}
 		#endregion
 
