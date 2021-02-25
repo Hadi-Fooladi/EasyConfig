@@ -103,7 +103,6 @@ namespace EasyConfig
 		private void FillNode(XmlNode Tag, object Value)
 		{
 			var T = Value.GetType();
-			bool AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
 
 			if (UseFields)
 				foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
@@ -121,7 +120,7 @@ namespace EasyConfig
 				{
 					if (MemberValue == null)
 					{
-						if (!MemberType.IsCollection() && Member.IsNecessary(AllFieldsNecessary))
+						if (!MemberType.IsCollection() && Member.IsNecessary())
 							throw new NecessaryFieldIsNullException();
 
 						return;
@@ -172,7 +171,6 @@ namespace EasyConfig
 		private object Load(XmlNode Tag, Type T)
 		{
 			var Result = Activator.CreateInstance(T);
-			bool AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
 
 			if (UseFields)
 				foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
@@ -226,7 +224,7 @@ namespace EasyConfig
 								Setter(DefaultAttr.Value);
 							else
 								// Throw exception if field is necessary
-								if (Member.IsNecessary(AllFieldsNecessary))
+								if (Member.IsNecessary())
 									throw new NecessaryFieldNotFoundException();
 						}
 					}
@@ -251,7 +249,7 @@ namespace EasyConfig
 						if (Node != null)
 							Setter(Load(Node, MemberType));
 						else
-							if (Member.IsNecessary(AllFieldsNecessary))
+							if (Member.IsNecessary())
 								throw new NecessaryFieldNotFoundException();
 					}
 				}

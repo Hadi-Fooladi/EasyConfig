@@ -48,9 +48,15 @@ namespace EasyConfig
 			return A == null ? MI.Name : A.Name;
 		}
 
-		public static bool IsNecessary(this MemberInfo MI, bool Necessary)
-			=> Necessary ?
-				!MI.HasAttribute<OptionalAttribute>() :
-				MI.HasAttribute<NecessaryAttribute>();
+		public static bool IsNecessary(this MemberInfo mi)
+		{
+			if (mi.HasAttribute<NecessaryAttribute>())
+				return true;
+
+			if (mi.DeclaringType.HasAttribute<AllFieldsNecessaryAttribute>())
+				return !mi.HasAttribute<OptionalAttribute>();
+
+			return false;
+		}
 	}
 }
