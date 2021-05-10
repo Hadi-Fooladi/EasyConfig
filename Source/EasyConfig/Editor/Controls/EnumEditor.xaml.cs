@@ -11,7 +11,7 @@ namespace EasyConfig.Editor
 	internal partial class EnumEditor : IEditor
 	{
 		#region Constructors
-		private EnumEditor(Type T, object Value, object Default)
+		public EnumEditor(Type T, object Value, object Default)
 		{
 			this.T = T;
 			InitializeComponent();
@@ -48,8 +48,6 @@ namespace EasyConfig.Editor
 				lblDefault.Text = Default.ToString();
 		}
 
-		public EnumEditor(object Value, object Default) : this(Value.GetType(), Value, Default) { }
-
 		public EnumEditor(Type T, XmlAttribute Attr, object Default) : this(T, Attr == null ? null : Enum.Parse(T, Attr.Value), Default) { }
 		#endregion
 
@@ -67,7 +65,7 @@ namespace EasyConfig.Editor
 
 				foreach (ToggleButton X in SP.Children)
 				{
-					if (X.IsChecked.isFalse()) continue;
+					if (X.IsChecked != true) continue;
 
 					var Member = (string)X.Content;
 					Result |= (int)Enum.Parse(T, Member);
@@ -80,7 +78,7 @@ namespace EasyConfig.Editor
 			}
 		}
 
-		public bool Ignored => cbIgnore.IsChecked.isTrue();
+		public bool Ignored => cbIgnore.IsChecked == true;
 
 		public void Validate() { }
 		public void ShowItem(object Item) { }

@@ -70,8 +70,8 @@ namespace EasyConfig.Editor
 			if (isBool)
 			{
 				bool
-					No = rbNo.IsChecked.isTrue(),
-					Yes = rbYes.IsChecked.isTrue();
+					No = rbNo.IsChecked == true,
+					Yes = rbYes.IsChecked == true;
 
 				if (!Yes && !No)
 					throw new Exception("Value not set");
@@ -87,7 +87,7 @@ namespace EasyConfig.Editor
 
 		public object Value => GetValue();
 
-		public bool Ignored => cbIgnore.IsChecked.isTrue();
+		public bool Ignored => cbIgnore.IsChecked == true;
 
 		public void Validate() => GetValue();
 

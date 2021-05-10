@@ -14,14 +14,12 @@ namespace EasyConfig.Editor
 	internal partial class CompoundEditor : IEditor
 	{
 		private readonly Type T;
-		private readonly bool AllFieldsNecessary;
 
 		#region Constructors
 		private CompoundEditor(Type T)
 		{
 			this.T = T;
 			InitializeComponent();
-			AllFieldsNecessary = T.HasAttribute<AllFieldsNecessaryAttribute>();
 		}
 
 		public CompoundEditor(Type T, object Value) : this(T)
@@ -44,8 +42,6 @@ namespace EasyConfig.Editor
 		#endregion
 
 		#region Constants
-		private const BindingFlags PUBLIC_INSTANCE_FLAG = BindingFlags.Instance | BindingFlags.Public;
-
 		private static readonly IReadOnlyDictionary<Type, IAttributeType> AttributeMap = new Dictionary<Type, IAttributeType>
 		{
 			{ typeof(int), new IntAttr() },
@@ -78,26 +74,24 @@ namespace EasyConfig.Editor
 			PopulateFields(Value);
 		}
 
-		private void PopulateFields(object Value)
+		private void PopulateFields(object obj)
 		{
-			var Items = LB.Items;
+			var items = LB.Items;
 
-			Items.Clear();
-			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
-				if (!F.HasAttribute<IgnoreAttribute>())
-					Items.Add(new FieldItem(F, F.GetValue(Value), AllFieldsNecessary));
+			items.Clear();
+			foreach (var mi in T.GetConfigMembers())
+				items.Add(new MemberItem(mi, mi.GetValue(obj)));
 
 			LB.SelectedIndex = 0;
 		}
 
-		private void PopulateFields(XmlNode Node)
+		private void PopulateFields(XmlNode node)
 		{
-			var Items = LB.Items;
+			var items = LB.Items;
 
-			Items.Clear();
-			foreach (var F in T.GetFields(PUBLIC_INSTANCE_FLAG))
-				if (!F.HasAttribute<IgnoreAttribute>())
-					Items.Add(new FieldItem(F, Node, AllFieldsNecessary));
+			items.Clear();
+			foreach (var mi in T.GetConfigMembers())
+				items.Add(new MemberItem(mi, node));
 
 			LB.SelectedIndex = 0;
 		}
@@ -114,7 +108,7 @@ namespace EasyConfig.Editor
 
 				var Result = Activator.CreateInstance(T);
 
-				foreach (FieldItem FI in LB.Items)
+				foreach (MemberItem FI in LB.Items)
 					FI.Save(Result);
 
 				return Result;
@@ -125,7 +119,7 @@ namespace EasyConfig.Editor
 
 		public void Validate()
 		{
-			foreach (FieldItem FI in LB.Items)
+			foreach (MemberItem FI in LB.Items)
 				try
 				{
 					var E = FI.Editor;
@@ -148,7 +142,7 @@ namespace EasyConfig.Editor
 
 		public void SaveToXmlNode(XmlNode Node, string Name)
 		{
-			foreach (FieldItem FI in LB.Items)
+			foreach (MemberItem FI in LB.Items)
 			{
 				var E = FI.Editor;
 				if (E.Ignored) continue;
@@ -165,35 +159,34 @@ namespace EasyConfig.Editor
 		#endregion
 
 		#region Nested Class
-		private class FieldItem
+		private class MemberItem
 		{
-			private readonly FieldInfo FI;
+			private readonly MemberInfo MI;
 
 			public readonly bool Necessary;
 			public readonly IEditor Editor;
 
-			public string Name => FI.Name;
-			public string ConfigName => FI.GetConfigName();
+			public string Name => MI.Name;
+			public string ConfigName => MI.GetConfigName();
 
 			public Brush Color => Necessary ? Brushes.DarkRed : Brushes.Black;
 			public FontWeight FontWeight => Necessary ? FontWeights.SemiBold : FontWeights.Normal;
 
-			private object Default => FI.GetCustomAttribute<DefaultAttribute>()?.Value;
+			private object Default => MI.GetCustomAttribute<DefaultAttribute>()?.Value;
 
 			#region Constructors
-			private FieldItem(FieldInfo FI, bool Necessary)
-			{
-				this.FI = FI;
-				this.Necessary = FI.IsNecessary(Necessary);
-			}
+			private MemberItem(MemberInfo mi) => Necessary = (MI = mi).IsNecessary();
 
-			public FieldItem(FieldInfo FI, object Value, bool Necessary) : this(FI, Necessary)
+			public MemberItem(MemberInfo mi, object Value) : this(mi)
 			{
-				var Type = FI.FieldType;
+				var Type = mi.GetMemberType();
+
+				// T? => T
+				Type = Nullable.GetUnderlyingType(Type) ?? Type;
 
 				if (Type.IsEnum)
 				{
-					Editor = new EnumEditor(Value, Default);
+					Editor = new EnumEditor(Type, Value, Default);
 					return;
 				}
 
@@ -210,9 +203,12 @@ namespace EasyConfig.Editor
 					Editor = new CompoundEditor(Type, Value);
 			}
 
-			public FieldItem(FieldInfo FI, XmlNode Node, bool Necessary) : this(FI, Necessary)
+			public MemberItem(MemberInfo mi, XmlNode Node) : this(mi)
 			{
-				var Type = FI.FieldType;
+				var Type = mi.GetMemberType();
+
+				// T? => T
+				Type = Nullable.GetUnderlyingType(Type) ?? Type;
 
 				if (Type.IsEnum)
 				{
@@ -237,12 +233,12 @@ namespace EasyConfig.Editor
 			public void Save(object Obj)
 			{
 				if (!Editor.Ignored)
-					FI.SetValue(Obj, Editor.Value);
+					MI.SetValue(Obj, Editor.Value);
 				else
 				{
 					var D = Default;
 					if (D != null)
-						FI.SetValue(Obj, D);
+						MI.SetValue(Obj, D);
 				}
 			}
 		}
@@ -259,7 +255,7 @@ namespace EasyConfig.Editor
 
 		private void LB_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var FI = LB.SelectedItem as FieldItem;
+			var FI = LB.SelectedItem as MemberItem;
 			FieldEditorContainer.Content = FI?.Editor.Control;
 		}
 		#endregion
