@@ -13,7 +13,11 @@ namespace Editor_Test
 		{
 			var App = new Application();
 
+			Options.UseFields =
+			Options.UseProperties = true;
+
 			var EW = EditorWindow.New<Config>(FILENAME);
+			//var EW = new EditorWindow(new Config());
 			EW.OnSaveRequested += OnSaveRequested;
 
 			App.Run(EW);

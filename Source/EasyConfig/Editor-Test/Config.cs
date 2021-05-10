@@ -54,6 +54,11 @@ namespace Editor_Test
 		[Necessary]
 		public Point Position;
 
+		public int? NullableInt;
+		public eBloodType? NullableBlood;
+
+		public int PropertyInt { get; set; }
+
 		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
 
 		[AllFieldsNecessary]
@@ -79,6 +84,9 @@ namespace Editor_Test
 
 			[Optional]
 			public eBloodType BloodType;
+
+			[Name("C")]
+			public Config Config { get; set; }
 
 			public Person() { }
 
