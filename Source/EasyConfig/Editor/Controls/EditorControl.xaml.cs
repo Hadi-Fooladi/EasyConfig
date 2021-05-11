@@ -10,28 +10,22 @@ namespace EasyConfig.Editor
 		#region Constructors
 		public EditorControl() => InitializeComponent();
 
-		public EditorControl(string XmlPath, Type T) : this(Fn.LoadXml(XmlPath), T) { }
+		public EditorControl(object obj) : this() => Value = obj;
+		public EditorControl(XmlDocument doc, Type t) : this() => Fill(doc, t);
+		public EditorControl(string xmlPath, Type t) : this(Fn.LoadXml(xmlPath), t) { }
 
-		public EditorControl(XmlDocument Doc, Type T) : this()
-		{
-			var Root = Doc.DocumentElement;
-
-			SV.Content = CE = new CompoundEditor(T, Root);
-		}
-
-		public EditorControl(object Obj) : this()
-		{
-			SV.Content = CE = new CompoundEditor(Obj.GetType(), Obj);
-		}
-
-		public static EditorControl New<T>(string XmlPath) => New<T>(Fn.LoadXml(XmlPath));
-		public static EditorControl New<T>(XmlDocument Doc) => new EditorControl(Doc, typeof(T));
+		public static EditorControl New<T>(string xmlPath) => New<T>(Fn.LoadXml(xmlPath));
+		public static EditorControl New<T>(XmlDocument doc) => new EditorControl(doc, typeof(T));
 		#endregion
 
-		private readonly CompoundEditor CE;
+		private CompoundEditor CE;
 
 		#region Public Members
-		public object Value => CE.Value;
+		public object Value
+		{
+			get => CE.Value;
+			set => SV.Content = CE = new CompoundEditor(value.GetType(), value);
+		}
 
 		public void Validate()
 		{
@@ -69,6 +63,9 @@ namespace EasyConfig.Editor
 
 			return Doc;
 		}
+
+		public void Fill<T>(XmlDocument doc) => Fill(doc, typeof(T));
+		public void Fill(XmlDocument doc, Type t) => SV.Content = CE = new CompoundEditor(t, doc.DocumentElement);
 		#endregion
 	}
 }
