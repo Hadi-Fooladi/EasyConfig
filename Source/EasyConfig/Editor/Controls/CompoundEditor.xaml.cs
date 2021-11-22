@@ -44,9 +44,13 @@ namespace EasyConfig.Editor
 		#region Constants
 		private static readonly IReadOnlyDictionary<Type, IAttributeType> AttributeMap = new Dictionary<Type, IAttributeType>
 		{
-			{ typeof(int), new IntAttr() },
 			{ typeof(bool), new BoolAttr() },
 			{ typeof(char), new CharAttr() },
+			{ typeof(byte), new ByteAttr() },
+			{ typeof(short), new Int16Attr() },
+			{ typeof(ushort), new UInt16Attr() },
+			{ typeof(int), new IntAttr() },
+			{ typeof(long), new Int64Attr() },
 			{ typeof(float), new SingleAttr() },
 			{ typeof(double), new DoubleAttr() },
 			{ typeof(string), new StringAttr() },

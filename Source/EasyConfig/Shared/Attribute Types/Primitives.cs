@@ -2,6 +2,36 @@
 
 namespace EasyConfig
 {
+	internal class GenericAttr : IAttributeType
+	{
+		private readonly Func<string, object> _fromString;
+
+		public GenericAttr(string typeName, Func<string, object> fromString)
+		{
+			TypeName = typeName;
+			_fromString = fromString;
+		}
+
+		public string TypeName { get; }
+		public object FromString(string s) => _fromString(s);
+		public string ToString(object value) => value.ToString();
+	}
+
+	internal class UInt16Attr : GenericAttr
+	{
+		public UInt16Attr() : base("ushort", s => ushort.Parse(s)) { }
+	}
+
+	internal class Int16Attr : GenericAttr
+	{
+		public Int16Attr() : base("short", s => short.Parse(s)) { }
+	}
+
+	internal class ByteAttr : GenericAttr
+	{
+		public ByteAttr() : base("byte", s => byte.Parse(s)) { }
+	}
+
 	internal class StringAttr : IAttributeType
 	{
 		public object FromString(string S) => S;

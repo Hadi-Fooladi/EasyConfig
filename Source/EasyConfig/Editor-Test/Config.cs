@@ -59,6 +59,10 @@ namespace Editor_Test
 
 		public int PropertyInt { get; set; }
 
+		public byte Byte;
+		public short Short;
+		public ushort UShort;
+
 		public override string ToString() => $"Num = {Num}, Text = {Text}, Version = {Version}, Persons = [{string.Join(", ", Persons ?? new List<Person>())}]";
 
 		[AllFieldsNecessary]
