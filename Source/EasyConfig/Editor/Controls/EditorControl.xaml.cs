@@ -27,6 +27,36 @@ namespace EasyConfig.Editor
 			set => SV.Content = CE = new CompoundEditor(value.GetType(), value);
 		}
 
+		public bool IsValid(bool showError)
+		{
+			try
+			{
+				CE.Validate();
+				return true;
+			}
+			catch (ValidationException ve)
+			{
+				if (!showError) return false;
+
+				for (; ; )
+				{
+					ve.ShowItemInEditor();
+
+					var ie = ve.InnerException;
+					if (ie is ValidationException ex)
+					{
+						ve = ex;
+						continue;
+					}
+
+					Msg.Error(ie.Message);
+					break;
+				}
+			}
+
+			return false;
+		}
+
 		public void Validate()
 		{
 			try
