@@ -178,8 +178,14 @@ namespace EasyConfig.Editor
 
 			private object Default => MI.GetCustomAttribute<DefaultAttribute>()?.Value;
 
+			public string Desc { get; }
+
 			#region Constructors
-			private MemberItem(MemberInfo mi) => Necessary = (MI = mi).IsNecessary();
+			private MemberItem(MemberInfo mi)
+			{
+				Necessary = (MI = mi).IsNecessary();
+				Desc = mi.GetCustomAttribute<DescriptionAttribute>()?.Desc;
+			}
 
 			public MemberItem(MemberInfo mi, object Value) : this(mi)
 			{
@@ -259,8 +265,17 @@ namespace EasyConfig.Editor
 
 		private void LB_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var FI = LB.SelectedItem as MemberItem;
-			FieldEditorContainer.Content = FI?.Editor.Control;
+			var mi = LB.SelectedItem as MemberItem;
+			FieldEditorContainer.Content = mi?.Editor.Control;
+
+			var desc = mi?.Desc;
+			if (desc == null)
+				_descLabel.Visibility = Visibility.Collapsed;
+			else
+			{
+				_descLabel.Text = mi.Desc;
+				_descLabel.Visibility = Visibility.Visible;
+			}
 		}
 		#endregion
 	}

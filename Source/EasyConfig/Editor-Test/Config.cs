@@ -43,12 +43,13 @@ namespace Editor_Test
 		[Default(false)]
 		public bool Boolean;
 
-		[Name("Person")]
+		[Name("Person"), Description("A list")]
 		public List<Person> Persons;
 
 		[Default(eOctal.Six)]
 		public eOctal Oct;
 
+		[Description("Root")]
 		public Person Root;
 
 		[Necessary]
@@ -86,7 +87,7 @@ namespace Editor_Test
 			[Name("Child")]
 			public List<Person> Children;
 
-			[Optional]
+			[Optional, Description("A, B, AB, O")]
 			public eBloodType BloodType;
 
 			[Name("C")]

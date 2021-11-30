@@ -18,6 +18,9 @@
 		
 		<DockPanel Grid.Column="0">
 			<Button Name="bNewDel" DockPanel.Dock="Top" Click="bNewDel_OnClick" />
+
+			<TextBlock Name="_descLabel" DockPanel.Dock="Bottom" Background="Beige" Padding="5,2" Visibility="Collapsed" />
+			
 			<ListBox Name="LB" SelectionChanged="LB_OnSelectionChanged">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
