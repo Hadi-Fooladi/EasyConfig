@@ -44,11 +44,19 @@ namespace Editor_Test
 
 		public void SaveToXmlNode(XmlNode Node, string Name)
 		{
+			var a = Node.OwnerDocument.CreateAttribute(Name);
+			a.Value = _tb.Text;
+			Node.Attributes.Append(a);
 		}
 
 		public void SetValueBy(XmlAttribute attribute)
 		{
 			_tb.Text = attribute?.Value;
+		}
+
+		public void SetValueBy(XmlNode containerNode, string name)
+		{
+			SetValueBy(containerNode.Attributes[name]);
 		}
 		#endregion
 	}

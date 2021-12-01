@@ -171,6 +171,11 @@ namespace EasyConfig.Editor
 		{
 			throw new NotSupportedException();
 		}
+
+		public void SetValueBy(XmlNode containerNode, string name)
+		{
+			throw new NotSupportedException();
+		}
 		#endregion
 
 		#region Nested Class
@@ -242,7 +247,7 @@ namespace EasyConfig.Editor
 					var editor = GetCostumEditor(mi);
 					if (editor != null)
 					{
-						editor.SetValueBy(Node.Attributes[ConfigName]);
+						editor.SetValueBy(Node , ConfigName);
 						Editor = editor;
 						return;
 					}

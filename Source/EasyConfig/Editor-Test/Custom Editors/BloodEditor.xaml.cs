@@ -60,6 +60,11 @@ namespace Editor_Test
 					return;
 				}
 		}
+
+		public void SetValueBy(XmlNode containerNode, string name)
+		{
+			SetValueBy(containerNode.Attributes[name]);
+		}
 		#endregion
 	}
 }

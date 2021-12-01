@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using System.Windows.Controls;
 
 namespace EasyConfig.Editor
@@ -31,6 +32,9 @@ namespace EasyConfig.Editor
 		/// </param>
 		void SaveToXmlNode(XmlNode Node, string Name);
 
+		[Obsolete("Use `SetValueBy(XmlNode containerNode, string name)`")]
 		void SetValueBy(XmlAttribute attribute);
+
+		void SetValueBy(XmlNode containerNode, string name);
 	}
 }

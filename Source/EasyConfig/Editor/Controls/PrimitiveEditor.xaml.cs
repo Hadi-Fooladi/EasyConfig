@@ -111,6 +111,11 @@ namespace EasyConfig.Editor
 			else
 				TB.Text = attr.Value;
 		}
+
+		public void SetValueBy(XmlNode containerNode, string name)
+		{
+			SetValueBy(containerNode.Attributes[name]);
+		}
 		#endregion
 	}
 }

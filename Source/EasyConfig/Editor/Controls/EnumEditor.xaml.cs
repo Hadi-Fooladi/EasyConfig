@@ -95,6 +95,11 @@ namespace EasyConfig.Editor
 		{
 			throw new NotSupportedException();
 		}
+
+		public void SetValueBy(XmlNode containerNode, string name)
+		{
+			throw new NotSupportedException();
+		}
 		#endregion
 	}
 }
