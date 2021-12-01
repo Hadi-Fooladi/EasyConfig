@@ -56,9 +56,15 @@ namespace EasyConfig.Editor
 
 				return L;
 			}
+
+			set => throw new NotSupportedException();
 		}
 
-		public bool Ignored => false;
+		public bool Ignored
+		{
+			get => false;
+			set { }
+		}
 
 		public void Validate()
 		{
@@ -106,6 +112,11 @@ namespace EasyConfig.Editor
 		{
 			var LI = LB.SelectedItem as ListItem;
 			FieldEditorContainer.Content = LI?.Editor.Control;
+		}
+
+		public void SetValueBy(XmlAttribute attribute)
+		{
+			throw new NotSupportedException();
 		}
 		#endregion
 	}

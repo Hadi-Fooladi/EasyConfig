@@ -76,14 +76,25 @@ namespace EasyConfig.Editor
 
 				return Enum.ToObject(T, Result);
 			}
+
+			set => throw new NotSupportedException();
 		}
 
-		public bool Ignored => cbIgnore.IsChecked == true;
+		public bool Ignored
+		{
+			get => cbIgnore.IsChecked == true;
+			set => cbIgnore.IsChecked = value;
+		}
 
 		public void Validate() { }
 		public void ShowItem(object Item) { }
 
 		public void SaveToXmlNode(XmlNode Node, string Name) => Node.AddAttr(Name, Value);
+
+		public void SetValueBy(XmlAttribute attribute)
+		{
+			throw new NotSupportedException();
+		}
 		#endregion
 	}
 }

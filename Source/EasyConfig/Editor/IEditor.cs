@@ -3,13 +3,13 @@ using System.Windows.Controls;
 
 namespace EasyConfig.Editor
 {
-	internal interface IEditor
+	public interface IEditor
 	{
 		Control Control { get; }
 
-		object Value { get; }
+		object Value { get; set; }
 
-		bool Ignored { get; }
+		bool Ignored { get; set; }
 
 		/// <summary>
 		/// Must throw <see cref="ValidationException"/> in case of validation error
@@ -30,5 +30,7 @@ namespace EasyConfig.Editor
 		/// For compound values, it will be ignored.
 		/// </param>
 		void SaveToXmlNode(XmlNode Node, string Name);
+
+		void SetValueBy(XmlAttribute attribute);
 	}
 }

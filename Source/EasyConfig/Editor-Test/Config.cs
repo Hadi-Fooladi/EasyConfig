@@ -1,6 +1,8 @@
 ﻿using System;
-using EasyConfig.Attributes;
 using System.Collections.Generic;
+
+using EasyConfig.Editor;
+using EasyConfig.Attributes;
 
 namespace Editor_Test
 {
@@ -75,6 +77,7 @@ namespace Editor_Test
 			public int Age;
 			public string Name;
 
+			[Editor(typeof(BoolEditor))]
 			public bool Married;
 
 			[Default(5)]

@@ -117,9 +117,15 @@ namespace EasyConfig.Editor
 
 				return Result;
 			}
+
+			set => throw new NotSupportedException();
 		}
 
-		public bool Ignored => LB.Visibility != Visibility.Visible;
+		public bool Ignored
+		{
+			get => LB.Visibility != Visibility.Visible;
+			set => throw new NotSupportedException();
+		}
 
 		public void Validate()
 		{
@@ -160,6 +166,11 @@ namespace EasyConfig.Editor
 					E.SaveToXmlNode(Node, FI.ConfigName);
 			}
 		}
+
+		public void SetValueBy(XmlAttribute attribute)
+		{
+			throw new NotSupportedException();
+		}
 		#endregion
 
 		#region Nested Class
@@ -191,6 +202,17 @@ namespace EasyConfig.Editor
 			{
 				var Type = mi.GetMemberType();
 
+				{
+					var attr = mi.GetCustomAttribute<EditorAttribute>();
+					if (attr != null)
+					{
+						var editor = attr.CreateNewEditor();
+						editor.Value = Value;
+						Editor = editor;
+						return;
+					}
+				}
+
 				// T? => T
 				Type = Nullable.GetUnderlyingType(Type) ?? Type;
 
@@ -216,6 +238,17 @@ namespace EasyConfig.Editor
 			public MemberItem(MemberInfo mi, XmlNode Node) : this(mi)
 			{
 				var Type = mi.GetMemberType();
+
+				{
+					var attr = mi.GetCustomAttribute<EditorAttribute>();
+					if (attr != null)
+					{
+						var editor = attr.CreateNewEditor();
+						editor.SetValueBy(Node.Attributes[ConfigName]);
+						Editor = editor;
+						return;
+					}
+				}
 
 				// T? => T
 				Type = Nullable.GetUnderlyingType(Type) ?? Type;
