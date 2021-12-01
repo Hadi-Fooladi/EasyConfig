@@ -6,6 +6,7 @@ using EasyConfig.Attributes;
 
 namespace Editor_Test
 {
+	[Editor(typeof(BloodEditor))]
 	internal enum eBloodType
 	{
 		Unknown,
@@ -56,6 +57,8 @@ namespace Editor_Test
 
 		[Necessary]
 		public Point Position;
+		
+		public eBloodType Blood;
 
 		public int? NullableInt;
 		public eBloodType? NullableBlood;
@@ -90,7 +93,7 @@ namespace Editor_Test
 			[Name("Child")]
 			public List<Person> Children;
 
-			[Optional, Description("A, B, AB, O")]
+			[Optional, Description("A, B, AB, O"), DefaultEditor]
 			public eBloodType BloodType;
 
 			[Name("C")]

@@ -1,0 +1,24 @@
+﻿<UserControl
+	x:ClassModifier="internal"
+	x:Class="Editor_Test.BloodEditor"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	Width="200" Padding="5"
+	FontSize="20">
+	
+	<UserControl.Resources>
+		<Style TargetType="RadioButton">
+			<Setter Property="VerticalAlignment" Value="Center" />
+			<Setter Property="HorizontalAlignment" Value="Center" />
+			<Setter Property="VerticalContentAlignment" Value="Center" />
+		</Style>
+
+	</UserControl.Resources>
+
+	<UniformGrid Name="_g" Rows="2" Columns="2">
+		<RadioButton>O</RadioButton>
+		<RadioButton>A</RadioButton>
+		<RadioButton>B</RadioButton>
+		<RadioButton>AB</RadioButton>
+	</UniformGrid>
+</UserControl>

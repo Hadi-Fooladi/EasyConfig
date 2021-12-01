@@ -2,7 +2,7 @@
 
 namespace EasyConfig.Editor
 {
-	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum)]
 	public class EditorAttribute : Attribute
 	{
 		/// <param name="editorType">Should implement <see cref="IEditor" /> and have a default constructor</param>

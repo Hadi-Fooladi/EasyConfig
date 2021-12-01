@@ -203,10 +203,9 @@ namespace EasyConfig.Editor
 				var Type = mi.GetMemberType();
 
 				{
-					var attr = mi.GetCustomAttribute<EditorAttribute>();
-					if (attr != null)
+					var editor = GetCostumEditor(mi);
+					if (editor != null)
 					{
-						var editor = attr.CreateNewEditor();
 						editor.Value = Value;
 						Editor = editor;
 						return;
@@ -240,10 +239,9 @@ namespace EasyConfig.Editor
 				var Type = mi.GetMemberType();
 
 				{
-					var attr = mi.GetCustomAttribute<EditorAttribute>();
-					if (attr != null)
+					var editor = GetCostumEditor(mi);
+					if (editor != null)
 					{
-						var editor = attr.CreateNewEditor();
 						editor.SetValueBy(Node.Attributes[ConfigName]);
 						Editor = editor;
 						return;
@@ -283,6 +281,19 @@ namespace EasyConfig.Editor
 					if (D != null)
 						MI.SetValue(Obj, D);
 				}
+			}
+
+			/// <returns>`null` when there is none</returns>
+			private static IEditor GetCostumEditor(MemberInfo mi)
+			{
+				if (mi.HasAttribute<DefaultEditorAttribute>())
+					return null;
+
+				return
+					get(mi) ??
+					get(mi.GetMemberType());
+
+				IEditor get(MemberInfo m) => m.GetCustomAttribute<EditorAttribute>()?.CreateNewEditor();
 			}
 		}
 		#endregion
