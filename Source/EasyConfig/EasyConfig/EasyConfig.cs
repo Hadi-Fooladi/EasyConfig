@@ -89,7 +89,10 @@ namespace EasyConfig
 			{ typeof(float), new SingleAttr() },
 			{ typeof(double), new DoubleAttr() },
 			{ typeof(string), new StringAttr() },
-			{ typeof(Version), new VersionAttr() }
+			{ typeof(Version), new VersionAttr() },
+			{ typeof(byte), new ByteAttr() },
+			{ typeof(short), new Int16Attr() },
+			{ typeof(ushort), new UInt16Attr() }
 		};
 		#endregion
 
