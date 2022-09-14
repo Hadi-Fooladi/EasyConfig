@@ -294,9 +294,12 @@ namespace EasyConfig.Editor
 				if (mi.HasAttribute<DefaultEditorAttribute>())
 					return null;
 
+				var type = mi.GetMemberType();
+
 				return
 					get(mi) ??
-					get(mi.GetMemberType());
+					get(type) ??
+					Options.GetCustomEditor(type);
 
 				IEditor get(MemberInfo m) => m.GetCustomAttribute<EditorAttribute>()?.CreateNewEditor();
 			}
