@@ -1,21 +1,13 @@
-﻿using System;
-using System.Xml;
-
-using XmlExt;
-
-namespace EasyConfig.Editor
+﻿namespace EasyConfig.Editor
 {
 	public partial class EditorControl
 	{
 		#region Constructors
-		public EditorControl() => InitializeComponent();
-
-		public EditorControl(object obj) : this() => Value = obj;
-		public EditorControl(XmlDocument doc, Type t) : this() => Fill(doc, t);
-		public EditorControl(string xmlPath, Type t) : this(Fn.LoadXml(xmlPath), t) { }
-
-		public static EditorControl New<T>(string xmlPath) => New<T>(Fn.LoadXml(xmlPath));
-		public static EditorControl New<T>(XmlDocument doc) => new EditorControl(doc, typeof(T));
+		public EditorControl(object obj)
+		{
+			InitializeComponent();
+			Value = obj;
+		}
 		#endregion
 
 		private CompoundEditor CE;
@@ -81,21 +73,6 @@ namespace EasyConfig.Editor
 				}
 			}
 		}
-
-		public XmlDocument GetXml(string RootTagName)
-		{
-			if (CE.Ignored) return null;
-
-			var Doc = new XmlDocument();
-
-			var Root = Doc.AppendNode(RootTagName);
-			CE.SaveToXmlNode(Root, null);
-
-			return Doc;
-		}
-
-		public void Fill<T>(XmlDocument doc) => Fill(doc, typeof(T));
-		public void Fill(XmlDocument doc, Type t) => SV.Content = CE = new CompoundEditor(t, doc.DocumentElement);
 		#endregion
 	}
 }

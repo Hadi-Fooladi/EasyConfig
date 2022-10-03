@@ -1,6 +1,4 @@
-﻿using System;
-using System.Xml;
-using System.Windows;
+﻿using System.Windows;
 
 namespace EasyConfig.Editor
 {
@@ -12,51 +10,15 @@ namespace EasyConfig.Editor
 		#region Constructors
 		public EditorWindow() => InitializeComponent();
 
-		public EditorWindow(string XmlPath, Type T) : this()
-		{
-			CC.Content = EC = new EditorControl(XmlPath, T);
-		}
-
 		public EditorWindow(object Value) : this()
 		{
 			CC.Content = EC = new EditorControl(Value);
 		}
-
-		public static EditorWindow New<T>(string XmlPath) => new EditorWindow(XmlPath, typeof(T));
 		#endregion
 
 		private readonly EditorControl EC;
 
 		#region Public Methods
-		/// <summary>
-		/// Save Xml without version
-		/// </summary>
-		public void SaveXml(string XmlPath, string RootTagName) => SaveXml(XmlPath, RootTagName, null);
-
-		public void SaveXml(string XmlPath, string RootTagName, IVersionWriter VersionWriter)
-		{
-			XmlDocument Doc;
-
-			try
-			{
-				Doc = EC.GetXml(RootTagName);
-				VersionWriter?.Write(Doc.DocumentElement);
-			}
-			catch (Exception Ex)
-			{
-				throw new Exception($"Something went wrong.{Environment.NewLine}Please validate.", Ex);
-			}
-
-			try
-			{
-				Doc.Save(XmlPath);
-			}
-			catch (Exception Ex)
-			{
-				throw new Exception($"Saving failed.{Environment.NewLine}Reason: {Ex.Message}", Ex);
-			}
-		}
-
 		public object Value => EC.Value;
 		#endregion
 

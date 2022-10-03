@@ -9,7 +9,7 @@ namespace EasyConfig.Editor
 			UseFields = true,
 			UseProperties = false;
 
-		public static Dictionary<Type, Func<IEditor>> s_editorByType = new Dictionary<Type, Func<IEditor>>();
+		private static readonly Dictionary<Type, Func<IEditor>> s_editorByType = new Dictionary<Type, Func<IEditor>>();
 
 		public static void AddCustomEditor<T>(Func<IEditor> editor)
 		{

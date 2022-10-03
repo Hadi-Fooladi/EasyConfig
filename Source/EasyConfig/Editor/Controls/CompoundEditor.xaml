@@ -21,7 +21,7 @@
 
 			<TextBlock Name="_descLabel" DockPanel.Dock="Bottom" Background="Beige" Padding="5,2" Visibility="Collapsed" TextWrapping="Wrap" />
 			
-			<ListBox Name="LB" SelectionChanged="LB_OnSelectionChanged">
+			<ListBox Name="_listbox" SelectionChanged="ListBox_OnSelectionChanged">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<TextBlock
@@ -35,6 +35,6 @@
 		
 		<GridSplitter Grid.Column="1" Width="2" Background="Black" HorizontalAlignment="Center" Margin="0,10" />
 
-		<ContentControl Grid.Column="2" Name="FieldEditorContainer" />
+		<ContentControl Grid.Column="2" Name="_fieldEditorContainer" />
 	</Grid>
 </UserControl>

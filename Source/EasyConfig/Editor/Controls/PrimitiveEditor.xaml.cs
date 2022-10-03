@@ -10,58 +10,48 @@ namespace EasyConfig.Editor
 	internal partial class PrimitiveEditor : IEditor
 	{
 		#region Constructors
-		private PrimitiveEditor(IAttributeType TypeConverter, object Default)
+		public PrimitiveEditor(object value, IAttributeType typeConverter, object @default)
 		{
 			InitializeComponent();
-			this.TypeConverter = TypeConverter;
+			_typeConverter = typeConverter;
 
 			// ReSharper disable once AssignmentInConditionalExpression
-			if (isBool = TypeConverter is BoolAttr)
+			if (_isBool = typeConverter is BoolAttr)
 			{
 				TB.Visibility = Visibility.Collapsed;
 				gYesNo.Visibility = Visibility.Visible;
 			}
 
-			lblType.Text = TypeConverter.TypeName;
+			lblType.Text = typeConverter.TypeName;
 
-			if (Default == null)
+			if (@default == null)
 				DefaultPanel.Visibility = Visibility.Collapsed;
 			else
-				lblDefault.Text = isBool ? TypeConverter.ToString(Default) : Default.ToString();
-		}
+				lblDefault.Text = _isBool ? typeConverter.ToString(@default) : @default.ToString();
 
-		public PrimitiveEditor(object value, IAttributeType TypeConverter, object Default)
-			: this(TypeConverter, Default)
-		{
 			Value = value;
-		}
-
-		public PrimitiveEditor(IAttributeType TypeConverter, XmlAttribute Attr, object Default)
-			: this(TypeConverter, Default)
-		{
-			SetValueBy(Attr);
 		}
 		#endregion
 
-		private readonly IAttributeType TypeConverter;
+		private readonly IAttributeType _typeConverter;
 
-		private readonly bool isBool;
+		private readonly bool _isBool;
 
 		private object GetValue()
 		{
-			if (isBool)
+			if (_isBool)
 			{
 				bool
-					No = rbNo.IsChecked == true,
-					Yes = rbYes.IsChecked == true;
+					no = rbNo.IsChecked == true,
+					yes = rbYes.IsChecked == true;
 
-				if (!Yes && !No)
+				if (!yes && !no)
 					throw new Exception("Value not set");
 
-				return Yes;
+				return yes;
 			}
 
-			return TypeConverter.FromString(TB.Text);
+			return _typeConverter.FromString(TB.Text);
 		}
 
 		#region IEditor Members
@@ -79,10 +69,10 @@ namespace EasyConfig.Editor
 					return;
 				}
 
-				if (isBool)
+				if (_isBool)
 					((bool)value ? rbYes : rbNo).IsChecked = true;
 				else
-					TB.Text = TypeConverter.ToString(value);
+					TB.Text = _typeConverter.ToString(value);
 			}
 		}
 
@@ -95,27 +85,6 @@ namespace EasyConfig.Editor
 		public void Validate() => GetValue();
 
 		public void ShowItem(object Item) { }
-
-		public void SaveToXmlNode(XmlNode Node, string Name) => Node.AddAttr(Name, TypeConverter.ToString(Value));
-
-		public void SetValueBy(XmlAttribute attr)
-		{
-			if (attr == null)
-			{
-				cbIgnore.IsChecked = true;
-				return;
-			}
-
-			if (isBool)
-				((bool)TypeConverter.FromString(attr.Value) ? rbYes : rbNo).IsChecked = true;
-			else
-				TB.Text = attr.Value;
-		}
-
-		public void SetValueBy(XmlNode containerNode, string name)
-		{
-			SetValueBy(containerNode.Attributes[name]);
-		}
 		#endregion
 	}
 }

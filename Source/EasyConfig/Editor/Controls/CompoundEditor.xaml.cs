@@ -1,48 +1,32 @@
 ﻿using System;
-using System.Xml;
 using System.Windows;
 using System.Reflection;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Collections.Generic;
 
-using XmlExt;
 using EasyConfig.Attributes;
 
 namespace EasyConfig.Editor
 {
 	internal partial class CompoundEditor : IEditor
 	{
-		private readonly Type T;
+		private readonly Type _type;
 
 		#region Constructors
-		private CompoundEditor(Type T)
+		public CompoundEditor(Type type, object value)
 		{
-			this.T = T;
+			_type = type;
 			InitializeComponent();
-		}
 
-		public CompoundEditor(Type T, object Value) : this(T)
-		{
-			if (Value == null)
+			if (value == null)
 				Delete();
-			else New(Value);
-		}
-
-		public CompoundEditor(Type T, XmlNode Node) : this(T)
-		{
-			if (Node == null)
-				Delete();
-			else
-			{
-				New();
-				PopulateFields(Node);
-			}
+			else New(value);
 		}
 		#endregion
 
 		#region Constants
-		private static readonly IReadOnlyDictionary<Type, IAttributeType> AttributeMap = new Dictionary<Type, IAttributeType>
+		private static readonly IReadOnlyDictionary<Type, IAttributeType> s_attributeByType = new Dictionary<Type, IAttributeType>
 		{
 			{ typeof(bool), new BoolAttr() },
 			{ typeof(char), new CharAttr() },
@@ -62,14 +46,14 @@ namespace EasyConfig.Editor
 		private void Delete()
 		{
 			bNewDel.Content = "New";
-			LB.Visibility = Visibility.Hidden;
-			FieldEditorContainer.Content = null;
+			_listbox.Visibility = Visibility.Hidden;
+			_fieldEditorContainer.Content = null;
 		}
 
 		private void New()
 		{
 			bNewDel.Content = "Delete";
-			LB.Visibility = Visibility.Visible;
+			_listbox.Visibility = Visibility.Visible;
 		}
 
 		private void New(object Value)
@@ -80,24 +64,13 @@ namespace EasyConfig.Editor
 
 		private void PopulateFields(object obj)
 		{
-			var items = LB.Items;
+			var items = _listbox.Items;
 
 			items.Clear();
-			foreach (var mi in T.GetConfigMembers())
+			foreach (var mi in _type.GetConfigMembers())
 				items.Add(new MemberItem(mi, mi.GetValue(obj)));
 
-			LB.SelectedIndex = 0;
-		}
-
-		private void PopulateFields(XmlNode node)
-		{
-			var items = LB.Items;
-
-			items.Clear();
-			foreach (var mi in T.GetConfigMembers())
-				items.Add(new MemberItem(mi, node));
-
-			LB.SelectedIndex = 0;
+			_listbox.SelectedIndex = 0;
 		}
 		#endregion
 
@@ -110,12 +83,12 @@ namespace EasyConfig.Editor
 			{
 				if (Ignored) return null;
 
-				var Result = Activator.CreateInstance(T);
+				var result = Activator.CreateInstance(_type);
 
-				foreach (MemberItem FI in LB.Items)
-					FI.Save(Result);
+				foreach (MemberItem FI in _listbox.Items)
+					FI.Save(result);
 
-				return Result;
+				return result;
 			}
 
 			set => throw new NotSupportedException();
@@ -123,92 +96,63 @@ namespace EasyConfig.Editor
 
 		public bool Ignored
 		{
-			get => LB.Visibility != Visibility.Visible;
+			get => _listbox.Visibility != Visibility.Visible;
 			set => throw new NotSupportedException();
 		}
 
 		public void Validate()
 		{
-			foreach (MemberItem FI in LB.Items)
+			foreach (MemberItem mi in _listbox.Items)
 				try
 				{
-					var E = FI.Editor;
+					var editor = mi.Editor;
 
-					if (E.Ignored)
+					if (editor.Ignored)
 					{
-						if (FI.Necessary)
+						if (mi.Necessary)
 							throw new NecessaryFieldIgnoredException();
 					}
 					else
-						E.Validate();
+						editor.Validate();
 				}
-				catch (Exception Ex)
+				catch (Exception ex)
 				{
-					throw new ValidationException(this, FI, Ex);
+					throw new ValidationException(this, mi, ex);
 				}
 		}
 
-		public void ShowItem(object Item) => LB.SelectedItem = Item;
-
-		public void SaveToXmlNode(XmlNode Node, string Name)
-		{
-			foreach (MemberItem FI in LB.Items)
-			{
-				var E = FI.Editor;
-				if (E.Ignored) continue;
-
-				if (E is CompoundEditor)
-				{
-					var ChildNode = Node.AppendNode(FI.ConfigName);
-					E.SaveToXmlNode(ChildNode, null);
-				}
-				else
-					E.SaveToXmlNode(Node, FI.ConfigName);
-			}
-		}
-
-		public void SetValueBy(XmlAttribute attribute)
-		{
-			throw new NotSupportedException();
-		}
-
-		public void SetValueBy(XmlNode containerNode, string name)
-		{
-			throw new NotSupportedException();
-		}
+		public void ShowItem(object item) => _listbox.SelectedItem = item;
 		#endregion
 
 		#region Nested Class
 		private class MemberItem
 		{
-			private readonly MemberInfo MI;
+			private readonly MemberInfo _mi;
 
 			public readonly bool Necessary;
 			public readonly IEditor Editor;
 
-			public string Name => MI.Name;
-			public string ConfigName => MI.GetConfigName();
+			public string Name => _mi.Name;
+			public string  ConfigName => _mi.GetConfigName();
 
 			public Brush Color => Necessary ? Brushes.DarkRed : Brushes.Black;
 			public FontWeight FontWeight => Necessary ? FontWeights.SemiBold : FontWeights.Normal;
 
-			private object Default => MI.GetCustomAttribute<DefaultAttribute>()?.Value;
+			private object Default => _mi.GetCustomAttribute<DefaultAttribute>()?.Value;
 
 			public string Desc { get; }
 
 			#region Constructors
-			private MemberItem(MemberInfo mi)
+			public MemberItem(MemberInfo mi, object Value)
 			{
-				Necessary = (MI = mi).IsNecessary();
+				_mi = mi;
+				Necessary = mi.IsNecessary();
 				Desc = mi.GetCustomAttribute<DescriptionAttribute>()?.Desc;
-			}
 
-			public MemberItem(MemberInfo mi, object Value) : this(mi)
-			{
 				var Type = mi.GetMemberType();
 
 				{
-					var editor = GetCostumEditor(mi);
+					var editor = mi.GetCostumEditor();
 					if (editor != null)
 					{
 						editor.Value = Value;
@@ -226,10 +170,10 @@ namespace EasyConfig.Editor
 					return;
 				}
 
-				var AttributeType = AttributeMap.GetValueOrNull(Type);
-				if (AttributeType != null)
+				var attributeType = s_attributeByType.GetValueOrNull(Type);
+				if (attributeType != null)
 				{
-					Editor = new PrimitiveEditor(Value, AttributeType, Default);
+					Editor = new PrimitiveEditor(Value, attributeType, Default);
 					return;
 				}
 
@@ -238,70 +182,18 @@ namespace EasyConfig.Editor
 				else
 					Editor = new CompoundEditor(Type, Value);
 			}
-
-			public MemberItem(MemberInfo mi, XmlNode Node) : this(mi)
-			{
-				var Type = mi.GetMemberType();
-
-				{
-					var editor = GetCostumEditor(mi);
-					if (editor != null)
-					{
-						editor.SetValueBy(Node , ConfigName);
-						Editor = editor;
-						return;
-					}
-				}
-
-				// T? => T
-				Type = Nullable.GetUnderlyingType(Type) ?? Type;
-
-				if (Type.IsEnum)
-				{
-					Editor = new EnumEditor(Type, Node.Attributes[ConfigName], Default);
-					return;
-				}
-
-				var AttributeType = AttributeMap.GetValueOrNull(Type);
-				if (AttributeType != null)
-				{
-					Editor = new PrimitiveEditor(AttributeType, Node.Attributes[ConfigName], Default);
-					return;
-				}
-
-				if (Type.IsCollection())
-					Editor = new CollectionEditor(Type, Node.SelectNodes(ConfigName));
-				else
-					Editor = new CompoundEditor(Type, Node.SelectSingleNode(ConfigName));
-			}
 			#endregion
 
 			public void Save(object Obj)
 			{
 				if (!Editor.Ignored)
-					MI.SetValue(Obj, Editor.Value);
+					_mi.SetValue(Obj, Editor.Value);
 				else
 				{
-					var D = Default;
-					if (D != null)
-						MI.SetValue(Obj, D);
+					var d = Default;
+					if (d != null)
+						_mi.SetValue(Obj, d);
 				}
-			}
-
-			/// <returns>`null` when there is none</returns>
-			private static IEditor GetCostumEditor(MemberInfo mi)
-			{
-				if (mi.HasAttribute<DefaultEditorAttribute>())
-					return null;
-
-				var type = mi.GetMemberType();
-
-				return
-					get(mi) ??
-					get(type) ??
-					Options.GetCustomEditor(type);
-
-				IEditor get(MemberInfo m) => m.GetCustomAttribute<EditorAttribute>()?.CreateNewEditor();
 			}
 		}
 		#endregion
@@ -310,15 +202,15 @@ namespace EasyConfig.Editor
 		private void bNewDel_OnClick(object sender, RoutedEventArgs e)
 		{
 			if (Ignored)
-				New(Activator.CreateInstance(T));
+				New(Activator.CreateInstance(_type));
 			else
 				Delete();
 		}
 
-		private void LB_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void ListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var mi = LB.SelectedItem as MemberItem;
-			FieldEditorContainer.Content = mi?.Editor.Control;
+			var mi = _listbox.SelectedItem as MemberItem;
+			_fieldEditorContainer.Content = mi?.Editor.Control;
 
 			var desc = mi?.Desc;
 			if (desc == null)

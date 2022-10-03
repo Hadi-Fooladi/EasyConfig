@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="Attributes\DefaultEditorAttribute.cs" />
     <Compile Include="Attributes\EditorAttribute.cs" />
-    <Compile Include="Classes\Functions.cs" />
     <Compile Include="Classes\Options.cs" />
     <Compile Include="Controls\CollectionEditor.xaml.cs">
       <DependentUpon>CollectionEditor.xaml</DependentUpon>
@@ -61,8 +60,6 @@
     <Compile Include="Controls\EnumEditor.xaml.cs">
       <DependentUpon>EnumEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VersionWriter\IVersionWriter.cs" />
-    <Compile Include="VersionWriter\SimpleVersionWriter.cs" />
     <Compile Include="Windows\EditorWindow.xaml.cs">
       <DependentUpon>EditorWindow.xaml</DependentUpon>
     </Compile>

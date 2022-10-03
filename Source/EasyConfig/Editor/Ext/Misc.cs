@@ -59,5 +59,22 @@ namespace EasyConfig.Editor
 					if (!property.HasAttribute<IgnoreAttribute>())
 						yield return property;
 		}
+
+		public static IEditor GetCostumEditor(this MemberInfo mi)
+		{
+			if (mi.HasAttribute<DefaultEditorAttribute>())
+				return null;
+
+			return
+				TryCreateEditorByAttribute(mi) ??
+				mi.GetMemberType().GetCostumEditor();
+		}
+
+		public static IEditor GetCostumEditor(this Type type)
+			=> TryCreateEditorByAttribute(type) ?? Options.GetCustomEditor(type);
+
+		/// <returns>null if there is no <see cref="EditorAttribute"/></returns>
+		private static IEditor TryCreateEditorByAttribute(MemberInfo mi)
+			=> mi.GetCustomAttribute<EditorAttribute>()?.CreateNewEditor();
 	}
 }

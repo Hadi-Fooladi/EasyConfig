@@ -1,46 +1,33 @@
 ﻿using System;
-using System.Xml;
 using System.Windows;
 using System.Collections;
 using System.Windows.Controls;
 using System.Collections.Generic;
-
-using XmlExt;
 
 namespace EasyConfig.Editor
 {
 	internal partial class CollectionEditor : IEditor
 	{
 		#region Constructors
-		private CollectionEditor(Type CollectionType)
+		public CollectionEditor(Type collectionType, object value)
 		{
 			InitializeComponent();
 
-			ElementType = CollectionType.GetCollectionElementType();
-			ListType = typeof(List<>).MakeGenericType(ElementType);
-		}
+			_elementType = collectionType.GetCollectionElementType();
+			_listType = typeof(List<>).MakeGenericType(_elementType);
 
-		public CollectionEditor(Type CollectionType, object Value) : this(CollectionType)
-		{
-			if (Value == null) return;
+			if (value == null) return;
 
-			var C = (ICollection)Value;
-			foreach (var X in C)
-				LB.Items.Add(new ListItem(ElementType, X));
+			var items = _listbox.Items;
+			var collection = (ICollection)value;
+			foreach (var element in collection)
+				items.Add(new ListItem(_elementType, element));
 
-			LB.SelectedIndex = 0;
-		}
-
-		public CollectionEditor(Type CollectionType, XmlNodeList Nodes) : this(CollectionType)
-		{
-			foreach (XmlNode Node in Nodes)
-				LB.Items.Add(new ListItem(ElementType, Node));
-
-			LB.SelectedIndex = 0;
+			_listbox.SelectedIndex = 0;
 		}
 		#endregion
 
-		private readonly Type ElementType, ListType;
+		private readonly Type _elementType, _listType;
 
 		#region IEditor Members
 		public Control Control => this;
@@ -49,12 +36,12 @@ namespace EasyConfig.Editor
 		{
 			get
 			{
-				var L = (IList)Activator.CreateInstance(ListType);
+				var list = (IList)Activator.CreateInstance(_listType);
 
-				foreach (ListItem Item in LB.Items)
-					L.Add(Item.Editor.Value);
+				foreach (ListItem Item in _listbox.Items)
+					list.Add(Item.Editor.Value);
 
-				return L;
+				return list;
 			}
 
 			set => throw new NotSupportedException();
@@ -68,27 +55,18 @@ namespace EasyConfig.Editor
 
 		public void Validate()
 		{
-			foreach (ListItem Item in LB.Items)
+			foreach (ListItem item in _listbox.Items)
 				try
 				{
-					Item.Editor.Validate();
+					item.Editor.Validate();
 				}
-				catch (Exception E)
+				catch (Exception ex)
 				{
-					throw new ValidationException(this, Item, E);
+					throw new ValidationException(this, item, ex);
 				}
 		}
 
-		public void ShowItem(object Item) => LB.SelectedItem = Item;
-
-		public void SaveToXmlNode(XmlNode Node, string Name)
-		{
-			foreach (ListItem Item in LB.Items)
-			{
-				var ChildNode = Node.AppendNode(Name);
-				Item.Editor.SaveToXmlNode(ChildNode, null);
-			}
-		}
+		public void ShowItem(object item) => _listbox.SelectedItem = item;
 		#endregion
 
 		#region Nested Class
@@ -96,32 +74,28 @@ namespace EasyConfig.Editor
 		{
 			public readonly IEditor Editor;
 
-			public ListItem(Type ValueType, object Value) => Editor = new CompoundEditor(ValueType, Value);
-			public ListItem(Type ValueType, XmlNode Node) => Editor = new CompoundEditor(ValueType, Node);
+			public ListItem(Type ValueType, object Value)
+			{
+				Editor = ValueType.GetCostumEditor();
+				if (Editor != null)
+					Editor.Value = Value;
+				else
+					Editor = new CompoundEditor(ValueType, Value);
+			}
 
 			public override string ToString() => "Item";
 		}
 		#endregion
 
 		#region Event Handlers
-		private void bAdd_OnClick(object sender, RoutedEventArgs e) => LB.Items.Add(new ListItem(ElementType, Activator.CreateInstance(ElementType)));
+		private void bAdd_OnClick(object sender, RoutedEventArgs e) => _listbox.Items.Add(new ListItem(_elementType, Activator.CreateInstance(_elementType)));
 
-		private void bDel_OnClick(object sender, RoutedEventArgs e) => LB.Items.Remove(LB.SelectedItem);
+		private void bDel_OnClick(object sender, RoutedEventArgs e) => _listbox.Items.Remove(_listbox.SelectedItem);
 
 		private void LB_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var LI = LB.SelectedItem as ListItem;
-			FieldEditorContainer.Content = LI?.Editor.Control;
-		}
-
-		public void SetValueBy(XmlAttribute attribute)
-		{
-			throw new NotSupportedException();
-		}
-
-		public void SetValueBy(XmlNode containerNode, string name)
-		{
-			throw new NotSupportedException();
+			var item = _listbox.SelectedItem as ListItem;
+			_fieldEditorContainer.Content = item?.Editor.Control;
 		}
 		#endregion
 	}

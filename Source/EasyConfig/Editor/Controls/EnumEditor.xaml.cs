@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-
-using XmlExt;
 
 namespace EasyConfig.Editor
 {
@@ -47,8 +44,6 @@ namespace EasyConfig.Editor
 			else
 				lblDefault.Text = Default.ToString();
 		}
-
-		public EnumEditor(Type T, XmlAttribute Attr, object Default) : this(T, Attr == null ? null : Enum.Parse(T, Attr.Value), Default) { }
 		#endregion
 
 		private readonly Type T;
@@ -63,11 +58,11 @@ namespace EasyConfig.Editor
 			{
 				int Result = 0;
 
-				foreach (ToggleButton X in SP.Children)
+				foreach (ToggleButton tb in SP.Children)
 				{
-					if (X.IsChecked != true) continue;
+					if (tb.IsChecked != true) continue;
 
-					var Member = (string)X.Content;
+					var Member = (string)tb.Content;
 					Result |= (int)Enum.Parse(T, Member);
 
 					if (!Flags)
@@ -87,19 +82,7 @@ namespace EasyConfig.Editor
 		}
 
 		public void Validate() { }
-		public void ShowItem(object Item) { }
-
-		public void SaveToXmlNode(XmlNode Node, string Name) => Node.AddAttr(Name, Value);
-
-		public void SetValueBy(XmlAttribute attribute)
-		{
-			throw new NotSupportedException();
-		}
-
-		public void SetValueBy(XmlNode containerNode, string name)
-		{
-			throw new NotSupportedException();
-		}
+		public void ShowItem(object item) { }
 		#endregion
 	}
 }
