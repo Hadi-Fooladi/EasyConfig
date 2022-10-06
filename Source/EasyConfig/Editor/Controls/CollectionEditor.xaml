@@ -27,13 +27,24 @@
 					</Style>
 				</StackPanel.Resources>
 
-				<Button Click="bAdd_OnClick">
+				<Button ToolTip="Add" Click="bAdd_OnClick">
 					<Image Source="../Resources/Blue-Plus.png" />
 				</Button>
 
-				<Button Click="bDel_OnClick">
+				<Button ToolTip="Remove" Click="bDel_OnClick">
 					<Image Source="../Resources/Red-Cross.png" />
 				</Button>
+
+				<Rectangle Fill="Black" Width="1" Margin="5,3,3,3" SnapsToDevicePixels="True" />
+
+				<Button ToolTip="Move Up" Click="MoveUp_OnClick">
+					<Image Source="../Resources/Up.png" />
+				</Button>
+
+				<Button ToolTip="Move Down" Click="MoveDown_OnClick">
+					<Image Source="../Resources/Down.png" />
+				</Button>
+
 			</StackPanel>
 
 			<ListBox Name="_listbox" SelectionChanged="LB_OnSelectionChanged" />

@@ -29,6 +29,8 @@ namespace EasyConfig.Editor
 
 		private readonly Type _elementType, _listType;
 
+		private ListItem SelectedItem => _listbox.SelectedItem as ListItem;
+
 		#region IEditor Members
 		public Control Control => this;
 
@@ -94,9 +96,36 @@ namespace EasyConfig.Editor
 
 		private void LB_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var item = _listbox.SelectedItem as ListItem;
-			_fieldEditorContainer.Content = item?.Editor.Control;
+			_fieldEditorContainer.Content = SelectedItem?.Editor.Control;
+		}
+
+		private void MoveUp_OnClick(object sender, RoutedEventArgs e)
+		{
+			var ndx = _listbox.SelectedIndex;
+			if (ndx < 1) return;
+
+			var items = _listbox.Items;
+			var item = items[ndx];
+
+			items.RemoveAt(ndx);
+			items.Insert(ndx - 1, item);
+
+			_listbox.SelectedItem = item;
+		}
+
+		private void MoveDown_OnClick(object sender, RoutedEventArgs e)
+		{
+			var items = _listbox.Items;
+			var ndx = _listbox.SelectedIndex;
+			if (ndx >= items.Count - 1) return;
+
+			var item = items[ndx];
+			items.RemoveAt(ndx);
+			items.Insert(ndx + 1, item);
+
+			_listbox.SelectedItem = item;
 		}
 		#endregion
+
 	}
 }

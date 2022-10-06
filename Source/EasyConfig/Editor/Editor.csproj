@@ -112,7 +112,10 @@
   <ItemGroup>
     <None Include="Editor.nuspec" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Down.png" />
+    <Resource Include="Resources\Up.png" />
+  </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
