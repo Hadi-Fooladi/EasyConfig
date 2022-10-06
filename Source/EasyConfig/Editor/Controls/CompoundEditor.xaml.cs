@@ -3,13 +3,12 @@ using System.Windows;
 using System.Reflection;
 using System.Windows.Media;
 using System.Windows.Controls;
-using System.Collections.Generic;
 
 using EasyConfig.Attributes;
 
 namespace EasyConfig.Editor
 {
-	internal partial class CompoundEditor : IEditor
+	partial class CompoundEditor : IEditor
 	{
 		private readonly Type _type;
 
@@ -23,23 +22,6 @@ namespace EasyConfig.Editor
 				Delete();
 			else New(value);
 		}
-		#endregion
-
-		#region Constants
-		private static readonly IReadOnlyDictionary<Type, IAttributeType> s_attributeByType = new Dictionary<Type, IAttributeType>
-		{
-			{ typeof(bool), new BoolAttr() },
-			{ typeof(char), new CharAttr() },
-			{ typeof(byte), new ByteAttr() },
-			{ typeof(short), new Int16Attr() },
-			{ typeof(ushort), new UInt16Attr() },
-			{ typeof(int), new IntAttr() },
-			{ typeof(long), new Int64Attr() },
-			{ typeof(float), new SingleAttr() },
-			{ typeof(double), new DoubleAttr() },
-			{ typeof(string), new StringAttr() },
-			{ typeof(Version), new VersionAttr() }
-		};
 		#endregion
 
 		#region Private Methods
@@ -148,39 +130,7 @@ namespace EasyConfig.Editor
 				_mi = mi;
 				Necessary = mi.IsNecessary();
 				Desc = mi.GetCustomAttribute<DescriptionAttribute>()?.Desc;
-
-				var Type = mi.GetMemberType();
-
-				{
-					var editor = mi.GetCostumEditor();
-					if (editor != null)
-					{
-						editor.Value = Value;
-						Editor = editor;
-						return;
-					}
-				}
-
-				// T? => T
-				Type = Nullable.GetUnderlyingType(Type) ?? Type;
-
-				if (Type.IsEnum)
-				{
-					Editor = new EnumEditor(Type, Value, Default);
-					return;
-				}
-
-				var attributeType = s_attributeByType.GetValueOrNull(Type);
-				if (attributeType != null)
-				{
-					Editor = new PrimitiveEditor(Value, attributeType, Default);
-					return;
-				}
-
-				if (Type.IsCollection())
-					Editor = new CollectionEditor(Type, Value);
-				else
-					Editor = new CompoundEditor(Type, Value);
+				Editor = mi.CreateEditor(Value);
 			}
 			#endregion
 

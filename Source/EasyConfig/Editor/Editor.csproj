@@ -60,6 +60,7 @@
     <Compile Include="Controls\EnumEditor.xaml.cs">
       <DependentUpon>EnumEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ext\Public.cs" />
     <Compile Include="Windows\EditorWindow.xaml.cs">
       <DependentUpon>EditorWindow.xaml</DependentUpon>
     </Compile>

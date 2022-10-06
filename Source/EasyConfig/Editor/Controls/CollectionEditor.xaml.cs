@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace EasyConfig.Editor
 {
-	internal partial class CollectionEditor : IEditor
+	partial class CollectionEditor : IEditor
 	{
 		#region Constructors
 		public CollectionEditor(Type collectionType, object value)
@@ -76,13 +76,9 @@ namespace EasyConfig.Editor
 		{
 			public readonly IEditor Editor;
 
-			public ListItem(Type ValueType, object Value)
+			public ListItem(Type type, object value)
 			{
-				Editor = ValueType.GetCostumEditor();
-				if (Editor != null)
-					Editor.Value = Value;
-				else
-					Editor = new CompoundEditor(ValueType, Value);
+				Editor = type.CreateEditor(value);
 			}
 
 			public override string ToString() => "Item";

@@ -10,20 +10,20 @@
 		}
 		#endregion
 
-		private CompoundEditor CE;
+		private IEditor _editor;
 
 		#region Public Members
 		public object Value
 		{
-			get => CE.Value;
-			set => SV.Content = CE = new CompoundEditor(value.GetType(), value);
+			get => _editor.Value;
+			set => SV.Content = _editor = value.GetType().CreateEditor(value);
 		}
 
 		public bool IsValid(bool showError)
 		{
 			try
 			{
-				CE.Validate();
+				_editor.Validate();
 				return true;
 			}
 			catch (ValidationException ve)
@@ -53,7 +53,7 @@
 		{
 			try
 			{
-				CE.Validate();
+				_editor.Validate();
 				Msg.Info("Validation Succeeded");
 			}
 			catch (ValidationException VE)

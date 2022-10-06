@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
-
-using XmlExt;
 
 namespace EasyConfig.Editor
 {
