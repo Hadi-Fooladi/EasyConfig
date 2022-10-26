@@ -37,9 +37,18 @@ namespace Editor_Test
 			set { }
 		}
 
+		public double? RequestedWidth => null;
+
 		public void Validate() { }
 
 		public void ShowItem(object Item) { }
+
+		public IEditor SelectedItemEditor => null;
+		public event EventHandler SelectedItemChanged
+		{
+			add { }
+			remove { }
+		}
 
 		public void SaveToXmlNode(XmlNode Node, string Name)
 		{

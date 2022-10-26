@@ -81,8 +81,17 @@ namespace EasyConfig.Editor
 			set => cbIgnore.IsChecked = value;
 		}
 
+		public double? RequestedWidth => null;
+		
 		public void Validate() { }
 		public void ShowItem(object item) { }
+		
+		public IEditor SelectedItemEditor => null;
+		public event EventHandler SelectedItemChanged
+		{
+			add { }
+			remove { }
+		}
 		#endregion
 	}
 }

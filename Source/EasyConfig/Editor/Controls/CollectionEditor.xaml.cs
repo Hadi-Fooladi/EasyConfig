@@ -55,6 +55,8 @@ namespace EasyConfig.Editor
 			set { }
 		}
 
+		public double? RequestedWidth => null;
+
 		public void Validate()
 		{
 			foreach (ListItem item in _listbox.Items)
@@ -69,6 +71,10 @@ namespace EasyConfig.Editor
 		}
 
 		public void ShowItem(object item) => _listbox.SelectedItem = item;
+
+		public IEditor SelectedItemEditor => SelectedItem?.Editor;
+		
+		public event EventHandler SelectedItemChanged;
 		#endregion
 
 		#region Nested Class
@@ -92,7 +98,7 @@ namespace EasyConfig.Editor
 
 		private void LB_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			_fieldEditorContainer.Content = SelectedItem?.Editor.Control;
+			SelectedItemChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		private void MoveUp_OnClick(object sender, RoutedEventArgs e)

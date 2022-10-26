@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -38,9 +39,17 @@ namespace Editor_Test
 			set { }
 		}
 
+		public double? RequestedWidth => 400;
 		public void Validate() { }
 
 		public void ShowItem(object Item) { }
+
+		public IEditor SelectedItemEditor => null;
+		public event EventHandler SelectedItemChanged
+		{
+			add { }
+			remove { }
+		}
 
 		public void SaveToXmlNode(XmlNode Node, string Name)
 		{

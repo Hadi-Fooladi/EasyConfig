@@ -1,22 +1,33 @@
-﻿namespace EasyConfig.Editor
+﻿using System;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Controls;
+using System.Collections.Generic;
+
+namespace EasyConfig.Editor
 {
-	public partial class EditorControl
+	partial class EditorControl
 	{
-		#region Constructors
-		public EditorControl(object obj)
+		public EditorControl()
 		{
 			InitializeComponent();
-			Value = obj;
+			_grid.ColumnDefinitions.Clear();
 		}
-		#endregion
 
 		private IEditor _editor;
+		private readonly List<IEditor> _editors = new List<IEditor>();
 
-		#region Public Members
 		public object Value
 		{
 			get => _editor.Value;
-			set => SV.Content = _editor = value.GetType().CreateEditor(value);
+			set
+			{
+				// Clear all editors
+				RemoveEditorsAfter(-1);
+
+				Add(_editor = value.GetType().CreateEditor(value));
+				AddSelectedItemEditors(_editor);
+			}
 		}
 
 		public bool IsValid(bool showError)
@@ -56,23 +67,97 @@
 				_editor.Validate();
 				Msg.Info("Validation Succeeded");
 			}
-			catch (ValidationException VE)
+			catch (ValidationException ve)
 			{
-				for (;;)
+				for (; ; )
 				{
-					VE.ShowItemInEditor();
+					ve.ShowItemInEditor();
 
-					var E = VE.InnerException;
-					if (E is ValidationException Ex)
-						VE = Ex;
+					var e = ve.InnerException;
+					if (e is ValidationException ex)
+						ve = ex;
 					else
 					{
-						Msg.Error(E.Message);
+						Msg.Error(e.Message);
 						break;
 					}
 				}
 			}
 		}
-		#endregion
+
+		private void Add(IEditor editor)
+		{
+			_editors.Add(editor);
+
+			var cdc = _grid.ColumnDefinitions;
+
+			var n = cdc.Count;
+			if (n > 0)
+				cdc.RemoveAt(--n);
+
+			addColumn(editor.RequestedWidth ?? 200, editor.Control);
+			addColumn(6, newSplitter());
+			cdc.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+			editor.SelectedItemChanged += Editor_SelectedItemChanged;
+
+			void addColumn(double width, UIElement element)
+			{
+				cdc.Add(new ColumnDefinition { Width = new GridLength(width) });
+				_grid.Children.Add(element);
+				Grid.SetColumn(element, n++);
+			}
+
+			GridSplitter newSplitter() => new GridSplitter
+			{
+				Width = 2,
+				Background = Brushes.Black,
+				Margin = new Thickness(0, 10, 0, 10),
+				HorizontalAlignment = HorizontalAlignment.Center
+			};
+		}
+
+		private void RemoveEditorsAfter(int ndx)
+		{
+			ndx++;
+			int n = _editors.Count;
+
+			for (int i = ndx; i < n; i++)
+				_editors[i].SelectedItemChanged -= Editor_SelectedItemChanged;
+			
+			if (ndx < n)
+				_editors.RemoveRange(ndx, n - ndx);
+
+			var cdc = _grid.ColumnDefinitions;
+			n = cdc.Count - 1;
+			ndx *= 2;
+			if (ndx < n)
+			{
+				var count = n - ndx;
+				cdc.RemoveRange(ndx, count);
+				_grid.Children.RemoveRange(ndx, count);
+			}
+		}
+
+		private void AddSelectedItemEditors(IEditor editor)
+		{
+			for (; ; )
+			{
+				editor = editor.SelectedItemEditor;
+				if (editor == null) break;
+
+				Add(editor);
+			}
+		}
+
+		private void Editor_SelectedItemChanged(object sender, EventArgs e)
+		{
+			var editor = (IEditor)sender;
+			int ndx = _editors.IndexOf(editor);
+			if (ndx == -1) return;
+
+			RemoveEditorsAfter(ndx);
+			AddSelectedItemEditors(editor);
+		}
 	}
 }

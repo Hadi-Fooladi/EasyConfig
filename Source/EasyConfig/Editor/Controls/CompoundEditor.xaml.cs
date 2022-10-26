@@ -24,12 +24,14 @@ namespace EasyConfig.Editor
 		}
 		#endregion
 
+		private MemberItem SelectedItem => _listbox.SelectedItem as MemberItem;
+
 		#region Private Methods
 		private void Delete()
 		{
 			bNewDel.Content = "New";
+			_listbox.Items.Clear();
 			_listbox.Visibility = Visibility.Hidden;
-			_fieldEditorContainer.Content = null;
 		}
 
 		private void New()
@@ -38,10 +40,10 @@ namespace EasyConfig.Editor
 			_listbox.Visibility = Visibility.Visible;
 		}
 
-		private void New(object Value)
+		private void New(object value)
 		{
 			New();
-			PopulateFields(Value);
+			PopulateFields(value);
 		}
 
 		private void PopulateFields(object obj)
@@ -82,6 +84,8 @@ namespace EasyConfig.Editor
 			set => throw new NotSupportedException();
 		}
 
+		public double? RequestedWidth => null;
+
 		public void Validate()
 		{
 			foreach (MemberItem mi in _listbox.Items)
@@ -104,6 +108,9 @@ namespace EasyConfig.Editor
 		}
 
 		public void ShowItem(object item) => _listbox.SelectedItem = item;
+
+		public IEditor SelectedItemEditor => SelectedItem?.Editor;
+		public event EventHandler SelectedItemChanged;
 		#endregion
 
 		#region Nested Class
@@ -159,8 +166,7 @@ namespace EasyConfig.Editor
 
 		private void ListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			var mi = _listbox.SelectedItem as MemberItem;
-			_fieldEditorContainer.Content = mi?.Editor.Control;
+			var mi = SelectedItem;
 
 			var desc = mi?.Desc;
 			if (desc == null)
@@ -170,6 +176,8 @@ namespace EasyConfig.Editor
 				_descLabel.Text = mi.Desc;
 				_descLabel.Visibility = Visibility.Visible;
 			}
+
+			SelectedItemChanged?.Invoke(this, EventArgs.Empty);
 		}
 		#endregion
 	}

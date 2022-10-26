@@ -8,18 +8,15 @@ namespace EasyConfig.Editor
 		//public delegate void dlg<in T>(EditorWindow EW, T Data);
 
 		#region Constructors
-		public EditorWindow() => InitializeComponent();
-
-		public EditorWindow(object Value) : this()
+		public EditorWindow(object value)
 		{
-			CC.Content = EC = new EditorControl(Value);
+			InitializeComponent();
+			_ec.Value = value;
 		}
 		#endregion
 
-		private readonly EditorControl EC;
-
 		#region Public Methods
-		public object Value => EC.Value;
+		public object Value => _ec.Value;
 		#endregion
 
 		#region Event Handlers
@@ -28,7 +25,7 @@ namespace EasyConfig.Editor
 		#endregion
 
 		#region Event Handlers
-		private void bValidate_OnClick(object sender, RoutedEventArgs e) => EC.Validate();
+		private void bValidate_OnClick(object sender, RoutedEventArgs e) => _ec.Validate();
 
 		private void bSave_OnClick(object sender, RoutedEventArgs e) => fireSaveRequested();
 		#endregion
