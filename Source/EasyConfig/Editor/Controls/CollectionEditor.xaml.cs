@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
+using System.Reflection;
 using System.Collections;
+using System.ComponentModel;
 using System.Windows.Controls;
 using System.Collections.Generic;
 
@@ -78,16 +80,35 @@ namespace EasyConfig.Editor
 		#endregion
 
 		#region Nested Class
-		private class ListItem
+		private class ListItem : ListBoxItem
 		{
 			public readonly IEditor Editor;
+			private readonly object _value;
+			private readonly string _propertyName;
+			private readonly PropertyInfo _propertyInfo;
 
 			public ListItem(Type type, object value)
 			{
-				Editor = type.CreateEditor(value);
+				Content = "Item";
+				Editor = type.CreateEditor(_value = value);
+
+				_propertyName = type.GetCustomAttribute<TextPropertyNameAttribute>()?.Name;
+				if (_propertyName == null) return;
+				if (!(value is INotifyPropertyChanged npc)) return;
+
+				_propertyInfo = type.GetProperty(_propertyName);
+				npc.PropertyChanged += OnPropertyChanged;
+
+				UpdateContent();
 			}
 
-			public override string ToString() => "Item";
+			private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+			{
+				if (e.PropertyName == _propertyName)
+					UpdateContent();
+			}
+
+			private void UpdateContent() { Content = _propertyInfo.GetValue(_value); }
 		}
 		#endregion
 

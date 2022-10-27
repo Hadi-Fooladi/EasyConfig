@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Attributes\DefaultEditorAttribute.cs" />
     <Compile Include="Attributes\EditorAttribute.cs" />
+    <Compile Include="Attributes\TextPropertyNameAttribute.cs" />
     <Compile Include="Classes\Options.cs" />
     <Compile Include="Controls\EditorControl.xaml.cs">
       <DependentUpon>EditorControl.xaml</DependentUpon>
