@@ -55,6 +55,11 @@
     <Compile Include="Config.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LinkedList.cs" />
+    <Compile Include="ListItem.cs" />
+    <Compile Include="Custom Editors\ListItemEditor.xaml.cs">
+      <DependentUpon>ListItemEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Msg.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -103,6 +108,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Custom Editors\BoolEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Custom Editors\ListItemEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
