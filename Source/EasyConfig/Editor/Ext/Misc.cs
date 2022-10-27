@@ -76,5 +76,8 @@ namespace EasyConfig.Editor
 		/// <returns>null if there is no <see cref="EditorAttribute"/></returns>
 		private static IEditor TryCreateEditorByAttribute(MemberInfo mi)
 			=> mi.GetCustomAttribute<EditorAttribute>()?.CreateNewEditor();
+
+		private static IEditor CreateNewEditor(this EditorAttribute attr)
+			=> (IEditor)Activator.CreateInstance(attr.EditorType);
 	}
 }
