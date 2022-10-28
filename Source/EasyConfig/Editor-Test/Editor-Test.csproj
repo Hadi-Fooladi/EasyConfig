@@ -96,6 +96,10 @@
       <Project>{3bce72cd-09cd-47b4-8b01-267f9469d684}</Project>
       <Name>EasyConfig</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EditorAttributes\EditorAttributes.csproj">
+      <Project>{69d48659-5836-4816-a2eb-5c6ad68ee6cf}</Project>
+      <Name>EditorAttributes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Editor\Editor.csproj">
       <Project>{0f9a6009-e66c-40e6-9da9-2ce8eb4f50df}</Project>
       <Name>Editor</Name>
