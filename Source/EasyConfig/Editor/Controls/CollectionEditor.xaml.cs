@@ -142,7 +142,7 @@ namespace EasyConfig.Editor
 		{
 			var items = _listbox.Items;
 			var ndx = _listbox.SelectedIndex;
-			if (ndx >= items.Count - 1) return;
+			if (ndx < 0 || ndx >= items.Count - 1) return;
 
 			var item = items[ndx];
 			items.RemoveAt(ndx);
