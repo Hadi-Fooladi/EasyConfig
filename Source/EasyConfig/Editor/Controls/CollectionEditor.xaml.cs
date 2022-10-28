@@ -33,6 +33,8 @@ namespace EasyConfig.Editor
 
 		private ListItem SelectedItem => _listbox.SelectedItem as ListItem;
 
+		public void ClearSelection() { _listbox.SelectedIndex = -1; }
+
 		#region IEditor Members
 		public Control Control => this;
 

@@ -26,6 +26,8 @@ namespace EasyConfig.Editor
 
 		private MemberItem SelectedItem => _listbox.SelectedItem as MemberItem;
 
+		public void ClearSelection() { _listbox.SelectedIndex = -1; }
+
 		#region Private Methods
 		private void Delete()
 		{
