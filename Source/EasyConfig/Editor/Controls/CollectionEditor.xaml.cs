@@ -33,6 +33,12 @@ namespace EasyConfig.Editor
 
 		private ListItem SelectedItem => _listbox.SelectedItem as ListItem;
 
+		public int SelectedIndex
+		{
+			get => _listbox.SelectedIndex;
+			set => _listbox.SelectedIndex = Math.Max(-1, value);
+		}
+
 		public void ClearSelection() { _listbox.SelectedIndex = -1; }
 
 		#region IEditor Members
