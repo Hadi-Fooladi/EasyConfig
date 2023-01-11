@@ -22,11 +22,11 @@ namespace Editor_Test
 				UseProperties = true
 			};
 
-			//var wnd = new EditorWindow(new Config());
+			var wnd = new EditorWindow(new Config());
 			//var wnd = new EditorWindow(ec.Load<Config>(FILENAME));
 
 			//var wnd = new EditorWindow(new LinkedList());
-			var wnd = new EditorWindow(ec.Load<LinkedList>(FILENAME));
+			//var wnd = new EditorWindow(ec.Load<LinkedList>(FILENAME));
 
 			wnd.OnSaveRequested += _ =>
 			{

@@ -1,125 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0F9A6009-E66C-40E6-9DA9-2CE8EB4F50DF}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EasyConfig.Editor</RootNamespace>
-    <AssemblyName>EasyConfig-Editor</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Classes\Options.cs" />
-    <Compile Include="Controls\EditorControl.xaml.cs">
-      <DependentUpon>EditorControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\CollectionEditor.xaml.cs">
-      <DependentUpon>CollectionEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\CompoundEditor.xaml.cs">
-      <DependentUpon>CompoundEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PrimitiveEditor.xaml.cs">
-      <DependentUpon>PrimitiveEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\EnumEditor.xaml.cs">
-      <DependentUpon>EnumEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Ext\Public.cs" />
-    <Compile Include="Windows\EditorWindow.xaml.cs">
-      <DependentUpon>EditorWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Exceptions\ValidationException.cs" />
-    <Compile Include="Ext\Misc.cs" />
-    <Compile Include="IEditor.cs" />
-    <Compile Include="Msg.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Controls\EditorControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\CollectionEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\CompoundEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\PrimitiveEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\EnumEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\EditorWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Blue-Plus.png" />
-    <Resource Include="Resources\Red-Cross.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Attributes\Attributes.csproj">
-      <Project>{07292f12-1018-4fdb-a127-c464042f89b7}</Project>
-      <Name>Attributes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EditorAttributes\EditorAttributes.csproj">
-      <Project>{69d48659-5836-4816-a2eb-5c6ad68ee6cf}</Project>
-      <Name>EditorAttributes</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Save.png" />
-    <Resource Include="Resources\Validation.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Editor.nuspec" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Down.png" />
-    <Resource Include="Resources\Up.png" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<UseWPF>true</UseWPF>
+		<Version>10.2.43</Version>
+		<TargetFramework>net7.0-windows</TargetFramework>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+		<Title>EasyConfig Editor</Title>
+		<PackageId>HaFT.EasyConfig.Editor</PackageId>
+		<AssemblyName>EasyConfig-Editor</AssemblyName>
+		<RootNamespace>EasyConfig.Editor</RootNamespace>
+
+		<Authors>Hadi Fooladi Talari</Authors>
+		<Company>HaFT</Company>
+		<PackageTags>Easy Config Editor XML</PackageTags>
+		<RepositoryUrl>https://github.com/Hadi-Fooladi/EasyConfig</RepositoryUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Attributes\Attributes.csproj" />
+		<ProjectReference Include="..\EditorAttributes\EditorAttributes.csproj" />
+
+		<Resource Include="Resources\*.png" />
+	</ItemGroup>
+
+	<Import Project="..\Shared\Shared.projitems" Label="Shared" />
+
 </Project>
